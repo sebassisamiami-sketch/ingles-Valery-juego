@@ -363,6 +363,17 @@
         @keyframes goldenGlow { 0%,100%{box-shadow:0 4px 12px rgba(255,165,0,0.4);} 50%{box-shadow:0 10px 30px rgba(255,215,0,0.85);} }
         .grand-title { color:#FF8C00; text-shadow:1px 1px 0 #FFD700; }
 
+        /* Súper título (el mejor de todos) */
+        .top-title {
+            background: linear-gradient(135deg,#FFD700,#FFF3B0,#FFA500,#FFD700) !important;
+            border:4px solid #FF8C00 !important; border-radius:18px;
+            box-shadow:0 6px 20px rgba(255,165,0,0.5);
+            animation: goldenGlow 2s ease-in-out infinite;
+            grid-column: 1 / -1;
+        }
+        .top-title .shop-emoji { font-size:3.6em; }
+        .top-title .shop-name { font-size:1.2em; color:#8B4513; text-shadow:1px 1px 0 #FFF3B0; }
+
         /* Calcomanía que aparece al tocar la pantalla */
         .sticker-pop {
             position: fixed; font-size: 3.4em; z-index: 40; pointer-events: none;
@@ -1100,7 +1111,8 @@
             star:     { name:"Estrella Brillante", emoji:"🌟", text:"🌟 Estrella Brillante", price:15 },
             genius:   { name:"Genio del Inglés", emoji:"🧠", text:"🧠 Genio del Inglés", price:25 },
             princess: { name:"Princesa del Inglés", emoji:"👑", text:"👑 Princesa del Inglés", price:35 },
-            master:   { name:"Maestra del Inglés", emoji:"🎓", text:"🎓 Maestra del Inglés", price:50 }
+            master:   { name:"Maestra del Inglés", emoji:"🎓", text:"🎓 Maestra del Inglés", price:50 },
+            legend:   { name:"🏆 ¡Leyenda del Inglés! (¡El mejor!)", emoji:"🏆", text:"🏆 Leyenda del Inglés 🌟", price:200, top:true }
         };
         function getShopItem(kind, id) {
             if (kind==='bg') return backgrounds[id];
@@ -1412,7 +1424,7 @@
             const isEquipped = equip[kind] === id;
 
             const div = document.createElement('div');
-            div.className = 'shop-item' + (isEquipped ? ' equipped' : '') + (item.grand ? ' grand-prize' : '');
+            div.className = 'shop-item' + (isEquipped ? ' equipped' : '') + (item.grand ? ' grand-prize' : '') + (item.top ? ' top-title' : '');
 
             const btn = document.createElement('button');
             btn.className = 'btn btn-buy';
