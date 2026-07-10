@@ -213,6 +213,7 @@
         .lvl-numbers { background:#4682B4; box-shadow:0 6px 0 #2C5A80; }
         .lvl-colors  { background:#DA70D6; box-shadow:0 6px 0 #A64DA6; }
         .lvl-actions { background:#2E8B57; box-shadow:0 6px 0 #1E5E3A; }
+        .lvl-objects { background:#607D8B; box-shadow:0 6px 0 #455A64; }
         .lvl-all  { background:#8A2BE2; box-shadow:0 6px 0 #5D1A9E; }
         .medal-tag { font-size: 1.1em; background: rgba(255,255,255,0.3); border-radius:20px; padding:2px 8px; }
         .btn-shop { background:#FFD700; color:#8A2BE2; box-shadow:0 6px 0 #DAA520; font-size:1.35em; margin-top:18px; }
@@ -404,6 +405,7 @@
             <button class="btn btn-level lvl-numbers" onclick="startGame(8)"><span>🔢 LOS NÚMEROS</span><span id="medal-8" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-colors" onclick="startGame(9)"><span>🎨 LOS COLORES</span><span id="medal-9" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-actions" onclick="startGame(10)"><span>🏃 ACCIONES</span><span id="medal-10" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-objects" onclick="startGame(11)"><span>🎒 LOS OBJETOS</span><span id="medal-11" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
             <button class="btn btn-shop" onclick="openShop()">🛒 Tienda de Recompensas (<span id="start-gems">0</span> 💎)</button>
             <button class="btn btn-progress" onclick="openProgress()">💾 Mi Progreso (pasar a otro aparato)</button>
@@ -992,11 +994,60 @@
               rule:"🏃 Verbos de acción (Actions)",
               exp:"'Nadar' en inglés es SWIM. Nadamos en el agua 💧. Las otras: DANCE es bailar y JUMP es saltar. Por eso 'nadar' es SWIM.",
               examples:[{en:"I swim in the pool.",es:"Nado en la piscina."},{en:"Fish can swim.",es:"Los peces pueden nadar."}],
-              scene:'<span class="a-bounce">🏊</span><span class="a-float">🌊</span>' }
+              scene:'<span class="a-bounce">🏊</span><span class="a-float">🌊</span>' },
+
+            /* ---------- NIVEL 11: LOS OBJETOS ---------- */
+            { level:11, q:"¿Cómo se dice 'Libro' en inglés? 📖",
+              options:[{text:"Book (Libro)",en:"Book"},{text:"Pencil (Lápiz)",en:"Pencil"},{text:"Ball (Pelota)",en:"Ball"}],
+              answer:0, say:"Book. I read a book.", img:"book", lock:111,
+              rule:"🎒 Los objetos (Objects)",
+              exp:"'Libro' en inglés es BOOK. Con los libros leemos y aprendemos 📚. Los otros objetos son: PENCIL es lápiz (para escribir) y BALL es pelota (para jugar). Por eso 'libro' es BOOK.",
+              examples:[{en:"I read a book.",es:"Leo un libro."},{en:"The book is big.",es:"El libro es grande."}],
+              scene:'<span class="a-float">📖</span><span class="a-bounce">📚</span>' },
+
+            { level:11, q:"¿Cómo se dice 'Lápiz' en inglés? ✏️",
+              options:[{text:"Chair (Silla)",en:"Chair"},{text:"Pencil (Lápiz)",en:"Pencil"},{text:"Door (Puerta)",en:"Door"}],
+              answer:1, say:"Pencil. I write with my pencil.", img:"pencil", lock:112,
+              rule:"🎒 Los objetos (Objects)",
+              exp:"'Lápiz' en inglés es PENCIL. Con el lápiz escribimos y dibujamos ✏️. Los otros: CHAIR es silla (para sentarse) y DOOR es puerta. Por eso 'lápiz' es PENCIL.",
+              examples:[{en:"I write with my pencil.",es:"Escribo con mi lápiz."},{en:"My pencil is red.",es:"Mi lápiz es rojo."}],
+              scene:'<span class="a-swing">✏️</span><span class="a-float">📝</span>' },
+
+            { level:11, q:"¿Cómo se dice 'Silla' en inglés? 🪑",
+              options:[{text:"Table (Mesa)",en:"Table"},{text:"Bed (Cama)",en:"Bed"},{text:"Chair (Silla)",en:"Chair"}],
+              answer:2, say:"Chair. I sit on the chair.", img:"chair", lock:113,
+              rule:"🎒 Los objetos (Objects)",
+              exp:"'Silla' en inglés es CHAIR. En la silla nos sentamos 🪑. Los otros muebles son: TABLE es mesa y BED es cama. Por eso 'silla' es CHAIR.",
+              examples:[{en:"I sit on the chair.",es:"Me siento en la silla."},{en:"The chair is small.",es:"La silla es pequeña."}],
+              scene:'<span class="a-bounce">🪑</span><span class="a-float">💺</span>' },
+
+            { level:11, q:"¿Cómo se dice 'Mesa' en inglés? 🍽️",
+              options:[{text:"Table (Mesa)",en:"Table"},{text:"Window (Ventana)",en:"Window"},{text:"Ball (Pelota)",en:"Ball"}],
+              answer:0, say:"Table. The food is on the table.", img:"table,furniture", lock:114,
+              rule:"🎒 Los objetos (Objects)",
+              exp:"'Mesa' en inglés es TABLE. Sobre la mesa ponemos la comida y los platos 🍽️. Los otros: WINDOW es ventana y BALL es pelota. Por eso 'mesa' es TABLE.",
+              examples:[{en:"The food is on the table.",es:"La comida está sobre la mesa."},{en:"My table is brown.",es:"Mi mesa es café."}],
+              scene:'<span class="a-float">🪵</span><span class="a-bounce">🍽️</span>' },
+
+            { level:11, q:"¿Cómo se dice 'Pelota' en inglés? ⚽",
+              options:[{text:"Clock (Reloj)",en:"Clock"},{text:"Ball (Pelota)",en:"Ball"},{text:"Book (Libro)",en:"Book"}],
+              answer:1, say:"Ball. I play with the ball.", img:"ball,soccer", lock:115,
+              rule:"🎒 Los objetos (Objects)",
+              exp:"'Pelota' o 'balón' en inglés es BALL. Con la pelota jugamos y pateamos ⚽. Los otros: CLOCK es reloj y BOOK es libro. Por eso 'pelota' es BALL.",
+              examples:[{en:"I play with the ball.",es:"Juego con la pelota."},{en:"The ball is round.",es:"La pelota es redonda."}],
+              scene:'<span class="a-bounce">⚽</span><span class="a-float">🏀</span>' },
+
+            { level:11, q:"¿Cómo se dice 'Mochila' en inglés? 🎒",
+              options:[{text:"Pencil (Lápiz)",en:"Pencil"},{text:"Chair (Silla)",en:"Chair"},{text:"Backpack (Mochila)",en:"Backpack"}],
+              answer:2, say:"Backpack. My books are in my backpack.", img:"backpack", lock:116,
+              rule:"🎒 Los objetos (Objects)",
+              exp:"'Mochila' en inglés es BACKPACK. En la mochila llevamos los cuadernos a la escuela 🎒. Los otros: PENCIL es lápiz y CHAIR es silla. Por eso 'mochila' es BACKPACK.",
+              examples:[{en:"My books are in my backpack.",es:"Mis libros están en mi mochila."},{en:"My backpack is blue.",es:"Mi mochila es azul."}],
+              scene:'<span class="a-bounce">🎒</span><span class="a-float">📚</span>' }
         ];
 
         const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 4:"Familia 👨‍👩‍👧", 5:"Cuerpo 🧍",
-                            6:"Animales 🐶", 7:"Comida 🍎", 8:"Números 🔢", 9:"Colores 🎨", 10:"Acciones 🏃", 0:"Mezcla 🌈"};
+                            6:"Animales 🐶", 7:"Comida 🍎", 8:"Números 🔢", 9:"Colores 🎨", 10:"Acciones 🏃", 11:"Objetos 🎒", 0:"Mezcla 🌈"};
 
         /* ============ TIENDA: fondos y personajes ============ */
         const backgrounds = {
@@ -1230,7 +1281,7 @@
         }
         function updateMedalDisplay() {
             const m = getMedals();
-            [0,1,2,3,4,5,6,7,8,9,10].forEach(lvl => {
+            [0,1,2,3,4,5,6,7,8,9,10,11].forEach(lvl => {
                 const el = document.getElementById('medal-' + lvl);
                 if (!el) return;
                 if (m[lvl]) { el.innerText = rankEmoji[m[lvl]]; el.classList.remove('hidden'); }
