@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valery Chikitin - Misión Inglés</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&family=Comic+Neue:wght@400;700&family=Fredoka:wght@400;600&family=Nunito:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
     <style>
+        /* La tipografía se controla con esta variable, así se ve igual en todos los dispositivos */
+        :root { --game-font: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif; }
         * { box-sizing: border-box; }
         body { 
-            font-family: 'Comic Sans MS', cursive, sans-serif; 
+            font-family: var(--game-font); 
             background-color: #87CEEB; 
             background-image: radial-gradient(#fff 15%, transparent 16%), radial-gradient(#fff 15%, transparent 16%);
             background-size: 30px 30px;
@@ -43,7 +48,7 @@
             border-radius: 15px; 
             cursor: pointer; 
             margin: 10px; 
-            font-family: 'Comic Sans MS', cursive; 
+            font-family: var(--game-font); 
             box-shadow: 0 6px 0 #228B22; 
             transition: transform 0.1s, box-shadow 0.1s; 
             font-weight: bold;
@@ -198,6 +203,16 @@
         .medal-tag { font-size: 1.1em; background: rgba(255,255,255,0.3); border-radius:20px; padding:2px 8px; }
         .btn-shop { background:#FFD700; color:#8A2BE2; box-shadow:0 6px 0 #DAA520; font-size:1.35em; margin-top:18px; }
 
+        /* Selector de tipografía */
+        #font-picker-wrap { margin-top:18px; border-top:2px dashed #FFD700; padding-top:12px; }
+        #font-picker { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+        .font-opt {
+            border:2px solid #FFD700; background:#FFFDF5; border-radius:12px;
+            padding:8px 14px; cursor:pointer; font-size:1.05em; color:#333;
+        }
+        .font-opt.active { border-color:#32CD32; background:#F0FFF0; font-weight:bold; }
+        .font-opt:hover { background:#FFF8DC; }
+
         /* Tienda */
         #gem-wallet { font-size:1.4em; color:#1E90FF; font-weight:bold; background:#E6F3FF; border-radius:15px; padding:10px 18px; display:inline-block; margin:8px 0 4px; }
         .shop-section-title { color:#FF8C00; margin:18px 0 6px; }
@@ -269,7 +284,7 @@
         .nav-btn {
             background:#9370DB; color:#fff; border:none; border-radius:12px;
             padding:9px 16px; font-size:1em; font-weight:bold; cursor:pointer;
-            font-family:'Comic Sans MS', cursive; box-shadow:0 4px 0 #6A5ACD;
+            font-family:var(--game-font); box-shadow:0 4px 0 #6A5ACD;
             transition: transform 0.1s, box-shadow 0.1s;
         }
         .nav-btn:hover:not(:disabled) { background:#A385E0; }
@@ -290,6 +305,7 @@
     <div id="buddy">🌟</div>
     <div id="game-container">
         <div id="controls">
+            <button id="font-toggle" class="ctrl-btn" onclick="cycleFont()" title="Cambiar tipo de letra">🔤</button>
             <button id="music-toggle" class="ctrl-btn" onclick="toggleMusic()" title="Música de fondo">🎵</button>
             <button id="sound-toggle" class="ctrl-btn" onclick="toggleSound()" title="Sonidos del juego">🔊</button>
         </div>
@@ -307,6 +323,10 @@
             <button class="btn btn-level lvl-body" onclick="startGame(5)"><span>🧍 EL CUERPO</span><span id="medal-5" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
             <button class="btn btn-shop" onclick="openShop()">🛒 Tienda de Recompensas (<span id="start-gems">0</span> 💎)</button>
+            <div id="font-picker-wrap">
+                <p class="level-title">🔤 Tipo de letra:</p>
+                <div id="font-picker"></div>
+            </div>
         </div>
 
         <!-- TIENDA -->
@@ -1067,7 +1087,46 @@
             else launchConfetti(40);
         }
 
+        /* ============ TIPOGRAFÍA (se guarda y se ve igual en todo dispositivo) ============ */
+        const fontOptions = [
+            { id:'comic',  name:'Divertida', css:"'Comic Neue','Comic Sans MS',cursive" },
+            { id:'round',  name:'Redonda',   css:"'Baloo 2','Comic Sans MS',sans-serif" },
+            { id:'soft',   name:'Suave',     css:"'Fredoka','Comic Sans MS',sans-serif" },
+            { id:'clear',  name:'Clara',     css:"'Nunito',Verdana,sans-serif" },
+            { id:'hand',   name:'Manuscrita',css:"'Patrick Hand',cursive" },
+            { id:'simple', name:'Sencilla',  css:"Arial,Helvetica,sans-serif" }
+        ];
+        function getFont() { return localStorage.getItem('valeryFont') || 'comic'; }
+        function setFont(id) { try { localStorage.setItem('valeryFont', id); } catch(e){} }
+        function applyFont(id) {
+            const f = fontOptions.find(o => o.id === id) || fontOptions[0];
+            document.documentElement.style.setProperty('--game-font', f.css);
+        }
+        function renderFontPicker() {
+            const wrap = document.getElementById('font-picker');
+            if (!wrap) return;
+            const cur = getFont();
+            wrap.innerHTML = '';
+            fontOptions.forEach(o => {
+                const b = document.createElement('button');
+                b.className = 'font-opt' + (o.id === cur ? ' active' : '');
+                b.style.fontFamily = o.css;
+                b.innerText = o.name;
+                b.onclick = () => chooseFont(o.id);
+                wrap.appendChild(b);
+            });
+        }
+        function chooseFont(id) { playClick(); setFont(id); applyFont(id); renderFontPicker(); }
+        function cycleFont() {
+            const idx = fontOptions.findIndex(o => o.id === getFont());
+            const next = fontOptions[(idx + 1) % fontOptions.length];
+            playClick(); setFont(next.id); applyFont(next.id); renderFontPicker();
+            showRewardPopup('🔤 ' + next.name);
+        }
+
         /* ============ AL ABRIR ============ */
+        applyFont(getFont());
+        renderFontPicker();
         applyEquip();
         updateMedalDisplay();
         document.getElementById('start-gems').innerText = getGems();
