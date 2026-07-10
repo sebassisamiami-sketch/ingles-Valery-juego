@@ -363,6 +363,17 @@
         @keyframes goldenGlow { 0%,100%{box-shadow:0 4px 12px rgba(255,165,0,0.4);} 50%{box-shadow:0 10px 30px rgba(255,215,0,0.85);} }
         .grand-title { color:#FF8C00; text-shadow:1px 1px 0 #FFD700; }
 
+        /* Calcomanía MEGA (la mejor de todas) */
+        .mega-sticker {
+            background: linear-gradient(135deg,#ff9a9e,#fbc2eb,#a18cd1,#84fab0,#ffd700) !important;
+            border:4px solid #FF69B4 !important; border-radius:18px;
+            box-shadow:0 6px 20px rgba(255,105,180,0.5);
+            animation: goldenGlow 2s ease-in-out infinite;
+            grid-column: 1 / -1;
+        }
+        .mega-sticker .shop-emoji { font-size:3.8em; }
+        .mega-sticker .shop-name { font-size:1.25em; color:#8A2BE2; text-shadow:1px 1px 0 #fff; }
+
         /* Súper título (el mejor de todos) */
         .top-title {
             background: linear-gradient(135deg,#FFD700,#FFF3B0,#FFA500,#FFD700) !important;
@@ -1102,7 +1113,8 @@
             star2:     { name:"Estrella", emoji:"⭐", price:50 },
             crown:     { name:"Corona", emoji:"👑", price:90 },
             medal:     { name:"Medalla", emoji:"🏅", price:100 },
-            trophy:    { name:"Trofeo", emoji:"🏆", price:130 }
+            trophy:    { name:"Trofeo", emoji:"🏆", price:130 },
+            megaparty: { name:"🎉 ¡Lluvia Mágica! (¡La mejor!)", emoji:"🎉", price:3000, mega:true }
         };
         // 👑 Títulos: se compran con ⭐ ESTRELLAS y aparecen junto a su nombre
         const titles = {
@@ -1375,12 +1387,26 @@
             if (soundOn) { playTone(660,0.07,'sine',0,0.12); playTone(990,0.09,'sine',0.05,0.12); }
             setTimeout(() => s.remove(), 1300);
         }
+        // 🎉 La calcomanía MEGA suelta TODAS las calcomanías a la vez, en lugares al azar
+        function spawnMegaStickers(x, y) {
+            const ids = shuffle(Object.keys(stickers).filter(id => !stickers[id].mega));
+            ids.forEach((id, i) => {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 25 + Math.random() * 130;
+                const sx = Math.max(30, Math.min(window.innerWidth  - 30, x + Math.cos(angle) * dist));
+                const sy = Math.max(30, Math.min(window.innerHeight - 30, y + Math.sin(angle) * dist));
+                setTimeout(() => spawnSticker(sx, sy, stickers[id].emoji), i * 90);
+            });
+            if (soundOn) playCharacterSound('magic');   // sonido mágico especial
+            launchConfetti(40);
+        }
         // Al tocar en cualquier parte (que no sea un botón) aparece la calcomanía activa
         document.addEventListener('click', function(e) {
             const active = getEquip().sticker;
             if (!active || !stickers[active]) return;
             if (isInteractive(e.target)) return;
-            spawnSticker(e.clientX, e.clientY, stickers[active].emoji);
+            if (stickers[active].mega) spawnMegaStickers(e.clientX, e.clientY);
+            else spawnSticker(e.clientX, e.clientY, stickers[active].emoji);
         });
 
         /* ============ TIENDA ============ */
@@ -1424,7 +1450,7 @@
             const isEquipped = equip[kind] === id;
 
             const div = document.createElement('div');
-            div.className = 'shop-item' + (isEquipped ? ' equipped' : '') + (item.grand ? ' grand-prize' : '') + (item.top ? ' top-title' : '');
+            div.className = 'shop-item' + (isEquipped ? ' equipped' : '') + (item.grand ? ' grand-prize' : '') + (item.mega ? ' mega-sticker' : '') + (item.top ? ' top-title' : '');
 
             const btn = document.createElement('button');
             btn.className = 'btn btn-buy';
