@@ -202,6 +202,14 @@
         .lvl-all  { background:#8A2BE2; box-shadow:0 6px 0 #5D1A9E; }
         .medal-tag { font-size: 1.1em; background: rgba(255,255,255,0.3); border-radius:20px; padding:2px 8px; }
         .btn-shop { background:#FFD700; color:#8A2BE2; box-shadow:0 6px 0 #DAA520; font-size:1.35em; margin-top:18px; }
+        .btn-progress { background:#20B2AA; box-shadow:0 6px 0 #178A84; font-size:1.15em; }
+
+        /* Pantalla de progreso */
+        .progress-box {
+            width:100%; min-height:90px; border:3px solid #FFD700; border-radius:12px;
+            padding:10px; font-family:monospace; font-size:0.9em; resize:vertical;
+            margin:8px 0; word-break:break-all;
+        }
 
         /* Selector de tipografía */
         #font-picker-wrap { margin-top:18px; border-top:2px dashed #FFD700; padding-top:12px; }
@@ -323,10 +331,34 @@
             <button class="btn btn-level lvl-body" onclick="startGame(5)"><span>🧍 EL CUERPO</span><span id="medal-5" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
             <button class="btn btn-shop" onclick="openShop()">🛒 Tienda de Recompensas (<span id="start-gems">0</span> 💎)</button>
+            <button class="btn btn-progress" onclick="openProgress()">💾 Mi Progreso (pasar a otro aparato)</button>
             <div id="font-picker-wrap">
                 <p class="level-title">🔤 Tipo de letra:</p>
                 <div id="font-picker"></div>
             </div>
+        </div>
+
+        <!-- PANTALLA DE PROGRESO (guardar / cargar en otro dispositivo) -->
+        <div id="progress-screen" class="hidden">
+            <h1>💾 Mi Progreso</h1>
+            <p style="color:#555; font-size:1.05em;">Tu progreso se guarda solito en este aparato. Para llevarlo a la <b>tablet</b> (u otro aparato), usa el código. 👇</p>
+
+            <h2 class="shop-section-title">📤 Guardar mi progreso</h2>
+            <p style="color:#666;">Copia este código y guárdalo (mándatelo por WhatsApp o correo):</p>
+            <textarea id="export-code" class="progress-box" readonly onclick="this.select()"></textarea>
+            <div>
+                <button class="btn" onclick="copyProgressCode()">📋 Copiar código</button>
+                <button class="btn btn-shop" onclick="downloadProgress()">⬇️ Descargar archivo</button>
+            </div>
+
+            <h2 class="shop-section-title">📥 Cargar progreso</h2>
+            <p style="color:#666;">Pega aquí el código en el otro aparato y toca "Cargar":</p>
+            <textarea id="import-code" class="progress-box" placeholder="Pega tu código aquí..."></textarea>
+            <div id="import-msg" style="min-height:24px; font-weight:bold;"></div>
+            <button class="btn lvl-easy" onclick="importProgress()">✅ Cargar progreso</button>
+
+            <br>
+            <button class="btn" onclick="closeProgress()">⬅️ Volver</button>
         </div>
 
         <!-- TIENDA -->
@@ -1044,6 +1076,7 @@
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('end-screen').classList.add('hidden');
             document.getElementById('shop-screen').classList.add('hidden');
+            document.getElementById('progress-screen').classList.add('hidden');
             document.getElementById('start-screen').classList.remove('hidden');
             updateMedalDisplay();
             document.getElementById('start-gems').innerText = getGems();
@@ -1122,6 +1155,76 @@
             const next = fontOptions[(idx + 1) % fontOptions.length];
             playClick(); setFont(next.id); applyFont(next.id); renderFontPicker();
             showRewardPopup('🔤 ' + next.name);
+        }
+
+        /* ============ GUARDAR / CARGAR PROGRESO (pasar a otro dispositivo) ============ */
+        const PROGRESS_KEYS = ['valeryGems','valeryMedals','valeryOwned','valeryEquip','valeryFont'];
+        const PROGRESS_PREFIX = 'VALERY1:';
+
+        function collectProgress() {
+            const data = {};
+            PROGRESS_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v !== null) data[k] = v; });
+            return data;
+        }
+        function makeCode() {
+            const json = JSON.stringify(collectProgress());
+            // codificamos en base64 seguro para acentos y emojis
+            return PROGRESS_PREFIX + btoa(unescape(encodeURIComponent(json)));
+        }
+        function openProgress() {
+            playClick();
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('progress-screen').classList.remove('hidden');
+            document.getElementById('export-code').value = makeCode();
+            document.getElementById('import-msg').innerText = '';
+            document.getElementById('import-code').value = '';
+        }
+        function closeProgress() {
+            playClick();
+            document.getElementById('progress-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            document.getElementById('start-gems').innerText = getGems();
+            updateMedalDisplay();
+        }
+        function copyProgressCode() {
+            const ta = document.getElementById('export-code');
+            ta.select();
+            let ok = false;
+            try { ok = document.execCommand('copy'); } catch(e) {}
+            if (navigator.clipboard) { navigator.clipboard.writeText(ta.value).catch(()=>{}); }
+            playReward();
+            showRewardPopup(ok ? '📋 ¡Copiado!' : '📋 Copia el texto');
+        }
+        function downloadProgress() {
+            playClick();
+            const blob = new Blob([makeCode()], {type:'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'progreso-valery.txt';
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        }
+        function importProgress() {
+            const msg = document.getElementById('import-msg');
+            let code = (document.getElementById('import-code').value || '').trim();
+            if (!code) { msg.style.color = '#FF4500'; msg.innerText = '✋ Primero pega tu código.'; return; }
+            try {
+                if (code.startsWith(PROGRESS_PREFIX)) code = code.slice(PROGRESS_PREFIX.length);
+                const json = decodeURIComponent(escape(atob(code)));
+                const data = JSON.parse(json);
+                let count = 0;
+                PROGRESS_KEYS.forEach(k => { if (data[k] !== undefined) { localStorage.setItem(k, data[k]); count++; } });
+                if (count === 0) throw new Error('vacío');
+                playWin(); launchConfetti(80);
+                msg.style.color = '#228B22';
+                msg.innerText = '✅ ¡Progreso cargado! Recargando el juego...';
+                setTimeout(() => location.reload(), 1400);
+            } catch(e) {
+                playWrong();
+                msg.style.color = '#FF4500';
+                msg.innerText = '❌ El código no es válido. Revisa que esté completo.';
+            }
         }
 
         /* ============ AL ABRIR ============ */
