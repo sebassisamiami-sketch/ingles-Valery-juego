@@ -199,6 +199,11 @@
         .lvl-hard { background:#FF4500; box-shadow:0 6px 0 #CC3700; }
         .lvl-fam  { background:#FF69B4; box-shadow:0 6px 0 #C71585; }
         .lvl-body { background:#20B2AA; box-shadow:0 6px 0 #178A84; }
+        .lvl-animals { background:#A0522D; box-shadow:0 6px 0 #6B3B1F; }
+        .lvl-food    { background:#FF7F50; box-shadow:0 6px 0 #CC5A33; }
+        .lvl-numbers { background:#4682B4; box-shadow:0 6px 0 #2C5A80; }
+        .lvl-colors  { background:#DA70D6; box-shadow:0 6px 0 #A64DA6; }
+        .lvl-actions { background:#2E8B57; box-shadow:0 6px 0 #1E5E3A; }
         .lvl-all  { background:#8A2BE2; box-shadow:0 6px 0 #5D1A9E; }
         .medal-tag { font-size: 1.1em; background: rgba(255,255,255,0.3); border-radius:20px; padding:2px 8px; }
         .btn-shop { background:#FFD700; color:#8A2BE2; box-shadow:0 6px 0 #DAA520; font-size:1.35em; margin-top:18px; }
@@ -329,6 +334,11 @@
             <button class="btn btn-level lvl-hard" onclick="startGame(3)"><span>😎 DIFÍCIL (Verbos y Pasado)</span><span id="medal-3" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-fam" onclick="startGame(4)"><span>👨‍👩‍👧 LA FAMILIA</span><span id="medal-4" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-body" onclick="startGame(5)"><span>🧍 EL CUERPO</span><span id="medal-5" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-animals" onclick="startGame(6)"><span>🐶 LOS ANIMALES</span><span id="medal-6" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-food" onclick="startGame(7)"><span>🍎 LA COMIDA</span><span id="medal-7" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-numbers" onclick="startGame(8)"><span>🔢 LOS NÚMEROS</span><span id="medal-8" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-colors" onclick="startGame(9)"><span>🎨 LOS COLORES</span><span id="medal-9" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-actions" onclick="startGame(10)"><span>🏃 ACCIONES</span><span id="medal-10" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
             <button class="btn btn-shop" onclick="openShop()">🛒 Tienda de Recompensas (<span id="start-gems">0</span> 💎)</button>
             <button class="btn btn-progress" onclick="openProgress()">💾 Mi Progreso (pasar a otro aparato)</button>
@@ -659,10 +669,256 @@
               rule:"🧍 El cuerpo (The body)",
               exp:"'Boca' en inglés es MOUTH. Con la boca comemos y hablamos. Cuidado: HAND es mano y HEAD es cabeza. Por eso 'boca' es MOUTH.",
               examples:[{en:"I eat with my mouth.",es:"Como con mi boca."},{en:"Open your mouth!",es:"¡Abre la boca!"}],
-              scene:'<span class="a-bounce">👄</span><span class="a-float">😁</span>' }
+              scene:'<span class="a-bounce">👄</span><span class="a-float">😁</span>' },
+
+            /* ---------- NIVEL 6: LOS ANIMALES ---------- */
+            { level:6, q:"¿Cómo se dice 'Perro' en inglés? 🐶",
+              options:[{text:"Dog (Perro)",en:"Dog"},{text:"Cat (Gato)",en:"Cat"},{text:"Fish (Pez)",en:"Fish"}],
+              answer:0, say:"Dog. The dog says woof.", img:"dog", lock:61,
+              rule:"🐾 Los animales (Animals)",
+              exp:"'Perro' en inglés es DOG, y hace 'woof'. Las otras: CAT es gato (hace 'meow') y FISH es pez (vive en el agua). Por eso 'perro' es DOG.",
+              examples:[{en:"The dog is big.",es:"El perro es grande."},{en:"I love my dog.",es:"Amo a mi perro."}],
+              scene:'<span class="a-bounce">🐶</span><span class="a-float">🦴</span>' },
+
+            { level:6, q:"¿Cómo se dice 'Pájaro' en inglés? 🐦",
+              options:[{text:"Horse (Caballo)",en:"Horse"},{text:"Bird (Pájaro)",en:"Bird"},{text:"Cow (Vaca)",en:"Cow"}],
+              answer:1, say:"Bird. The bird can fly.", img:"bird", lock:62,
+              rule:"🐾 Los animales (Animals)",
+              exp:"'Pájaro' o 'ave' en inglés es BIRD, y puede volar 🕊️. Las otras: HORSE es caballo y COW es vaca. Por eso 'pájaro' es BIRD.",
+              examples:[{en:"The bird can fly.",es:"El pájaro puede volar."},{en:"A small bird sings.",es:"Un pajarito canta."}],
+              scene:'<span class="a-float">🐦</span><span class="a-float">🌳</span>' },
+
+            { level:6, q:"¿Cómo se dice 'Pez' en inglés? 🐟",
+              options:[{text:"Frog (Rana)",en:"Frog"},{text:"Duck (Pato)",en:"Duck"},{text:"Fish (Pez)",en:"Fish"}],
+              answer:2, say:"Fish. The fish swims in the water.", img:"fish", lock:63,
+              rule:"🐾 Los animales (Animals)",
+              exp:"'Pez' en inglés es FISH, y nada en el agua 💧. Las otras: FROG es rana y DUCK es pato. Por eso 'pez' es FISH.",
+              examples:[{en:"The fish swims.",es:"El pez nada."},{en:"I have an orange fish.",es:"Tengo un pez naranja."}],
+              scene:'<span class="a-bounce">🐟</span><span class="a-float">💧</span>' },
+
+            { level:6, q:"¿Cómo se dice 'Vaca' en inglés? 🐮",
+              options:[{text:"Cow (Vaca)",en:"Cow"},{text:"Pig (Cerdo)",en:"Pig"},{text:"Sheep (Oveja)",en:"Sheep"}],
+              answer:0, say:"Cow. The cow says moo.", img:"cow", lock:64,
+              rule:"🐾 Los animales (Animals)",
+              exp:"'Vaca' en inglés es COW, y hace 'moo'. Nos da leche 🥛. Las otras: PIG es cerdo y SHEEP es oveja. Por eso 'vaca' es COW.",
+              examples:[{en:"The cow says moo.",es:"La vaca hace muu."},{en:"The cow gives milk.",es:"La vaca da leche."}],
+              scene:'<span class="a-bounce">🐮</span><span class="a-float">🥛</span>' },
+
+            { level:6, q:"¿Cómo se dice 'Caballo' en inglés? 🐴",
+              options:[{text:"Lion (León)",en:"Lion"},{text:"Horse (Caballo)",en:"Horse"},{text:"Bear (Oso)",en:"Bear"}],
+              answer:1, say:"Horse. The horse runs fast.", img:"horse", lock:65,
+              rule:"🐾 Los animales (Animals)",
+              exp:"'Caballo' en inglés es HORSE, y corre muy rápido 🏇. Las otras: LION es león y BEAR es oso. Por eso 'caballo' es HORSE.",
+              examples:[{en:"The horse runs fast.",es:"El caballo corre rápido."},{en:"I ride a horse.",es:"Monto un caballo."}],
+              scene:'<span class="a-bounce">🐴</span><span class="a-float">🌾</span>' },
+
+            { level:6, q:"¿Cómo se dice 'León' en inglés? 🦁",
+              options:[{text:"Monkey (Mono)",en:"Monkey"},{text:"Elephant (Elefante)",en:"Elephant"},{text:"Lion (León)",en:"Lion"}],
+              answer:2, say:"Lion. The lion is the king.", img:"lion", lock:66,
+              rule:"🐾 Los animales (Animals)",
+              exp:"'León' en inglés es LION, ¡el rey de la selva! 👑 Las otras: MONKEY es mono y ELEPHANT es elefante. Por eso 'león' es LION.",
+              examples:[{en:"The lion is strong.",es:"El león es fuerte."},{en:"The lion roars.",es:"El león ruge."}],
+              scene:'<span class="a-bounce">🦁</span><span class="a-float">👑</span>' },
+
+            /* ---------- NIVEL 7: LA COMIDA ---------- */
+            { level:7, q:"¿Cómo se dice 'Manzana' en inglés? 🍎",
+              options:[{text:"Apple (Manzana)",en:"Apple"},{text:"Banana (Banano)",en:"Banana"},{text:"Orange (Naranja)",en:"Orange"}],
+              answer:0, say:"Apple. I eat a red apple.", img:"apple", lock:71,
+              rule:"🍎 La comida (Food)",
+              exp:"'Manzana' en inglés es APPLE. Las otras frutas: BANANA es banano y ORANGE es naranja. Por eso 'manzana' es APPLE.",
+              examples:[{en:"I eat an apple.",es:"Como una manzana."},{en:"The apple is red.",es:"La manzana es roja."}],
+              scene:'<span class="a-bounce">🍎</span><span class="a-float">🍏</span>' },
+
+            { level:7, q:"¿Cómo se dice 'Leche' en inglés? 🥛",
+              options:[{text:"Juice (Jugo)",en:"Juice"},{text:"Milk (Leche)",en:"Milk"},{text:"Water (Agua)",en:"Water"}],
+              answer:1, say:"Milk. I drink milk.", img:"milk", lock:72,
+              rule:"🍎 La comida (Food)",
+              exp:"'Leche' en inglés es MILK. Las otras bebidas: JUICE es jugo y WATER es agua. Por eso 'leche' es MILK.",
+              examples:[{en:"I drink milk.",es:"Tomo leche."},{en:"The milk is cold.",es:"La leche está fría."}],
+              scene:'<span class="a-bounce">🥛</span><span class="a-float">🐄</span>' },
+
+            { level:7, q:"¿Cómo se dice 'Pan' en inglés? 🍞",
+              options:[{text:"Rice (Arroz)",en:"Rice"},{text:"Egg (Huevo)",en:"Egg"},{text:"Bread (Pan)",en:"Bread"}],
+              answer:2, say:"Bread. I like fresh bread.", img:"bread", lock:73,
+              rule:"🍎 La comida (Food)",
+              exp:"'Pan' en inglés es BREAD. Las otras comidas: RICE es arroz y EGG es huevo. Por eso 'pan' es BREAD.",
+              examples:[{en:"I eat bread.",es:"Como pan."},{en:"The bread is warm.",es:"El pan está calientito."}],
+              scene:'<span class="a-bounce">🍞</span><span class="a-float">🧈</span>' },
+
+            { level:7, q:"¿Cómo se dice 'Agua' en inglés? 💧",
+              options:[{text:"Water (Agua)",en:"Water"},{text:"Milk (Leche)",en:"Milk"},{text:"Soup (Sopa)",en:"Soup"}],
+              answer:0, say:"Water. I drink water.", img:"water,glass", lock:74,
+              rule:"🍎 La comida (Food)",
+              exp:"'Agua' en inglés es WATER. Es muy importante tomar agua 💧. Las otras: MILK es leche y SOUP es sopa. Por eso 'agua' es WATER.",
+              examples:[{en:"I drink water.",es:"Tomo agua."},{en:"The water is cold.",es:"El agua está fría."}],
+              scene:'<span class="a-rain">💧</span><span class="a-float">🥤</span>' },
+
+            { level:7, q:"¿Cómo se dice 'Banano' en inglés? 🍌",
+              options:[{text:"Grape (Uva)",en:"Grape"},{text:"Banana (Banano)",en:"Banana"},{text:"Apple (Manzana)",en:"Apple"}],
+              answer:1, say:"Banana. The monkey eats a banana.", img:"banana", lock:75,
+              rule:"🍎 La comida (Food)",
+              exp:"'Banano' en inglés es BANANA (¡suena muy parecido!). Las otras frutas: GRAPE es uva y APPLE es manzana. Por eso 'banano' es BANANA.",
+              examples:[{en:"I eat a banana.",es:"Como un banano."},{en:"The banana is yellow.",es:"El banano es amarillo."}],
+              scene:'<span class="a-bounce">🍌</span><span class="a-float">🐵</span>' },
+
+            { level:7, q:"¿Cómo se dice 'Huevo' en inglés? 🥚",
+              options:[{text:"Cheese (Queso)",en:"Cheese"},{text:"Fish (Pescado)",en:"Fish"},{text:"Egg (Huevo)",en:"Egg"}],
+              answer:2, say:"Egg. I eat an egg for breakfast.", img:"egg", lock:76,
+              rule:"🍎 La comida (Food)",
+              exp:"'Huevo' en inglés es EGG. Las otras: CHEESE es queso y FISH es pescado. Por eso 'huevo' es EGG.",
+              examples:[{en:"I eat an egg.",es:"Como un huevo."},{en:"The egg is white.",es:"El huevo es blanco."}],
+              scene:'<span class="a-bounce">🥚</span><span class="a-float">🍳</span>' },
+
+            /* ---------- NIVEL 8: LOS NÚMEROS ---------- */
+            { level:8, q:"¿Cómo se dice el número 'tres' (3)? 🔢",
+              options:[{text:"Two (2)",en:"Two"},{text:"Three (3)",en:"Three"},{text:"Four (4)",en:"Four"}],
+              answer:1, say:"Three. One, two, three!", img:"three,number", lock:81,
+              rule:"🔢 Los números (Numbers)",
+              exp:"El número 3 en inglés es THREE. Recuerda la cuenta: one (1), two (2), THREE (3), four (4). Por eso 'tres' es THREE.",
+              examples:[{en:"I am three years old.",es:"Tengo tres años."},{en:"I see three cats.",es:"Veo tres gatos."}],
+              scene:'<span class="a-bounce">3️⃣</span><span class="a-float">🐱</span>' },
+
+            { level:8, q:"¿Cómo se dice el número 'cinco' (5)? ✋",
+              options:[{text:"Four (4)",en:"Four"},{text:"Six (6)",en:"Six"},{text:"Five (5)",en:"Five"}],
+              answer:2, say:"Five. I have five fingers.", img:"five,hand", lock:82,
+              rule:"🔢 Los números (Numbers)",
+              exp:"El número 5 en inglés es FIVE. ¡Es el número de los dedos de una mano ✋! four (4), FIVE (5), six (6). Por eso 'cinco' es FIVE.",
+              examples:[{en:"I have five fingers.",es:"Tengo cinco dedos."},{en:"Give me five!",es:"¡Chócala!"}],
+              scene:'<span class="a-swing">✋</span><span class="a-float">5️⃣</span>' },
+
+            { level:8, q:"¿Cómo se dice el número 'siete' (7)? 🌈",
+              options:[{text:"Seven (7)",en:"Seven"},{text:"Six (6)",en:"Six"},{text:"Eight (8)",en:"Eight"}],
+              answer:0, say:"Seven. Six, seven, eight!", img:"seven,number", lock:83,
+              rule:"🔢 Los números (Numbers)",
+              exp:"El número 7 en inglés es SEVEN. La cuenta: six (6), SEVEN (7), eight (8). Por eso 'siete' es SEVEN.",
+              examples:[{en:"I have seven crayons.",es:"Tengo siete crayones."},{en:"Seven days a week.",es:"Siete días en la semana."}],
+              scene:'<span class="a-bounce">7️⃣</span><span class="a-float">🌈</span>' },
+
+            { level:8, q:"¿Cómo se dice el número 'cuatro' (4)? 🐾",
+              options:[{text:"Five (5)",en:"Five"},{text:"Four (4)",en:"Four"},{text:"Three (3)",en:"Three"}],
+              answer:1, say:"Four. One, two, three, four!", img:"four,number", lock:84,
+              rule:"🔢 Los números (Numbers)",
+              exp:"El número 4 en inglés es FOUR. La cuenta: three (3), FOUR (4), five (5). Por eso 'cuatro' es FOUR.",
+              examples:[{en:"A dog has four legs.",es:"Un perro tiene cuatro patas."},{en:"I am four years old.",es:"Tengo cuatro años."}],
+              scene:'<span class="a-bounce">4️⃣</span><span class="a-float">🐾</span>' },
+
+            { level:8, q:"¿Cómo se dice el número 'diez' (10)? 🙌",
+              options:[{text:"Nine (9)",en:"Nine"},{text:"Ten (10)",en:"Ten"},{text:"Twelve (12)",en:"Twelve"}],
+              answer:1, say:"Ten. I have ten fingers.", img:"ten,number", lock:85,
+              rule:"🔢 Los números (Numbers)",
+              exp:"El número 10 en inglés es TEN. ¡Son todos los dedos de las dos manos 🙌! nine (9), TEN (10). Por eso 'diez' es TEN.",
+              examples:[{en:"I have ten fingers.",es:"Tengo diez dedos."},{en:"Count to ten!",es:"¡Cuenta hasta diez!"}],
+              scene:'<span class="a-bounce">🔟</span><span class="a-float">🙌</span>' },
+
+            { level:8, q:"¿Cómo se dice el número 'ocho' (8)? 🎈",
+              options:[{text:"Seven (7)",en:"Seven"},{text:"Nine (9)",en:"Nine"},{text:"Eight (8)",en:"Eight"}],
+              answer:2, say:"Eight. Seven, eight, nine!", img:"eight,number", lock:86,
+              rule:"🔢 Los números (Numbers)",
+              exp:"El número 8 en inglés es EIGHT (se dice 'eit'). La cuenta: seven (7), EIGHT (8), nine (9). Por eso 'ocho' es EIGHT.",
+              examples:[{en:"I have eight balloons.",es:"Tengo ocho globos."},{en:"I count eight stars.",es:"Cuento ocho estrellas."}],
+              scene:'<span class="a-bounce">8️⃣</span><span class="a-float">🎈</span>' },
+
+            /* ---------- NIVEL 9: LOS COLORES ---------- */
+            { level:9, q:"¿Cómo se dice el color 'Rojo'? 🔴",
+              options:[{text:"Red (Rojo)",en:"Red"},{text:"Blue (Azul)",en:"Blue"},{text:"Green (Verde)",en:"Green"}],
+              answer:0, say:"Red. The apple is red.", img:"red,color", lock:91,
+              rule:"🎨 Los colores (Colors)",
+              exp:"'Rojo' en inglés es RED, como una fresa 🍓. Los otros: BLUE es azul y GREEN es verde. Por eso 'rojo' es RED.",
+              examples:[{en:"The apple is red.",es:"La manzana es roja."},{en:"I have a red car.",es:"Tengo un carro rojo."}],
+              scene:'<span class="a-grow">🔴</span><span class="a-float">🍓</span>' },
+
+            { level:9, q:"¿Cómo se dice el color 'Azul'? 🔵",
+              options:[{text:"Pink (Rosado)",en:"Pink"},{text:"Blue (Azul)",en:"Blue"},{text:"Yellow (Amarillo)",en:"Yellow"}],
+              answer:1, say:"Blue. The sky is blue.", img:"blue,color", lock:92,
+              rule:"🎨 Los colores (Colors)",
+              exp:"'Azul' en inglés es BLUE, como el cielo 🌌. Los otros: PINK es rosado y YELLOW es amarillo. Por eso 'azul' es BLUE.",
+              examples:[{en:"The sky is blue.",es:"El cielo es azul."},{en:"I like blue shoes.",es:"Me gustan los zapatos azules."}],
+              scene:'<span class="a-grow">🔵</span><span class="a-float">🌊</span>' },
+
+            { level:9, q:"¿Cómo se dice el color 'Negro'? ⚫",
+              options:[{text:"White (Blanco)",en:"White"},{text:"Brown (Café)",en:"Brown"},{text:"Black (Negro)",en:"Black"}],
+              answer:2, say:"Black. The cat is black.", img:"black,color", lock:93,
+              rule:"🎨 Los colores (Colors)",
+              exp:"'Negro' en inglés es BLACK, como la noche 🌑. Los otros: WHITE es blanco y BROWN es café. Por eso 'negro' es BLACK.",
+              examples:[{en:"The cat is black.",es:"El gato es negro."},{en:"I have black hair.",es:"Tengo el pelo negro."}],
+              scene:'<span class="a-grow">⚫</span><span class="a-float">🌑</span>' },
+
+            { level:9, q:"¿Cómo se dice el color 'Blanco'? ⚪",
+              options:[{text:"White (Blanco)",en:"White"},{text:"Black (Negro)",en:"Black"},{text:"Purple (Morado)",en:"Purple"}],
+              answer:0, say:"White. The snow is white.", img:"white,snow", lock:94,
+              rule:"🎨 Los colores (Colors)",
+              exp:"'Blanco' en inglés es WHITE, como la nieve ❄️. Los otros: BLACK es negro y PURPLE es morado. Por eso 'blanco' es WHITE.",
+              examples:[{en:"The snow is white.",es:"La nieve es blanca."},{en:"I have a white shirt.",es:"Tengo una camisa blanca."}],
+              scene:'<span class="a-grow">⚪</span><span class="a-rain">❄️</span>' },
+
+            { level:9, q:"¿Cómo se dice el color 'Morado'? 🟣",
+              options:[{text:"Orange (Naranja)",en:"Orange"},{text:"Purple (Morado)",en:"Purple"},{text:"Green (Verde)",en:"Green"}],
+              answer:1, say:"Purple. The grapes are purple.", img:"purple,color", lock:95,
+              rule:"🎨 Los colores (Colors)",
+              exp:"'Morado' en inglés es PURPLE, como las uvas 🍇. Los otros: ORANGE es naranja y GREEN es verde. Por eso 'morado' es PURPLE.",
+              examples:[{en:"The grapes are purple.",es:"Las uvas son moradas."},{en:"I like purple flowers.",es:"Me gustan las flores moradas."}],
+              scene:'<span class="a-grow">🟣</span><span class="a-float">🍇</span>' },
+
+            { level:9, q:"¿Cómo se dice el color 'Naranja'? 🟠",
+              options:[{text:"Red (Rojo)",en:"Red"},{text:"Blue (Azul)",en:"Blue"},{text:"Orange (Naranja)",en:"Orange"}],
+              answer:2, say:"Orange. The ball is orange.", img:"orange,fruit", lock:96,
+              rule:"🎨 Los colores (Colors)",
+              exp:"'Naranja' en inglés es ORANGE. ¡La fruta y el color se dicen igual! 🍊 Los otros: RED es rojo y BLUE es azul. Por eso 'naranja' es ORANGE.",
+              examples:[{en:"The ball is orange.",es:"La pelota es naranja."},{en:"I eat an orange.",es:"Como una naranja."}],
+              scene:'<span class="a-grow">🟠</span><span class="a-float">🍊</span>' },
+
+            /* ---------- NIVEL 10: ACCIONES (VERBOS) ---------- */
+            { level:10, q:"¿Cómo se dice 'Correr' en inglés? 🏃",
+              options:[{text:"Run (Correr)",en:"Run"},{text:"Jump (Saltar)",en:"Jump"},{text:"Eat (Comer)",en:"Eat"}],
+              answer:0, say:"Run. I can run fast.", img:"running,child", lock:101,
+              rule:"🏃 Verbos de acción (Actions)",
+              exp:"'Correr' en inglés es RUN. Las otras acciones: JUMP es saltar y EAT es comer. Por eso 'correr' es RUN.",
+              examples:[{en:"I can run fast.",es:"Puedo correr rápido."},{en:"Run, run, run!",es:"¡Corre, corre, corre!"}],
+              scene:'<span class="a-bounce">🏃</span><span class="a-float">💨</span>' },
+
+            { level:10, q:"¿Cómo se dice 'Saltar' en inglés? 🤸",
+              options:[{text:"Sleep (Dormir)",en:"Sleep"},{text:"Jump (Saltar)",en:"Jump"},{text:"Read (Leer)",en:"Read"}],
+              answer:1, say:"Jump. I jump high.", img:"jump,kid", lock:102,
+              rule:"🏃 Verbos de acción (Actions)",
+              exp:"'Saltar' en inglés es JUMP. Las otras: SLEEP es dormir y READ es leer. Por eso 'saltar' es JUMP.",
+              examples:[{en:"I jump high.",es:"Salto alto."},{en:"Jump like a frog!",es:"¡Salta como una rana!"}],
+              scene:'<span class="a-bounce">🤸</span><span class="a-float">⬆️</span>' },
+
+            { level:10, q:"¿Cómo se dice 'Comer' en inglés? 🍽️",
+              options:[{text:"Walk (Caminar)",en:"Walk"},{text:"Drink (Tomar)",en:"Drink"},{text:"Eat (Comer)",en:"Eat"}],
+              answer:2, say:"Eat. I eat my food.", img:"eating,child", lock:103,
+              rule:"🏃 Verbos de acción (Actions)",
+              exp:"'Comer' en inglés es EAT. Las otras: WALK es caminar y DRINK es tomar/beber. Por eso 'comer' es EAT.",
+              examples:[{en:"I eat my food.",es:"Como mi comida."},{en:"Let us eat!",es:"¡Vamos a comer!"}],
+              scene:'<span class="a-bounce">🍽️</span><span class="a-float">😋</span>' },
+
+            { level:10, q:"¿Cómo se dice 'Dormir' en inglés? 😴",
+              options:[{text:"Sleep (Dormir)",en:"Sleep"},{text:"Run (Correr)",en:"Run"},{text:"Sing (Cantar)",en:"Sing"}],
+              answer:0, say:"Sleep. I sleep at night.", img:"sleeping,child", lock:104,
+              rule:"🏃 Verbos de acción (Actions)",
+              exp:"'Dormir' en inglés es SLEEP. Dormimos en la noche 🌙. Las otras: RUN es correr y SING es cantar. Por eso 'dormir' es SLEEP.",
+              examples:[{en:"I sleep at night.",es:"Duermo en la noche."},{en:"The baby is sleeping.",es:"El bebé está durmiendo."}],
+              scene:'<span class="a-float">😴</span><span class="a-float">🌙</span>' },
+
+            { level:10, q:"¿Cómo se dice 'Leer' en inglés? 📖",
+              options:[{text:"Write (Escribir)",en:"Write"},{text:"Read (Leer)",en:"Read"},{text:"Play (Jugar)",en:"Play"}],
+              answer:1, say:"Read. I read a book.", img:"reading,book,child", lock:105,
+              rule:"🏃 Verbos de acción (Actions)",
+              exp:"'Leer' en inglés es READ. Las otras: WRITE es escribir y PLAY es jugar. Por eso 'leer' es READ.",
+              examples:[{en:"I read a book.",es:"Leo un libro."},{en:"I like to read.",es:"Me gusta leer."}],
+              scene:'<span class="a-float">📖</span><span class="a-bounce">🤓</span>' },
+
+            { level:10, q:"¿Cómo se dice 'Nadar' en inglés? 🏊",
+              options:[{text:"Dance (Bailar)",en:"Dance"},{text:"Jump (Saltar)",en:"Jump"},{text:"Swim (Nadar)",en:"Swim"}],
+              answer:2, say:"Swim. I swim in the pool.", img:"swimming,pool", lock:106,
+              rule:"🏃 Verbos de acción (Actions)",
+              exp:"'Nadar' en inglés es SWIM. Nadamos en el agua 💧. Las otras: DANCE es bailar y JUMP es saltar. Por eso 'nadar' es SWIM.",
+              examples:[{en:"I swim in the pool.",es:"Nado en la piscina."},{en:"Fish can swim.",es:"Los peces pueden nadar."}],
+              scene:'<span class="a-bounce">🏊</span><span class="a-float">🌊</span>' }
         ];
 
-        const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 4:"Familia 👨‍👩‍👧", 5:"Cuerpo 🧍", 0:"Mezcla 🌈"};
+        const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 4:"Familia 👨‍👩‍👧", 5:"Cuerpo 🧍",
+                            6:"Animales 🐶", 7:"Comida 🍎", 8:"Números 🔢", 9:"Colores 🎨", 10:"Acciones 🏃", 0:"Mezcla 🌈"};
 
         /* ============ TIENDA: fondos y personajes ============ */
         const backgrounds = {
@@ -801,7 +1057,7 @@
         }
         function updateMedalDisplay() {
             const m = getMedals();
-            [0,1,2,3,4,5].forEach(lvl => {
+            [0,1,2,3,4,5,6,7,8,9,10].forEach(lvl => {
                 const el = document.getElementById('medal-' + lvl);
                 if (!el) return;
                 if (m[lvl]) { el.innerText = rankEmoji[m[lvl]]; el.classList.remove('hidden'); }
@@ -913,7 +1169,7 @@
         /* ============ JUEGO ============ */
         function startGame(level) {
             playClick(); getCtx(); currentLevel = level;
-            questions = level === 0 ? shuffle(allQuestions) : shuffle(allQuestions.filter(q => q.level === level));
+            questions = level === 0 ? shuffle(allQuestions).slice(0, 12) : shuffle(allQuestions.filter(q => q.level === level));
             currentQ = 0; score = 0; points = 0; gems = 0; streak = 0; bestStreak = 0; answers = [];
             document.getElementById('score').innerText = 0;
             document.getElementById('points').innerText = 0;
