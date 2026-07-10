@@ -368,6 +368,7 @@
         <div id="start-screen">
             <h1>🎮 Valery Chikitin 🌟</h1>
             <p style="font-size: 1.3em; color: #FF69B4; font-weight: bold; margin: 5px 0;">💜 Misión Inglés 💜</p>
+            <div id="player-title" style="display:none; background:#FFF8DC; border:2px solid #FFD700; border-radius:20px; padding:5px 16px; font-weight:bold; color:#8A2BE2; margin:8px auto;"></div>
             <p style="font-size: 1.1em; color: #555;">¡Ayuda a Valery a completar la misión y gana puntos, gemas y medallas!</p>
             <p class="level-title">Elige tu nivel: 👇</p>
             <button class="btn btn-level lvl-easy" onclick="startGame(1)"><span>😊 FÁCIL (Palabras)</span><span id="medal-1" class="medal-tag hidden"></span></button>
@@ -415,9 +416,9 @@
         <!-- TIENDA -->
         <div id="shop-screen" class="hidden">
             <h1>🛒 Tienda</h1>
-            <div id="gem-wallet">Tienes <span id="shop-gems">0</span> 💎</div>
-            <p style="color:#555;">¡Gana gemas jugando y cámbialas por fondos y personajes!</p>
-            <h2 class="shop-section-title">🖼️ Fondos</h2>
+            <div id="gem-wallet">⭐ <span id="shop-stars">0</span> &nbsp;·&nbsp; 🏆 <span id="shop-points">0</span> &nbsp;·&nbsp; 💎 <span id="shop-gems">0</span></div>
+            <p style="color:#555;">¡Todo lo que ganas jugando se puede canjear! Fondos y personajes con 💎, calcomanías con 🏆 y títulos con ⭐.</p>
+            <h2 class="shop-section-title">🖼️ Fondos <span style="font-size:0.7em;color:#FF8C00;">(con 💎 gemas)</span></h2>
             <div id="shop-backgrounds" class="shop-grid"></div>
             <h2 class="shop-section-title">🦄 Personajes</h2>
             <p style="color:#8A2BE2; font-weight:bold;">💡 ¡Toca tu personaje en la pantalla y verás cómo reacciona! Cada uno hace algo diferente. 🎉</p>
@@ -425,6 +426,15 @@
             <h2 class="shop-section-title grand-title">🏆 ¡PREMIO MAYOR! 🏆</h2>
             <p style="color:#B8860B; font-weight:bold;">El premio más grande de todos. ¡Junta 1000 gemas para ganarlo! 💎</p>
             <div id="shop-grandprize" class="shop-grid"></div>
+
+            <h2 class="shop-section-title">🌟 Calcomanías <span style="font-size:0.7em;color:#FF8C00;">(con 🏆 puntos)</span></h2>
+            <p style="color:#666;">¡Colecciónalas todas! Se compran con tus puntos 🏆</p>
+            <div id="shop-stickers" class="shop-grid"></div>
+
+            <h2 class="shop-section-title">👑 Títulos <span style="font-size:0.7em;color:#FF8C00;">(con ⭐ estrellas)</span></h2>
+            <p style="color:#666;">Un título especial que aparece junto a tu nombre. Se compran con estrellas ⭐</p>
+            <div id="shop-titles" class="shop-grid"></div>
+
             <button class="btn" onclick="closeShop()">⬅️ Volver</button>
         </div>
         
@@ -997,6 +1007,35 @@
         };
         function getCharacter(id) { return characters[id] || grandPrizes[id] || null; }
 
+        // 🌟 Calcomanías: se compran con 🏆 PUNTOS y se coleccionan
+        const stickers = {
+            heart:     { name:"Corazón", emoji:"💖", price:40 },
+            flower:    { name:"Flor", emoji:"🌸", price:45 },
+            rocket:    { name:"Cohete", emoji:"🚀", price:55 },
+            rainbow:   { name:"Arcoíris", emoji:"🌈", price:60 },
+            butterfly: { name:"Mariposa", emoji:"🦋", price:70 },
+            star2:     { name:"Estrella", emoji:"⭐", price:50 },
+            crown:     { name:"Corona", emoji:"👑", price:90 },
+            medal:     { name:"Medalla", emoji:"🏅", price:100 },
+            trophy:    { name:"Trofeo", emoji:"🏆", price:130 }
+        };
+        // 👑 Títulos: se compran con ⭐ ESTRELLAS y aparecen junto a su nombre
+        const titles = {
+            none:     { name:"(Sin título)", emoji:"🚫", text:"", price:0 },
+            student:  { name:"Súper Estudiante", emoji:"⭐", text:"⭐ Súper Estudiante", price:10 },
+            star:     { name:"Estrella Brillante", emoji:"🌟", text:"🌟 Estrella Brillante", price:15 },
+            genius:   { name:"Genio del Inglés", emoji:"🧠", text:"🧠 Genio del Inglés", price:25 },
+            princess: { name:"Princesa del Inglés", emoji:"👑", text:"👑 Princesa del Inglés", price:35 },
+            master:   { name:"Maestra del Inglés", emoji:"🎓", text:"🎓 Maestra del Inglés", price:50 }
+        };
+        function getShopItem(kind, id) {
+            if (kind==='bg') return backgrounds[id];
+            if (kind==='char') return characters[id] || grandPrizes[id];
+            if (kind==='sticker') return stickers[id];
+            if (kind==='title') return titles[id];
+            return null;
+        }
+
         let questions = [];
         let currentQ = 0;
         let score = 0, points = 0, gems = 0, streak = 0, bestStreak = 0;
@@ -1004,18 +1043,38 @@
         let currentLevel = 1;
         let soundOn = true, musicOn = false, audioCtx = null;
 
-        /* ---- localStorage (gemas, medallas, tienda) ---- */
-        function getGems() { return parseInt(localStorage.getItem('valeryGems') || '0', 10) || 0; }
-        function setGems(n) { try { localStorage.setItem('valeryGems', String(n)); } catch(e){} }
+        /* ---- localStorage (monedas, medallas, tienda) ---- */
+        function getGems()  { return parseInt(localStorage.getItem('valeryGems')  || '0',10) || 0; }
+        function setGems(n) { try { localStorage.setItem('valeryGems', String(Math.max(0,n))); } catch(e){} }
         function addGems(n) { setGems(getGems() + n); }
+        function getPoints()  { return parseInt(localStorage.getItem('valeryPoints') || '0',10) || 0; }
+        function setPoints(n) { try { localStorage.setItem('valeryPoints', String(Math.max(0,n))); } catch(e){} }
+        function addPoints(n) { setPoints(getPoints() + n); }
+        function getStars()  { return parseInt(localStorage.getItem('valeryStars') || '0',10) || 0; }
+        function setStars(n) { try { localStorage.setItem('valeryStars', String(Math.max(0,n))); } catch(e){} }
+        function addStars(n) { setStars(getStars() + n); }
+        // billetera según la moneda (gemas / puntos / estrellas)
+        function getWallet(cur){ return cur==='points'?getPoints():cur==='stars'?getStars():getGems(); }
+        function spendWallet(cur,n){ if(cur==='points')addPoints(-n); else if(cur==='stars')addStars(-n); else addGems(-n); }
+        const curEmoji = { gems:'💎', points:'🏆', stars:'⭐' };
+
         function getOwned() {
-            try { return JSON.parse(localStorage.getItem('valeryOwned')) || {bg:['default'],char:['star']}; }
-            catch(e){ return {bg:['default'],char:['star']}; }
+            let o; try { o = JSON.parse(localStorage.getItem('valeryOwned')); } catch(e){ o = null; }
+            if (!o) o = {};
+            if (!o.bg) o.bg = ['default'];
+            if (!o.char) o.char = ['star'];
+            if (!o.sticker) o.sticker = [];
+            if (!o.title) o.title = ['none'];
+            return o;
         }
         function setOwned(o){ try { localStorage.setItem('valeryOwned', JSON.stringify(o)); } catch(e){} }
         function getEquip() {
-            try { return JSON.parse(localStorage.getItem('valeryEquip')) || {bg:'default',char:'star'}; }
-            catch(e){ return {bg:'default',char:'star'}; }
+            let e; try { e = JSON.parse(localStorage.getItem('valeryEquip')); } catch(err){ e = null; }
+            if (!e) e = {};
+            if (!e.bg) e.bg = 'default';
+            if (!e.char) e.char = 'star';
+            if (!e.title) e.title = 'none';
+            return e;
         }
         function setEquip(e){ try { localStorage.setItem('valeryEquip', JSON.stringify(e)); } catch(e){} }
 
@@ -1178,6 +1237,12 @@
             const e = getEquip();
             applyBackground(e.bg);
             applyCharacter(e.char);
+            applyTitle(e.title);
+        }
+        function applyTitle(id) {
+            const t = titles[id] || titles.none;
+            const el = document.getElementById('player-title');
+            if (el) { el.innerText = t.text; el.style.display = t.text ? 'inline-block' : 'none'; }
         }
 
         /* ============ INTERACCIÓN DEL PERSONAJE ============ */
@@ -1220,25 +1285,29 @@
         }
         function renderShop() {
             document.getElementById('shop-gems').innerText = getGems();
+            document.getElementById('shop-points').innerText = getPoints();
+            document.getElementById('shop-stars').innerText = getStars();
+            fillShopGrid('shop-backgrounds', 'bg', backgrounds);
+            fillShopGrid('shop-characters', 'char', characters);
+            fillShopGrid('shop-grandprize', 'char', grandPrizes);
+            fillShopGrid('shop-stickers', 'sticker', stickers);
+            fillShopGrid('shop-titles', 'title', titles);
+        }
+        function fillShopGrid(divId, kind, obj) {
+            const div = document.getElementById(divId);
+            if (!div) return;
+            div.innerHTML = '';
+            Object.keys(obj).forEach(id => div.appendChild(makeShopItem(kind, id)));
+        }
+        function makeShopItem(kind, id) {
+            const item = getShopItem(kind, id);
             const owned = getOwned();
             const equip = getEquip();
-
-            const bgDiv = document.getElementById('shop-backgrounds');
-            bgDiv.innerHTML = '';
-            Object.keys(backgrounds).forEach(id => bgDiv.appendChild(makeShopItem('bg', id, backgrounds[id], owned, equip)));
-
-            const chDiv = document.getElementById('shop-characters');
-            chDiv.innerHTML = '';
-            Object.keys(characters).forEach(id => chDiv.appendChild(makeShopItem('char', id, characters[id], owned, equip)));
-
-            const gpDiv = document.getElementById('shop-grandprize');
-            gpDiv.innerHTML = '';
-            Object.keys(grandPrizes).forEach(id => gpDiv.appendChild(makeShopItem('char', id, grandPrizes[id], owned, equip)));
-        }
-        function makeShopItem(type, id, item, owned, equip) {
-            const list = type === 'bg' ? owned.bg : owned.char;
-            const isOwned = list.includes(id);
-            const isEquipped = equip[type === 'bg' ? 'bg' : 'char'] === id;
+            const currency = (kind === 'sticker') ? 'points' : (kind === 'title') ? 'stars' : 'gems';
+            const list = owned[kind] || [];
+            const equippable = (kind !== 'sticker');   // las calcomanías solo se coleccionan
+            const isOwned = list.includes(id) || item.price === 0;
+            const isEquipped = equippable && equip[kind] === id;
 
             const div = document.createElement('div');
             div.className = 'shop-item' + (isEquipped ? ' equipped' : '') + (item.grand ? ' grand-prize' : '');
@@ -1246,30 +1315,33 @@
             const btn = document.createElement('button');
             btn.className = 'btn btn-buy';
             if (isEquipped) { btn.classList.add('equip'); btn.innerText = 'Equipado ✓'; btn.disabled = true; }
-            else if (isOwned) { btn.classList.add('own'); btn.innerText = 'Usar'; btn.onclick = () => equipItem(type, id); }
-            else { btn.classList.add('locked'); btn.innerText = 'Comprar ' + item.price + ' 💎'; btn.onclick = () => buyItem(type, id, item.price); }
+            else if (isOwned && equippable) { btn.classList.add('own'); btn.innerText = 'Usar'; btn.onclick = () => equipItem(kind, id); }
+            else if (isOwned && !equippable) { btn.classList.add('equip'); btn.innerText = 'Tengo ✓'; btn.disabled = true; }
+            else { btn.classList.add('locked'); btn.innerText = 'Comprar ' + item.price + ' ' + curEmoji[currency]; btn.onclick = () => buyItem(kind, id, item.price, currency); }
 
-            div.innerHTML = `<div class="shop-emoji">${item.emoji}</div><div class="shop-name">${item.name}</div>`;
+            div.innerHTML = `<div class="shop-emoji">${item.emoji || '🏷️'}</div><div class="shop-name">${item.name}</div>`;
             div.appendChild(btn);
             return div;
         }
-        function buyItem(type, id, price) {
-            if (getGems() < price) {
+        function buyItem(kind, id, price, currency) {
+            if (getWallet(currency) < price) {
                 playWrong();
-                showRewardPopup('¡Te faltan gemas! 💎');
+                showRewardPopup('¡Te faltan ' + curEmoji[currency] + '!');
                 return;
             }
-            addGems(-price);
+            spendWallet(currency, price);
             const owned = getOwned();
-            (type === 'bg' ? owned.bg : owned.char).push(id);
+            if (!owned[kind]) owned[kind] = [];
+            owned[kind].push(id);
             setOwned(owned);
             playBuy();
             launchConfetti(40);
-            equipItem(type, id);   // al comprar, se equipa automáticamente
+            if (kind === 'sticker') { renderShop(); showRewardPopup('🌟 ¡Calcomanía nueva!'); }
+            else equipItem(kind, id);   // fondos, personajes y títulos se equipan al comprar
         }
-        function equipItem(type, id) {
+        function equipItem(kind, id) {
             const e = getEquip();
-            if (type === 'bg') e.bg = id; else e.char = id;
+            e[kind] = id;
             setEquip(e);
             playClick();
             applyEquip();
@@ -1361,7 +1433,9 @@
                 points += gained;
                 const gemsWon = 1 + (streak >= 3 ? 1 : 0) + (streak >= 5 ? 1 : 0);
                 gems += gemsWon;
-                addGems(gemsWon);   // se guardan en la billetera para la tienda
+                addGems(gemsWon);      // 💎 para fondos y personajes
+                addPoints(gained);     // 🏆 para calcomanías
+                addStars(1);           // ⭐ para títulos
 
                 document.getElementById('score').innerText = score;
                 document.getElementById('points').innerText = points;
