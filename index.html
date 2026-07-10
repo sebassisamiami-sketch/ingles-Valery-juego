@@ -32,7 +32,8 @@
             position: relative;
             z-index: 2;
         }
-        h1 { color: #FF4500; font-size: 2.8em; margin-top: 0; text-shadow: 2px 2px 0px #FFB6C1; }
+        h1 { color: #FF4500; font-size: 2.6em; margin-top: 0; text-shadow: 2px 2px 0px #FFB6C1; }
+        h2 { color: #8A2BE2; }
         .btn { 
             background-color: #32CD32; 
             color: white; 
@@ -49,7 +50,6 @@
         }
         .btn:active { transform: translateY(6px); box-shadow: 0 0 0; }
 
-        /* Fila de opción: botón grande + botón de escuchar */
         .option-row { display: flex; align-items: stretch; gap: 8px; margin: 15px 0; }
         .btn-option { 
             background-color: #1E90FF; 
@@ -74,7 +74,6 @@
         #question-text { font-size: 1.8em; color: #333; margin-bottom: 25px; font-weight: bold; }
         #feedback { font-size: 1.8em; font-weight: bold; min-height: 40px; margin: 15px 0; }
 
-        /* Cuadro de explicación */
         #explanation-box {
             background-color: #FFF8DC;
             border: 3px dashed #FFA500;
@@ -86,7 +85,7 @@
             text-align: left;
             animation: popIn 0.4s ease;
         }
-        .exp-header { font-weight: bold; font-size: 1.25em; display:block; margin-bottom: 8px; }
+        .exp-header { font-weight: bold; font-size: 1.2em; display:block; margin-bottom: 8px; }
         .exp-header.ok { color: #228B22; }
         .exp-header.no { color: #FF4500; }
         .exp-rule {
@@ -99,7 +98,6 @@
         .correct-answer { color: #228B22; font-weight: bold; }
         .picked-wrong { color: #FF4500; font-weight: bold; }
 
-        /* Ejemplos */
         .examples-box { background:#fff; border:2px solid #FFD700; border-radius:12px; padding:10px 14px; margin:12px 0; }
         .examples-title { font-weight:bold; color:#FF8C00; }
         .example-item { display:flex; align-items:center; gap:8px; margin:8px 0; }
@@ -111,8 +109,13 @@
         }
         .mini-speak:hover { background:#FF85C1; }
 
-        /* Escena animada (ejemplo visual, tipo gif) */
         .scene-label { font-weight:bold; color:#8A2BE2; margin-top:12px; }
+        .real-img {
+            max-width:100%; width:340px; height:auto; border-radius:14px;
+            border:3px solid #FFD700; margin:6px auto 0; display:block;
+            box-shadow:0 4px 10px rgba(0,0,0,0.15); background:#eef;
+            min-height: 60px;
+        }
         .scene {
             text-align:center; font-size:3.4em; margin:6px 0 4px; line-height:1.2;
             background: linear-gradient(135deg,#E0F7FF,#FFF0F5);
@@ -147,9 +150,7 @@
         .streak-fire { color: #FF4500; }
         #points-badge { color: #FF8C00; }
         #gems-badge { color: #1E90FF; }
-        #level-badge { color: #32CD32; }
 
-        /* Barra de progreso */
         #progress-wrap {
             background-color: #E0E0E0;
             border-radius: 20px;
@@ -166,7 +167,6 @@
             transition: width 0.4s ease;
         }
 
-        /* Botones de control (sonido y música) */
         #controls {
             position: absolute;
             top: 15px;
@@ -187,20 +187,37 @@
         }
         .ctrl-btn.off { background: #ddd; border-color: #999; opacity: 0.7; }
 
-        /* Selector de nivel */
         .level-title { font-size: 1.3em; color: #555; margin: 10px 0; }
-        .btn-level { display: flex; align-items:center; justify-content:center; gap:10px; width: 100%; margin: 12px 0; }
+        .btn-level { display: flex; align-items:center; justify-content:center; gap:10px; width: 100%; margin: 10px 0; }
         .lvl-easy { background:#32CD32; box-shadow:0 6px 0 #228B22; }
         .lvl-med  { background:#FF8C00; box-shadow:0 6px 0 #CC7000; }
         .lvl-hard { background:#FF4500; box-shadow:0 6px 0 #CC3700; }
+        .lvl-fam  { background:#FF69B4; box-shadow:0 6px 0 #C71585; }
+        .lvl-body { background:#20B2AA; box-shadow:0 6px 0 #178A84; }
         .lvl-all  { background:#8A2BE2; box-shadow:0 6px 0 #5D1A9E; }
         .medal-tag { font-size: 1.1em; background: rgba(255,255,255,0.3); border-radius:20px; padding:2px 8px; }
+        .btn-shop { background:#FFD700; color:#8A2BE2; box-shadow:0 6px 0 #DAA520; font-size:1.35em; margin-top:18px; }
 
-        /* Recompensa flotante */
+        /* Tienda */
+        #gem-wallet { font-size:1.4em; color:#1E90FF; font-weight:bold; background:#E6F3FF; border-radius:15px; padding:10px 18px; display:inline-block; margin:8px 0 4px; }
+        .shop-section-title { color:#FF8C00; margin:18px 0 6px; }
+        .shop-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:14px; }
+        .shop-item {
+            border:3px solid #FFD700; border-radius:15px; padding:12px 8px;
+            background:#FFFDF5; text-align:center;
+        }
+        .shop-item.equipped { border-color:#32CD32; background:#F0FFF0; }
+        .shop-emoji { font-size:2.8em; }
+        .shop-name { font-weight:bold; color:#333; margin:4px 0; }
+        .btn-buy { font-size:0.95em; padding:8px 14px; margin:6px 0 0; width:100%; }
+        .btn-buy.own { background:#1E90FF; box-shadow:0 5px 0 #0000CD; }
+        .btn-buy.equip { background:#32CD32; box-shadow:0 5px 0 #228B22; }
+        .btn-buy.locked { background:#FFA500; box-shadow:0 5px 0 #CC7000; }
+
         .reward-popup {
             position: fixed; left: 50%; top: 42%;
             transform: translateX(-50%);
-            font-size: 2.4em; font-weight: bold; color: #FFD700;
+            font-size: 2.2em; font-weight: bold; color: #FFD700;
             text-shadow: 2px 2px 0 #FF8C00, -1px -1px 0 #FF8C00;
             z-index: 50; pointer-events: none;
             animation: floatUp 1.3s ease-out forwards;
@@ -211,7 +228,6 @@
             100% { opacity: 0; transform: translate(-50%, -90px) scale(1.4); }
         }
 
-        /* Medalla final */
         #final-medal { font-size: 5em; margin: 10px 0; animation: bounce 1s ease infinite; }
         .rewards-summary {
             display:flex; justify-content:center; gap:20px; flex-wrap:wrap;
@@ -220,7 +236,6 @@
         }
         .rewards-summary span { color:#8A2BE2; }
 
-        /* Animaciones */
         @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-10px);} 40%{transform:translateX(10px);} 60%{transform:translateX(-8px);} 80%{transform:translateX(8px);} }
         @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
@@ -228,7 +243,6 @@
         .bounce { animation: bounce 0.6s; }
         .pulse { animation: popIn 0.3s; }
 
-        /* Animaciones de las escenas (ejemplos) */
         @keyframes floaty { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);} }
         @keyframes bouncy { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-22px);} }
         @keyframes spinny { 100%{transform:rotate(360deg);} }
@@ -242,24 +256,24 @@
         .a-rain { animation: rainy 0.8s ease-in-out infinite alternate; }
         .a-grow { animation: grow 1.4s ease-in-out infinite; }
 
-        /* Confeti */
         .confetti-piece {
-            position: fixed;
-            width: 12px;
-            height: 12px;
-            top: -20px;
-            z-index: 1;
-            opacity: 0.9;
-            animation: fall linear forwards;
+            position: fixed; width: 12px; height: 12px; top: -20px;
+            z-index: 1; opacity: 0.9; animation: fall linear forwards;
         }
-        @keyframes fall {
-            to { transform: translateY(105vh) rotate(720deg); opacity: 0.2; }
-        }
+        @keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: 0.2; } }
 
         #next-btn { background-color: #FF8C00; box-shadow: 0 6px 0 #CC7000; }
+
+        /* Personaje acompañante */
+        #buddy {
+            position: fixed; bottom: 15px; left: 15px; font-size: 3.2em;
+            z-index: 6; animation: floaty 2s ease-in-out infinite; pointer-events: none;
+            filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.3));
+        }
     </style>
 </head>
 <body>
+    <div id="buddy">🌟</div>
     <div id="game-container">
         <div id="controls">
             <button id="music-toggle" class="ctrl-btn" onclick="toggleMusic()" title="Música de fondo">🎵</button>
@@ -269,14 +283,28 @@
         <!-- PANTALLA DE INICIO -->
         <div id="start-screen">
             <h1>🎮 Valery Chikitin 🌟</h1>
-            <p style="font-size: 1.4em; color: #FF69B4; font-weight: bold; margin: 5px 0;">💜 Misión Inglés 💜</p>
-            <p style="font-size: 1.2em; color: #555;">¡Ayuda a Valery a completar la misión respondiendo los trucos secretos de inglés y gana muchas recompensas!</p>
-            <img src="https://api.iconify.design/fluent-emoji:star-struck.svg" width="90" height="90" alt="Star">
+            <p style="font-size: 1.3em; color: #FF69B4; font-weight: bold; margin: 5px 0;">💜 Misión Inglés 💜</p>
+            <p style="font-size: 1.1em; color: #555;">¡Ayuda a Valery a completar la misión y gana puntos, gemas y medallas!</p>
             <p class="level-title">Elige tu nivel: 👇</p>
             <button class="btn btn-level lvl-easy" onclick="startGame(1)"><span>😊 FÁCIL (Palabras)</span><span id="medal-1" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-med" onclick="startGame(2)"><span>🙂 MEDIO (Am / Is / Are)</span><span id="medal-2" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-hard" onclick="startGame(3)"><span>😎 DIFÍCIL (Verbos y Pasado)</span><span id="medal-3" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-fam" onclick="startGame(4)"><span>👨‍👩‍👧 LA FAMILIA</span><span id="medal-4" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-body" onclick="startGame(5)"><span>🧍 EL CUERPO</span><span id="medal-5" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
+            <button class="btn btn-shop" onclick="openShop()">🛒 Tienda de Recompensas (<span id="start-gems">0</span> 💎)</button>
+        </div>
+
+        <!-- TIENDA -->
+        <div id="shop-screen" class="hidden">
+            <h1>🛒 Tienda</h1>
+            <div id="gem-wallet">Tienes <span id="shop-gems">0</span> 💎</div>
+            <p style="color:#555;">¡Gana gemas jugando y cámbialas por fondos y personajes!</p>
+            <h2 class="shop-section-title">🖼️ Fondos</h2>
+            <div id="shop-backgrounds" class="shop-grid"></div>
+            <h2 class="shop-section-title">🦄 Personajes</h2>
+            <div id="shop-characters" class="shop-grid"></div>
+            <button class="btn" onclick="closeShop()">⬅️ Volver</button>
         </div>
         
         <!-- PANTALLA DE JUEGO -->
@@ -307,21 +335,20 @@
             </div>
             <p id="end-message" style="font-size: 1.4em; color: #555;"></p>
             <button class="btn" onclick="location.reload()">Volver a jugar 🔄</button>
+            <button class="btn btn-shop" onclick="openShop()">🛒 Ir a la Tienda</button>
         </div>
     </div>
 
     <script>
         /* ============ BANCO DE PREGUNTAS ============
-           level: 1=Fácil, 2=Medio, 3=Difícil
-           rule: nombre de la regla | exp: explicación detallada
-           examples: [{en, es}] ejemplos | scene: escena animada (ejemplo visual)
-           say: frase completa en inglés que se lee en voz alta
+           level: 1=Fácil, 2=Medio, 3=Difícil, 4=Familia, 5=Cuerpo
+           img: palabra clave para la foto real | scene: emoji animado de respaldo
         */
         const allQuestions = [
-            /* ---------- NIVEL 1: FÁCIL (vocabulario) ---------- */
+            /* ---------- NIVEL 1: FÁCIL ---------- */
             { level:1, q:"¿Cuál es el opuesto de TALL (Alto)? 🦒",
               options:[{text:"Short (Bajo)",en:"Short"},{text:"Fat (Gordo)",en:"Fat"},{text:"Beautiful (Lindo)",en:"Beautiful"}],
-              answer:0, say:"Short. The mouse is short.",
+              answer:0, say:"Short. The mouse is short.", img:"giraffe", lock:11,
               rule:"🔄 Opuestos (Opposites)",
               exp:"Las palabras opuestas significan lo contrario. TALL quiere decir 'alto', como una jirafa 🦒. Lo contrario de alto es 'bajito', y en inglés se dice SHORT. Las otras opciones no son opuestos de alto: FAT significa 'gordo' y BEAUTIFUL significa 'hermoso'.",
               examples:[{en:"The giraffe is tall.",es:"La jirafa es alta."},{en:"The mouse is short.",es:"El ratón es bajito."}],
@@ -329,7 +356,7 @@
 
             { level:1, q:"¿Cómo se dice 'Hola' en inglés? 👋",
               options:[{text:"Bye (Adiós)",en:"Bye"},{text:"Hello (Hola)",en:"Hello"},{text:"Please (Por favor)",en:"Please"}],
-              answer:1, say:"Hello! My name is Valery.",
+              answer:1, say:"Hello! My name is Valery.", img:"hello,wave", lock:12,
               rule:"👋 Saludos (Greetings)",
               exp:"Cuando saludamos a alguien decimos HELLO (o también HI). Las otras palabras se usan en otros momentos: BYE es para despedirnos (adiós) y PLEASE significa 'por favor'. Por eso, para saludar usamos HELLO.",
               examples:[{en:"Hello, teacher!",es:"¡Hola, profe!"},{en:"Hi, my name is Valery.",es:"Hola, me llamo Valery."}],
@@ -337,7 +364,7 @@
 
             { level:1, q:"¿De qué color es el sol? ☀️",
               options:[{text:"Blue (Azul)",en:"Blue"},{text:"Green (Verde)",en:"Green"},{text:"Yellow (Amarillo)",en:"Yellow"}],
-              answer:2, say:"Yellow. The sun is yellow.",
+              answer:2, say:"Yellow. The sun is yellow.", img:"sun,sky", lock:13,
               rule:"🎨 Colores (Colors)",
               exp:"El sol lo vemos de color amarillo, y 'amarillo' en inglés es YELLOW. Las otras son colores distintos: BLUE es azul (como el cielo 🌌) y GREEN es verde (como las plantas 🌿). Por eso el color del sol es YELLOW.",
               examples:[{en:"The sun is yellow.",es:"El sol es amarillo."},{en:"I have a yellow pencil.",es:"Tengo un lápiz amarillo."}],
@@ -345,7 +372,7 @@
 
             { level:1, q:"'Gato' en inglés es... 🐱",
               options:[{text:"Dog (Perro)",en:"Dog"},{text:"Cat (Gato)",en:"Cat"},{text:"Bird (Pájaro)",en:"Bird"}],
-              answer:1, say:"Cat. The cat says meow.",
+              answer:1, say:"Cat. The cat says meow.", img:"cat,kitten", lock:14,
               rule:"🐾 Animales (Animals)",
               exp:"'Gato' en inglés es CAT, y hace 'meow'. Las otras son otros animales: DOG es perro (hace 'woof' 🐶) y BIRD es pájaro (vuela y canta 🐦). Por eso 'gato' es CAT.",
               examples:[{en:"My cat is small.",es:"Mi gato es pequeño."},{en:"The cat likes milk.",es:"Al gato le gusta la leche."}],
@@ -353,7 +380,7 @@
 
             { level:1, q:"¿Cómo se dice el número 'dos'? ✌️",
               options:[{text:"Three (Tres)",en:"Three"},{text:"One (Uno)",en:"One"},{text:"Two (Dos)",en:"Two"}],
-              answer:2, say:"Two. One, two, three!",
+              answer:2, say:"Two. One, two, three!", img:"two,number", lock:15,
               rule:"🔢 Números (Numbers)",
               exp:"Los primeros números en inglés son ONE (uno), TWO (dos) y THREE (tres). Entonces 'dos' es TWO. THREE es tres y ONE es uno. ¡Cuenta conmigo: one, two, three!",
               examples:[{en:"I have two hands.",es:"Tengo dos manos."},{en:"Two cats are playing.",es:"Dos gatos están jugando."}],
@@ -361,16 +388,16 @@
 
             { level:1, q:"¿De qué color es el pasto? 🌱",
               options:[{text:"Green (Verde)",en:"Green"},{text:"Red (Rojo)",en:"Red"},{text:"Pink (Rosado)",en:"Pink"}],
-              answer:0, say:"Green. The grass is green.",
+              answer:0, say:"Green. The grass is green.", img:"grass,green", lock:16,
               rule:"🎨 Colores (Colors)",
               exp:"El pasto o la hierba es de color verde, y 'verde' en inglés se dice GREEN. Las otras son colores diferentes: RED es rojo (como una fresa 🍓) y PINK es rosado (como un chicle). Por eso el pasto es GREEN.",
               examples:[{en:"The grass is green.",es:"El pasto es verde."},{en:"I like green apples.",es:"Me gustan las manzanas verdes."}],
               scene:'<span class="a-float">🌱</span><span class="a-grow">🟢</span><span class="a-float">🌿</span>' },
 
-            /* ---------- NIVEL 2: MEDIO (am / is / are, clima, ropa) ---------- */
+            /* ---------- NIVEL 2: MEDIO ---------- */
             { level:2, q:"Completa el poder mágico: Pikachu _______ yellow. ⚡",
               options:[{text:"am",en:"am"},{text:"is",en:"is"},{text:"are",en:"are"}],
-              answer:1, say:"Pikachu is yellow.",
+              answer:1, say:"Pikachu is yellow.", img:"pikachu", lock:21,
               rule:"✨ Verbo TO BE: am / is / are",
               exp:"El verbo TO BE (ser o estar) cambia según quién habla. Con HE (él), SHE (ella) e IT (una cosa o animal) usamos IS. Pikachu es una sola cosa (un 'it'), por eso decimos Pikachu IS yellow. AM va solo con 'I' (yo) y ARE va con we/you/they.",
               examples:[{en:"Pikachu is yellow.",es:"Pikachu es amarillo."},{en:"She is my friend.",es:"Ella es mi amiga."}],
@@ -378,7 +405,7 @@
 
             { level:2, q:"Si cae mucha LLUVIA 🌧️, el clima está...",
               options:[{text:"Sunny (Soleado)",en:"Sunny"},{text:"Snowy (Nevado)",en:"Snowy"},{text:"Rainy (Lluvioso)",en:"Rainy"}],
-              answer:2, say:"It is a rainy day. Take your umbrella!",
+              answer:2, say:"It is a rainy day. Take your umbrella!", img:"rain,umbrella", lock:22,
               rule:"🌦️ El clima (The weather)",
               exp:"Para decir cómo está el clima usamos palabras que terminan en '-y'. Cuando cae lluvia (RAIN) decimos que está RAINY (lluvioso). Las otras son otros climas: SUNNY es soleado (con sol ☀️) y SNOWY es nevado (con nieve ❄️).",
               examples:[{en:"It is a rainy day.",es:"Es un día lluvioso."},{en:"Take your umbrella, it's rainy!",es:"¡Lleva tu sombrilla, está lluvioso!"}],
@@ -386,7 +413,7 @@
 
             { level:2, q:"Completa el equipo: We _______ friends! 👫",
               options:[{text:"are",en:"are"},{text:"am",en:"am"},{text:"is",en:"is"}],
-              answer:0, say:"We are friends!",
+              answer:0, say:"We are friends!", img:"friends,children", lock:23,
               rule:"✨ Verbo TO BE: am / is / are",
               exp:"Con WE (nosotros), YOU (tú/ustedes) y THEY (ellos) siempre usamos ARE. Como aquí hablamos de 'we' (nosotros), decimos We ARE friends. Recuerda: AM solo va con 'I' e IS va con he/she/it.",
               examples:[{en:"We are friends.",es:"Somos amigos."},{en:"We are happy.",es:"Estamos felices."}],
@@ -394,7 +421,7 @@
 
             { level:2, q:"Hace mucho frío afuera 🥶. Necesito mi...",
               options:[{text:"T-shirt (Camiseta)",en:"T-shirt"},{text:"Shorts (Pantaloneta)",en:"Shorts"},{text:"Jacket (Chaqueta)",en:"Jacket"}],
-              answer:2, say:"I wear a jacket when it is cold.",
+              answer:2, say:"I wear a jacket when it is cold.", img:"jacket,winter", lock:24,
               rule:"🧥 La ropa (Clothes)",
               exp:"Cuando hace frío 🥶 nos ponemos ropa abrigada. Una JACKET es una chaqueta que nos da calorcito. Las otras son ropa fresca para el calor: una T-SHIRT (camiseta) y unos SHORTS (pantaloneta). Por eso, con frío usamos la JACKET.",
               examples:[{en:"I wear a jacket when it's cold.",es:"Uso chaqueta cuando hace frío."},{en:"My jacket is blue.",es:"Mi chaqueta es azul."}],
@@ -402,7 +429,7 @@
 
             { level:2, q:"Hablando de mí: I _______ a student. 🎒",
               options:[{text:"am",en:"am"},{text:"is",en:"is"},{text:"are",en:"are"}],
-              answer:0, say:"I am a student.",
+              answer:0, say:"I am a student.", img:"student,school", lock:25,
               rule:"✨ Verbo TO BE: am / is / are",
               exp:"La palabrita AM solo se usa con 'I' (yo). Siempre van juntas, como mejores amigas: I AM. Por eso decimos I AM a student (yo soy estudiante). Nunca decimos 'I is' ni 'I are'.",
               examples:[{en:"I am a student.",es:"Yo soy estudiante."},{en:"I am seven years old.",es:"Yo tengo siete años."}],
@@ -410,16 +437,16 @@
 
             { level:2, q:"Ellos están felices: They _______ happy. 😃",
               options:[{text:"is",en:"is"},{text:"are",en:"are"},{text:"am",en:"am"}],
-              answer:1, say:"They are happy.",
+              answer:1, say:"They are happy.", img:"happy,kids", lock:26,
               rule:"✨ Verbo TO BE: am / is / are",
               exp:"THEY significa 'ellos' o 'ellas' (más de una persona). Con they usamos ARE. Por eso They ARE happy (ellos están felices). Recuerda el truco: he/she/it usan IS, pero they usa ARE.",
               examples:[{en:"They are happy.",es:"Ellos están felices."},{en:"They are my friends.",es:"Ellos son mis amigos."}],
               scene:'<span class="a-bounce">😃</span><span class="a-bounce">😄</span><span class="a-bounce">😁</span>' },
 
-            /* ---------- NIVEL 3: DIFÍCIL (verbos, -s, pasado, do/does) ---------- */
+            /* ---------- NIVEL 3: DIFÍCIL ---------- */
             { level:3, q:"Viajemos al PASADO ⏳: Yesterday, I _______ happy.",
               options:[{text:"am",en:"am"},{text:"was",en:"was"},{text:"were",en:"were"}],
-              answer:1, say:"Yesterday I was happy.",
+              answer:1, say:"Yesterday I was happy.", img:"calendar,time", lock:31,
               rule:"⏳ El pasado del verbo TO BE",
               exp:"Cuando hablamos de ANTES (ayer, el pasado), el verbo TO BE cambia: AM e IS se convierten en WAS, y ARE se convierte en WERE. La palabra 'yesterday' (ayer) nos avisa que es pasado. Con 'I' usamos WAS: I WAS happy (yo estaba feliz).",
               examples:[{en:"Yesterday I was happy.",es:"Ayer yo estaba feliz."},{en:"She was at school.",es:"Ella estaba en la escuela."}],
@@ -427,7 +454,7 @@
 
             { level:3, q:"La Corona de la 'S' 👑: She _______ basketball.",
               options:[{text:"play",en:"play"},{text:"plays",en:"plays"},{text:"playing",en:"playing"}],
-              answer:1, say:"She plays basketball.",
+              answer:1, say:"She plays basketball.", img:"basketball", lock:32,
               rule:"👑 La regla de la -S (he/she/it)",
               exp:"En presente, cuando hablamos de HE, SHE o IT, el verbo recibe una 'corona': se le agrega una -S al final. Por eso 'play' se vuelve PLAYS: She PLAYS basketball. Si habláramos de 'I' o 'they', diríamos 'play' sin la -s.",
               examples:[{en:"She plays basketball.",es:"Ella juega baloncesto."},{en:"He plays with his dog.",es:"Él juega con su perro."}],
@@ -435,7 +462,7 @@
 
             { level:3, q:"El Escudo Mágico 🛡️: _______ he play Minecraft?",
               options:[{text:"Do",en:"Do"},{text:"Does",en:"Does"},{text:"Is",en:"Is"}],
-              answer:1, say:"Does he play Minecraft?",
+              answer:1, say:"Does he play Minecraft?", img:"videogame,controller", lock:33,
               rule:"🛡️ Preguntas con DO / DOES",
               exp:"Para hacer preguntas en presente usamos DO o DOES al principio. Con HE, SHE, IT usamos DOES (¡la -s de la corona se pasa al 'does', por eso el verbo queda sin -s: play!). Por eso: DOES he play Minecraft? Con I/you/we/they usaríamos DO.",
               examples:[{en:"Does he play Minecraft?",es:"¿Él juega Minecraft?"},{en:"Does she like cats?",es:"¿A ella le gustan los gatos?"}],
@@ -443,7 +470,7 @@
 
             { level:3, q:"Todos los días: He _______ to school. 🚌",
               options:[{text:"go",en:"go"},{text:"gos",en:"gos"},{text:"goes",en:"goes"}],
-              answer:2, say:"He goes to school every day.",
+              answer:2, say:"He goes to school every day.", img:"schoolbus", lock:34,
               rule:"👑 La regla de la -S (casos especiales)",
               exp:"Con HE, SHE, IT el verbo lleva -s. Pero el verbo GO (ir) es especial: no decimos 'gos', sino GOES (con -es). Por eso: He GOES to school. Otros parecidos que llevan -es son: do → does. La opción 'gos' no existe en inglés.",
               examples:[{en:"He goes to school every day.",es:"Él va a la escuela todos los días."},{en:"She goes to the park.",es:"Ella va al parque."}],
@@ -451,7 +478,7 @@
 
             { level:3, q:"Pregunta para tu amiga: _______ you like pizza? 🍕",
               options:[{text:"Do",en:"Do"},{text:"Does",en:"Does"},{text:"Are",en:"Are"}],
-              answer:0, say:"Do you like pizza?",
+              answer:0, say:"Do you like pizza?", img:"pizza", lock:35,
               rule:"🛡️ Preguntas con DO / DOES",
               exp:"Con YOU (tú), I, WE y THEY usamos DO para hacer preguntas. Por eso: DO you like pizza? Solo con he/she/it cambiaríamos a DOES. La palabra ARE no se usa para este tipo de pregunta con el verbo 'like'.",
               examples:[{en:"Do you like pizza?",es:"¿Te gusta la pizza?"},{en:"Do you have a pet?",es:"¿Tienes una mascota?"}],
@@ -459,219 +486,375 @@
 
             { level:3, q:"El pasado de 'GO' (ir) es... ⏪",
               options:[{text:"goed",en:"goed"},{text:"went",en:"went"},{text:"gone",en:"gone"}],
-              answer:1, say:"I went to the park.",
+              answer:1, say:"I went to the park.", img:"park,playground", lock:36,
               rule:"⏪ Verbos irregulares en pasado",
               exp:"Muchos verbos en pasado terminan en -ed, pero algunos son 'irregulares' y cambian por completo. GO (ir) es uno de ellos: su pasado NO es 'goed', sino WENT. Por eso decimos: I WENT to the park (yo fui al parque).",
               examples:[{en:"I went to the park.",es:"Yo fui al parque."},{en:"We went to school.",es:"Nosotros fuimos a la escuela."}],
-              scene:'<span class="a-spin">⏪</span><span class="a-bounce">🏃</span><span class="a-float">🌳</span>' }
+              scene:'<span class="a-spin">⏪</span><span class="a-bounce">🏃</span><span class="a-float">🌳</span>' },
+
+            /* ---------- NIVEL 4: LA FAMILIA ---------- */
+            { level:4, q:"¿Cómo se dice 'Mamá' en inglés? 👩",
+              options:[{text:"Mother (Mamá)",en:"Mother"},{text:"Father (Papá)",en:"Father"},{text:"Sister (Hermana)",en:"Sister"}],
+              answer:0, say:"Mother. I love my mother.", img:"mother,child", lock:41,
+              rule:"👨‍👩‍👧 La familia (Family)",
+              exp:"'Mamá' en inglés es MOTHER (de cariño también se dice MOM o MUMMY). Las otras son otros miembros de la familia: FATHER es papá y SISTER es hermana. Por eso 'mamá' es MOTHER.",
+              examples:[{en:"I love my mother.",es:"Amo a mi mamá."},{en:"My mother is kind.",es:"Mi mamá es amable."}],
+              scene:'<span class="a-float">👩</span><span class="a-bounce">❤️</span>' },
+
+            { level:4, q:"¿Cómo se dice 'Papá' en inglés? 👨",
+              options:[{text:"Brother (Hermano)",en:"Brother"},{text:"Father (Papá)",en:"Father"},{text:"Baby (Bebé)",en:"Baby"}],
+              answer:1, say:"Father. My father is tall.", img:"father,child", lock:42,
+              rule:"👨‍👩‍👧 La familia (Family)",
+              exp:"'Papá' en inglés es FATHER (de cariño también DAD o DADDY). Las otras son distintas: BROTHER es hermano y BABY es bebé. Por eso 'papá' es FATHER.",
+              examples:[{en:"My father is tall.",es:"Mi papá es alto."},{en:"I play with my father.",es:"Juego con mi papá."}],
+              scene:'<span class="a-float">👨</span><span class="a-bounce">👧</span>' },
+
+            { level:4, q:"¿Cómo se dice 'Hermana' en inglés? 👧",
+              options:[{text:"Sister (Hermana)",en:"Sister"},{text:"Mother (Mamá)",en:"Mother"},{text:"Brother (Hermano)",en:"Brother"}],
+              answer:0, say:"Sister. She is my sister.", img:"sisters,girls", lock:43,
+              rule:"👨‍👩‍👧 La familia (Family)",
+              exp:"'Hermana' en inglés es SISTER. Ojo con no confundir: BROTHER es hermano (niño) y MOTHER es mamá. Por eso 'hermana' es SISTER.",
+              examples:[{en:"She is my sister.",es:"Ella es mi hermana."},{en:"My sister is funny.",es:"Mi hermana es divertida."}],
+              scene:'<span class="a-bounce">👧</span><span class="a-float">👧</span>' },
+
+            { level:4, q:"¿Cómo se dice 'Hermano' en inglés? 👦",
+              options:[{text:"Sister (Hermana)",en:"Sister"},{text:"Brother (Hermano)",en:"Brother"},{text:"Grandmother (Abuela)",en:"Grandmother"}],
+              answer:1, say:"Brother. He is my brother.", img:"brother,boy", lock:44,
+              rule:"👨‍👩‍👧 La familia (Family)",
+              exp:"'Hermano' en inglés es BROTHER. No lo confundas con SISTER, que es hermana. GRANDMOTHER es la abuela. Por eso 'hermano' es BROTHER.",
+              examples:[{en:"He is my brother.",es:"Él es mi hermano."},{en:"My brother is small.",es:"Mi hermano es pequeño."}],
+              scene:'<span class="a-bounce">👦</span><span class="a-float">⚽</span>' },
+
+            { level:4, q:"¿Cómo se dice 'Abuela' en inglés? 👵",
+              options:[{text:"Mother (Mamá)",en:"Mother"},{text:"Baby (Bebé)",en:"Baby"},{text:"Grandmother (Abuela)",en:"Grandmother"}],
+              answer:2, say:"Grandmother. My grandmother is kind.", img:"grandmother", lock:45,
+              rule:"👨‍👩‍👧 La familia (Family)",
+              exp:"'Abuela' en inglés es GRANDMOTHER (de cariño GRANDMA o GRANNY). La palabra 'grand' se le pone delante de 'mother' (mamá) para decir 'la mamá de mi mamá'. MOTHER es mamá y BABY es bebé.",
+              examples:[{en:"My grandmother is kind.",es:"Mi abuela es amable."},{en:"I visit my grandmother.",es:"Visito a mi abuela."}],
+              scene:'<span class="a-float">👵</span><span class="a-bounce">🍪</span>' },
+
+            { level:4, q:"¿Cómo se dice 'Bebé' en inglés? 👶",
+              options:[{text:"Baby (Bebé)",en:"Baby"},{text:"Father (Papá)",en:"Father"},{text:"Sister (Hermana)",en:"Sister"}],
+              answer:0, say:"Baby. The baby is small.", img:"baby", lock:46,
+              rule:"👨‍👩‍👧 La familia (Family)",
+              exp:"'Bebé' en inglés es BABY. Es fácil de recordar porque suena parecido: 'béibi'. FATHER es papá y SISTER es hermana. Por eso 'bebé' es BABY.",
+              examples:[{en:"The baby is small.",es:"El bebé es pequeño."},{en:"The baby is sleeping.",es:"El bebé está durmiendo."}],
+              scene:'<span class="a-bounce">👶</span><span class="a-float">🍼</span>' },
+
+            /* ---------- NIVEL 5: EL CUERPO ---------- */
+            { level:5, q:"¿Cómo se dice 'Mano' en inglés? ✋",
+              options:[{text:"Foot (Pie)",en:"Foot"},{text:"Hand (Mano)",en:"Hand"},{text:"Head (Cabeza)",en:"Head"}],
+              answer:1, say:"Hand. I have two hands.", img:"hand", lock:51,
+              rule:"🧍 El cuerpo (The body)",
+              exp:"'Mano' en inglés es HAND. Con las manos tomamos las cosas. Las otras partes son: FOOT es pie y HEAD es cabeza. Por eso 'mano' es HAND.",
+              examples:[{en:"I have two hands.",es:"Tengo dos manos."},{en:"Wash your hands!",es:"¡Lávate las manos!"}],
+              scene:'<span class="a-swing">✋</span><span class="a-float">🖐️</span>' },
+
+            { level:5, q:"¿Cómo se dice 'Ojos' en inglés? 👀",
+              options:[{text:"Ears (Orejas)",en:"Ears"},{text:"Nose (Nariz)",en:"Nose"},{text:"Eyes (Ojos)",en:"Eyes"}],
+              answer:2, say:"Eyes. My eyes are brown.", img:"eyes,face", lock:52,
+              rule:"🧍 El cuerpo (The body)",
+              exp:"'Ojos' en inglés es EYES (un solo ojo es EYE). Con los ojos vemos. Las otras partes: EARS son las orejas (para oír) y NOSE es la nariz (para oler). Por eso 'ojos' es EYES.",
+              examples:[{en:"My eyes are brown.",es:"Mis ojos son cafés."},{en:"Close your eyes!",es:"¡Cierra los ojos!"}],
+              scene:'<span class="a-bounce">👀</span><span class="a-float">👁️</span>' },
+
+            { level:5, q:"¿Cómo se dice 'Cabeza' en inglés? 🙂",
+              options:[{text:"Head (Cabeza)",en:"Head"},{text:"Hand (Mano)",en:"Hand"},{text:"Foot (Pie)",en:"Foot"}],
+              answer:0, say:"Head. This is my head.", img:"head,child", lock:53,
+              rule:"🧍 El cuerpo (The body)",
+              exp:"'Cabeza' en inglés es HEAD. En la cabeza están los ojos, la nariz y la boca. Cuidado: HAND es mano y FOOT es pie. Por eso 'cabeza' es HEAD.",
+              examples:[{en:"This is my head.",es:"Esta es mi cabeza."},{en:"Touch your head!",es:"¡Tócate la cabeza!"}],
+              scene:'<span class="a-float">🙂</span><span class="a-grow">🧠</span>' },
+
+            { level:5, q:"¿Cómo se dice 'Pies' en inglés? 👣",
+              options:[{text:"Hands (Manos)",en:"Hands"},{text:"Feet (Pies)",en:"Feet"},{text:"Eyes (Ojos)",en:"Eyes"}],
+              answer:1, say:"Feet. I have two feet.", img:"feet", lock:54,
+              rule:"🧍 El cuerpo (The body)",
+              exp:"'Pies' en inglés es FEET (un solo pie es FOOT). Con los pies caminamos. HANDS son las manos y EYES son los ojos. Por eso 'pies' es FEET.",
+              examples:[{en:"I have two feet.",es:"Tengo dos pies."},{en:"My feet are cold.",es:"Mis pies están fríos."}],
+              scene:'<span class="a-bounce">👣</span><span class="a-float">🦶</span>' },
+
+            { level:5, q:"¿Cómo se dice 'Nariz' en inglés? 👃",
+              options:[{text:"Mouth (Boca)",en:"Mouth"},{text:"Ear (Oreja)",en:"Ear"},{text:"Nose (Nariz)",en:"Nose"}],
+              answer:2, say:"Nose. I smell with my nose.", img:"nose,face", lock:55,
+              rule:"🧍 El cuerpo (The body)",
+              exp:"'Nariz' en inglés es NOSE. Con la nariz olemos las cosas ricas 👃. Las otras: MOUTH es la boca (para comer) y EAR es la oreja (para oír). Por eso 'nariz' es NOSE.",
+              examples:[{en:"I smell with my nose.",es:"Huelo con mi nariz."},{en:"My nose is small.",es:"Mi nariz es pequeña."}],
+              scene:'<span class="a-grow">👃</span><span class="a-float">🌸</span>' },
+
+            { level:5, q:"¿Cómo se dice 'Boca' en inglés? 👄",
+              options:[{text:"Mouth (Boca)",en:"Mouth"},{text:"Hand (Mano)",en:"Hand"},{text:"Head (Cabeza)",en:"Head"}],
+              answer:0, say:"Mouth. I eat with my mouth.", img:"mouth,smile", lock:56,
+              rule:"🧍 El cuerpo (The body)",
+              exp:"'Boca' en inglés es MOUTH. Con la boca comemos y hablamos. Cuidado: HAND es mano y HEAD es cabeza. Por eso 'boca' es MOUTH.",
+              examples:[{en:"I eat with my mouth.",es:"Como con mi boca."},{en:"Open your mouth!",es:"¡Abre la boca!"}],
+              scene:'<span class="a-bounce">👄</span><span class="a-float">😁</span>' }
         ];
 
-        const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 0:"Mezcla 🌈"};
+        const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 4:"Familia 👨‍👩‍👧", 5:"Cuerpo 🧍", 0:"Mezcla 🌈"};
+
+        /* ============ TIENDA: fondos y personajes ============ */
+        const backgrounds = {
+            default: { name:"Cielo", emoji:"☁️", price:0 },
+            space:   { name:"Espacio", emoji:"🌌", price:20, css:"linear-gradient(135deg,#0b0b2a,#3a1c71)" },
+            candy:   { name:"Dulces", emoji:"🍭", price:25, css:"linear-gradient(135deg,#ffafbd,#ffc3a0)" },
+            ocean:   { name:"Océano", emoji:"🌊", price:25, css:"linear-gradient(135deg,#2193b0,#6dd5ed)" },
+            forest:  { name:"Bosque", emoji:"🌳", price:30, css:"linear-gradient(135deg,#134e2e,#4caf50)" },
+            rainbow: { name:"Arcoíris", emoji:"🌈", price:40, css:"linear-gradient(135deg,#ff9a9e,#fbc2eb,#a18cd1,#84fab0)" }
+        };
+        const characters = {
+            star:    { name:"Estrellita", emoji:"🌟", price:0 },
+            cat:     { name:"Gatito", emoji:"🐱", price:15 },
+            dog:     { name:"Perrito", emoji:"🐶", price:15 },
+            robot:   { name:"Robot", emoji:"🤖", price:20 },
+            unicorn: { name:"Unicornio", emoji:"🦄", price:30 },
+            dragon:  { name:"Dragón", emoji:"🐲", price:35 }
+        };
 
         let questions = [];
         let currentQ = 0;
-        let score = 0;       // respuestas correctas
-        let points = 0;      // puntos totales (recompensa grande)
-        let gems = 0;        // gemas coleccionadas
-        let streak = 0;
-        let bestStreak = 0;
+        let score = 0, points = 0, gems = 0, streak = 0, bestStreak = 0;
         let currentLevel = 1;
-        let soundOn = true;
-        let musicOn = false;
-        let audioCtx = null;
+        let soundOn = true, musicOn = false, audioCtx = null;
 
-        /* ============ VOZ EN INGLÉS (Text-to-Speech) ============ */
+        /* ---- localStorage (gemas, medallas, tienda) ---- */
+        function getGems() { return parseInt(localStorage.getItem('valeryGems') || '0', 10) || 0; }
+        function setGems(n) { try { localStorage.setItem('valeryGems', String(n)); } catch(e){} }
+        function addGems(n) { setGems(getGems() + n); }
+        function getOwned() {
+            try { return JSON.parse(localStorage.getItem('valeryOwned')) || {bg:['default'],char:['star']}; }
+            catch(e){ return {bg:['default'],char:['star']}; }
+        }
+        function setOwned(o){ try { localStorage.setItem('valeryOwned', JSON.stringify(o)); } catch(e){} }
+        function getEquip() {
+            try { return JSON.parse(localStorage.getItem('valeryEquip')) || {bg:'default',char:'star'}; }
+            catch(e){ return {bg:'default',char:'star'}; }
+        }
+        function setEquip(e){ try { localStorage.setItem('valeryEquip', JSON.stringify(e)); } catch(e){} }
+
+        /* ============ VOZ EN INGLÉS ============ */
         let enVoice = null;
         function pickVoice() {
             const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-            enVoice = voices.find(v => /en[-_]US/i.test(v.lang)) ||
-                      voices.find(v => /^en/i.test(v.lang)) || null;
+            enVoice = voices.find(v => /en[-_]US/i.test(v.lang)) || voices.find(v => /^en/i.test(v.lang)) || null;
         }
-        if (window.speechSynthesis) {
-            pickVoice();
-            window.speechSynthesis.onvoiceschanged = pickVoice;
-        }
+        if (window.speechSynthesis) { pickVoice(); window.speechSynthesis.onvoiceschanged = pickVoice; }
         function speakEnglish(text) {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(text);
             u.lang = 'en-US';
             if (enVoice) u.voice = enVoice;
-            u.rate = 0.85;
-            u.pitch = 1.1;
+            u.rate = 0.85; u.pitch = 1.1;
             window.speechSynthesis.speak(u);
         }
 
-        /* ============ SONIDOS DEL JUEGO (Web Audio API) ============ */
-        function getCtx() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            return audioCtx;
-        }
-        function playTone(freq, duration, type = 'sine', startTime = 0, vol = 0.2) {
+        /* ============ SONIDOS ============ */
+        function getCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+        function playTone(freq, duration, type='sine', startTime=0, vol=0.2) {
             if (!soundOn) return;
             const ctx = getCtx();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = type;
-            osc.frequency.value = freq;
+            const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.type = type; osc.frequency.value = freq;
             gain.gain.setValueAtTime(vol, ctx.currentTime + startTime);
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(ctx.currentTime + startTime);
-            osc.stop(ctx.currentTime + startTime + duration);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + startTime); osc.stop(ctx.currentTime + startTime + duration);
         }
         function playClick()   { playTone(500, 0.08, 'square', 0, 0.12); }
-        function playReward()  { // sonidito de "monedita/recompensa"
-            playTone(880, 0.08, 'square', 0, 0.14);
-            playTone(1318, 0.14, 'square', 0.08, 0.14);
-        }
-        function playCorrect() {
-            playTone(523, 0.12, 'sine', 0);
-            playTone(659, 0.12, 'sine', 0.1);
-            playTone(784, 0.2, 'sine', 0.2);
-            playTone(1046, 0.3, 'sine', 0.32);
-        }
-        function playWrong()   {
-            playTone(300, 0.15, 'sawtooth', 0, 0.18);
-            playTone(200, 0.25, 'sawtooth', 0.15, 0.18);
-        }
-        function playWin()     {
-            const notes = [523, 659, 784, 1046, 784, 1046, 1318];
-            notes.forEach((n, i) => playTone(n, 0.25, 'triangle', i * 0.18, 0.22));
-        }
+        function playReward()  { playTone(880, 0.08, 'square', 0, 0.14); playTone(1318, 0.14, 'square', 0.08, 0.14); }
+        function playCorrect() { playTone(523,0.12,'sine',0); playTone(659,0.12,'sine',0.1); playTone(784,0.2,'sine',0.2); playTone(1046,0.3,'sine',0.32); }
+        function playWrong()   { playTone(300,0.15,'sawtooth',0,0.18); playTone(200,0.25,'sawtooth',0.15,0.18); }
+        function playWin()     { [523,659,784,1046,784,1046,1318].forEach((n,i)=>playTone(n,0.25,'triangle',i*0.18,0.22)); }
+        function playBuy()     { playTone(700,0.1,'square',0,0.15); playTone(1000,0.12,'square',0.1,0.15); playTone(1400,0.18,'square',0.22,0.15); }
         function toggleSound() {
             soundOn = !soundOn;
             const b = document.getElementById('sound-toggle');
-            b.innerText = soundOn ? '🔊' : '🔇';
-            b.classList.toggle('off', !soundOn);
+            b.innerText = soundOn ? '🔊' : '🔇'; b.classList.toggle('off', !soundOn);
             if (soundOn) playClick();
         }
 
-        /* ============ MÚSICA DE FONDO ============ */
+        /* ============ MÚSICA ============ */
         let musicTimer = null;
-        const melody = [
-            523, 523, 587, 659, 659, 587, 523, 494,
-            440, 440, 494, 523, 523, 494, 494, 0,
-            523, 523, 587, 659, 659, 587, 523, 494,
-            440, 440, 494, 523, 494, 440, 440, 0
-        ];
+        const melody = [523,523,587,659,659,587,523,494,440,440,494,523,523,494,494,0,523,523,587,659,659,587,523,494,440,440,494,523,494,440,440,0];
         let melodyIndex = 0;
         function playMelodyNote() {
             if (!musicOn) return;
-            const ctx = getCtx();
-            const freq = melody[melodyIndex];
+            const ctx = getCtx(); const freq = melody[melodyIndex];
             if (freq > 0) {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.value = freq;
+                const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                osc.type = 'triangle'; osc.frequency.value = freq;
                 gain.gain.setValueAtTime(0.06, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.34);
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.34);
             }
             melodyIndex = (melodyIndex + 1) % melody.length;
         }
-        function startMusic() {
-            getCtx();
-            if (musicTimer) clearInterval(musicTimer);
-            musicTimer = setInterval(playMelodyNote, 320);
-        }
-        function stopMusic() {
-            if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
-        }
+        function startMusic(){ getCtx(); if (musicTimer) clearInterval(musicTimer); musicTimer = setInterval(playMelodyNote, 320); }
+        function stopMusic(){ if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } }
         function toggleMusic() {
             musicOn = !musicOn;
-            const b = document.getElementById('music-toggle');
-            b.classList.toggle('off', !musicOn);
+            document.getElementById('music-toggle').classList.toggle('off', !musicOn);
             if (musicOn) { playClick(); startMusic(); } else { stopMusic(); }
         }
 
-        /* ============ CONFETI Y RECOMPENSAS FLOTANTES ============ */
+        /* ============ CONFETI Y RECOMPENSAS ============ */
         function launchConfetti(amount = 40) {
-            const colors = ['#FFD700', '#FF4500', '#32CD32', '#1E90FF', '#FF69B4', '#8A2BE2'];
+            const colors = ['#FFD700','#FF4500','#32CD32','#1E90FF','#FF69B4','#8A2BE2'];
             for (let i = 0; i < amount; i++) {
-                const piece = document.createElement('div');
-                piece.className = 'confetti-piece';
-                piece.style.left = Math.random() * 100 + 'vw';
-                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                piece.style.animationDuration = (2 + Math.random() * 2) + 's';
-                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                document.body.appendChild(piece);
-                setTimeout(() => piece.remove(), 4000);
+                const p = document.createElement('div');
+                p.className = 'confetti-piece';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                p.style.animationDuration = (2 + Math.random() * 2) + 's';
+                p.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 4000);
             }
         }
         function showRewardPopup(text) {
             const pop = document.createElement('div');
-            pop.className = 'reward-popup';
-            pop.innerText = text;
+            pop.className = 'reward-popup'; pop.innerText = text;
             document.body.appendChild(pop);
             setTimeout(() => pop.remove(), 1300);
         }
 
-        /* ============ MEDALLAS GUARDADAS (recompensa por nivel) ============ */
+        /* ============ MEDALLAS ============ */
         const rankEmoji = { 4:"🥇 Oro", 3:"🥈 Plata", 2:"🥉 Bronce", 1:"🎗️" };
-        function getMedals() {
-            try { return JSON.parse(localStorage.getItem('valeryMedals') || '{}'); }
-            catch(e) { return {}; }
-        }
+        function getMedals() { try { return JSON.parse(localStorage.getItem('valeryMedals') || '{}'); } catch(e){ return {}; } }
         function saveMedal(level, rank) {
-            const medals = getMedals();
-            if (!medals[level] || rank > medals[level]) {
-                medals[level] = rank;
-                try { localStorage.setItem('valeryMedals', JSON.stringify(medals)); } catch(e) {}
-            }
+            const m = getMedals();
+            if (!m[level] || rank > m[level]) { m[level] = rank; try { localStorage.setItem('valeryMedals', JSON.stringify(m)); } catch(e){} }
         }
         function updateMedalDisplay() {
-            const medals = getMedals();
-            [0,1,2,3].forEach(lvl => {
+            const m = getMedals();
+            [0,1,2,3,4,5].forEach(lvl => {
                 const el = document.getElementById('medal-' + lvl);
                 if (!el) return;
-                if (medals[lvl]) {
-                    el.innerText = rankEmoji[medals[lvl]];
-                    el.classList.remove('hidden');
-                } else {
-                    el.classList.add('hidden');
-                }
+                if (m[lvl]) { el.innerText = rankEmoji[m[lvl]]; el.classList.remove('hidden'); }
+                else el.classList.add('hidden');
             });
+        }
+
+        /* ============ APLICAR FONDO Y PERSONAJE ============ */
+        function applyBackground(id) {
+            const b = backgrounds[id] || backgrounds.default;
+            if (id === 'default' || !b.css) {
+                document.body.style.background = '#87CEEB';
+                document.body.style.backgroundImage = 'radial-gradient(#fff 15%, transparent 16%), radial-gradient(#fff 15%, transparent 16%)';
+                document.body.style.backgroundSize = '30px 30px';
+                document.body.style.backgroundPosition = '0 0, 15px 15px';
+            } else {
+                document.body.style.backgroundImage = b.css;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundAttachment = 'fixed';
+            }
+        }
+        function applyCharacter(id) {
+            const c = characters[id] || characters.star;
+            document.getElementById('buddy').innerText = c.emoji;
+        }
+        function applyEquip() {
+            const e = getEquip();
+            applyBackground(e.bg);
+            applyCharacter(e.char);
+        }
+
+        /* ============ TIENDA ============ */
+        function openShop() {
+            playClick();
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('shop-screen').classList.remove('hidden');
+            renderShop();
+        }
+        function closeShop() {
+            playClick();
+            document.getElementById('shop-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            document.getElementById('start-gems').innerText = getGems();
+            updateMedalDisplay();
+        }
+        function renderShop() {
+            document.getElementById('shop-gems').innerText = getGems();
+            const owned = getOwned();
+            const equip = getEquip();
+
+            const bgDiv = document.getElementById('shop-backgrounds');
+            bgDiv.innerHTML = '';
+            Object.keys(backgrounds).forEach(id => bgDiv.appendChild(makeShopItem('bg', id, backgrounds[id], owned, equip)));
+
+            const chDiv = document.getElementById('shop-characters');
+            chDiv.innerHTML = '';
+            Object.keys(characters).forEach(id => chDiv.appendChild(makeShopItem('char', id, characters[id], owned, equip)));
+        }
+        function makeShopItem(type, id, item, owned, equip) {
+            const list = type === 'bg' ? owned.bg : owned.char;
+            const isOwned = list.includes(id);
+            const isEquipped = equip[type === 'bg' ? 'bg' : 'char'] === id;
+
+            const div = document.createElement('div');
+            div.className = 'shop-item' + (isEquipped ? ' equipped' : '');
+
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-buy';
+            if (isEquipped) { btn.classList.add('equip'); btn.innerText = 'Equipado ✓'; btn.disabled = true; }
+            else if (isOwned) { btn.classList.add('own'); btn.innerText = 'Usar'; btn.onclick = () => equipItem(type, id); }
+            else { btn.classList.add('locked'); btn.innerText = 'Comprar ' + item.price + ' 💎'; btn.onclick = () => buyItem(type, id, item.price); }
+
+            div.innerHTML = `<div class="shop-emoji">${item.emoji}</div><div class="shop-name">${item.name}</div>`;
+            div.appendChild(btn);
+            return div;
+        }
+        function buyItem(type, id, price) {
+            if (getGems() < price) {
+                playWrong();
+                showRewardPopup('¡Te faltan gemas! 💎');
+                return;
+            }
+            addGems(-price);
+            const owned = getOwned();
+            (type === 'bg' ? owned.bg : owned.char).push(id);
+            setOwned(owned);
+            playBuy();
+            launchConfetti(40);
+            equipItem(type, id);   // al comprar, se equipa automáticamente
+        }
+        function equipItem(type, id) {
+            const e = getEquip();
+            if (type === 'bg') e.bg = id; else e.char = id;
+            setEquip(e);
+            playClick();
+            applyEquip();
+            renderShop();
         }
 
         /* ============ MEZCLAR ============ */
         function shuffle(arr) {
             const a = arr.slice();
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
-            }
+            for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
             return a;
         }
 
         /* ============ JUEGO ============ */
         function startGame(level) {
-            playClick();
-            getCtx();
-            currentLevel = level;
-
+            playClick(); getCtx(); currentLevel = level;
             questions = level === 0 ? shuffle(allQuestions) : shuffle(allQuestions.filter(q => q.level === level));
             currentQ = 0; score = 0; points = 0; gems = 0; streak = 0; bestStreak = 0;
             document.getElementById('score').innerText = 0;
             document.getElementById('points').innerText = 0;
             document.getElementById('gems').innerText = 0;
             document.getElementById('streak').innerText = 0;
-
             document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('shop-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
             loadQuestion();
         }
-
         function updateProgress() {
-            const pct = (currentQ / questions.length) * 100;
-            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('progress-bar').style.width = (currentQ / questions.length) * 100 + '%';
         }
-
         function loadQuestion() {
             if (currentQ >= questions.length) { endGame(); return; }
             updateProgress();
@@ -687,26 +870,17 @@
             const optionsDiv = document.getElementById('options');
             optionsDiv.innerHTML = "";
             current.options.forEach((opt, index) => {
-                const row = document.createElement('div');
-                row.className = 'option-row';
-
+                const row = document.createElement('div'); row.className = 'option-row';
                 const btn = document.createElement('button');
-                btn.className = 'btn btn-option';
-                btn.innerText = opt.text;
+                btn.className = 'btn btn-option'; btn.innerText = opt.text;
                 btn.onclick = () => checkAnswer(index, btn);
-
                 const speak = document.createElement('button');
-                speak.className = 'btn btn-speak';
-                speak.innerText = '🔉';
-                speak.title = 'Escuchar en inglés';
+                speak.className = 'btn btn-speak'; speak.innerText = '🔉'; speak.title = 'Escuchar en inglés';
                 speak.onclick = (e) => { e.stopPropagation(); speakEnglish(opt.en); };
-
-                row.appendChild(btn);
-                row.appendChild(speak);
+                row.appendChild(btn); row.appendChild(speak);
                 optionsDiv.appendChild(row);
             });
         }
-
         function buildExamplesHTML(examples) {
             let html = '<div class="examples-box"><div class="examples-title">📖 Ejemplos:</div>';
             examples.forEach(ex => {
@@ -716,10 +890,8 @@
                     <span><span class="en">${ex.en}</span> <span class="es">— ${ex.es}</span></span>
                 </div>`;
             });
-            html += '</div>';
-            return html;
+            return html + '</div>';
         }
-
         function checkAnswer(selectedIndex, btn) {
             const buttons = document.querySelectorAll('.btn-option');
             buttons.forEach(b => b.disabled = true);
@@ -729,54 +901,41 @@
             const pickedText = current.options[selectedIndex].text;
             const feedback = document.getElementById('feedback');
             const expBox = document.getElementById('explanation-box');
-
             let headerHTML = "";
 
             if (selectedIndex === current.answer) {
-                btn.style.backgroundColor = '#32CD32';
-                btn.style.boxShadow = '0 6px 0 #228B22';
-                btn.classList.add('bounce');
-                feedback.innerText = "¡CORRECTO! 🌟";
-                feedback.style.color = '#32CD32';
+                btn.style.backgroundColor = '#32CD32'; btn.style.boxShadow = '0 6px 0 #228B22'; btn.classList.add('bounce');
+                feedback.innerText = "¡CORRECTO! 🌟"; feedback.style.color = '#32CD32';
+                score++; streak++; if (streak > bestStreak) bestStreak = streak;
 
-                score++;
-                streak++;
-                if (streak > bestStreak) bestStreak = streak;
-
-                // ===== RECOMPENSAS =====
                 const base = 10;
-                const bonus = Math.min((streak - 1) * 5, 25);   // bonus por racha
+                const bonus = Math.min((streak - 1) * 5, 25);
                 const gained = base + bonus;
                 points += gained;
                 const gemsWon = 1 + (streak >= 3 ? 1 : 0) + (streak >= 5 ? 1 : 0);
                 gems += gemsWon;
+                addGems(gemsWon);   // se guardan en la billetera para la tienda
 
                 document.getElementById('score').innerText = score;
                 document.getElementById('points').innerText = points;
                 document.getElementById('gems').innerText = gems;
                 document.getElementById('streak').innerText = streak;
 
-                playCorrect();
-                setTimeout(playReward, 350);
+                playCorrect(); setTimeout(playReward, 350);
                 launchConfetti(streak >= 3 ? 60 : 30);
                 showRewardPopup(`+${gained} 🏆  +${gemsWon} 💎`);
 
-                let bonusMsg = "";
-                if (bonus > 0) bonusMsg = `<br>🔥 <b>¡Racha de ${streak}! Bonus de +${bonus} puntos.</b>`;
+                let bonusMsg = bonus > 0 ? `<br>🔥 <b>¡Racha de ${streak}! Bonus de +${bonus} puntos.</b>` : "";
                 headerHTML = `<span class="exp-header ok">✅ ¡Muy bien, Valery! Escogiste "${correctText}".</span>` +
                              `<span class="exp-rule">${current.rule}</span>` +
                              `<div class="exp-text">${current.exp}${bonusMsg}</div>`;
             } else {
-                btn.style.backgroundColor = '#FF4500';
-                btn.style.boxShadow = '0 6px 0 #CC3700';
-                btn.classList.add('shake');
+                btn.style.backgroundColor = '#FF4500'; btn.style.boxShadow = '0 6px 0 #CC3700'; btn.classList.add('shake');
                 buttons[current.answer].style.backgroundColor = '#32CD32';
                 buttons[current.answer].style.boxShadow = '0 6px 0 #228B22';
                 buttons[current.answer].classList.add('bounce');
-                feedback.innerText = "¡Uy! Casi... 😅";
-                feedback.style.color = '#FF4500';
-                streak = 0;
-                document.getElementById('streak').innerText = streak;
+                feedback.innerText = "¡Uy! Casi... 😅"; feedback.style.color = '#FF4500';
+                streak = 0; document.getElementById('streak').innerText = streak;
                 playWrong();
 
                 headerHTML = `<span class="exp-header no">❌ Tú escogiste "<span class="picked-wrong">${pickedText}</span>", pero la respuesta correcta era "<span class="correct-answer">${correctText}</span>".</span>` +
@@ -784,13 +943,15 @@
                              `<div class="exp-text"><b>Te explico para que lo entiendas 👇</b><br>${current.exp}</div>`;
             }
 
-            // Ejemplos + escena animada (ejemplo visual tipo gif)
             let bodyHTML = buildExamplesHTML(current.examples);
-            bodyHTML += `<div class="scene-label">👀 Míralo con un ejemplo:</div><div class="scene">${current.scene}</div>`;
+            const imgUrl = `https://loremflickr.com/340/220/${current.img}?lock=${current.lock}`;
+            bodyHTML += `<div class="scene-label">👀 Míralo de verdad:</div>
+                <img class="real-img" src="${imgUrl}" alt="${current.img}"
+                     onerror="this.style.display='none';var s=document.getElementById('emoji-scene');if(s)s.style.display='block';">
+                <div id="emoji-scene" class="scene" style="display:none">${current.scene}</div>`;
 
             expBox.innerHTML = headerHTML + bodyHTML;
 
-            // Botón para escuchar la frase completa en inglés
             const listenBtn = document.createElement('button');
             listenBtn.className = 'btn btn-listen-sentence';
             listenBtn.innerText = '🔊 Escuchar la frase en inglés';
@@ -804,12 +965,7 @@
             nextBtn.innerText = (currentQ + 1 >= questions.length) ? "Ver mis recompensas 🏆" : "Siguiente ➡️";
             nextBtn.classList.remove('hidden');
         }
-
-        function nextQuestion() {
-            playClick();
-            currentQ++;
-            loadQuestion();
-        }
+        function nextQuestion() { playClick(); currentQ++; loadQuestion(); }
 
         function endGame() {
             updateProgress();
@@ -820,31 +976,25 @@
             document.getElementById('final-gems').innerText = gems;
             document.getElementById('final-streak').innerText = bestStreak;
 
-            // Medalla según el porcentaje de aciertos
             const pct = score / questions.length;
             let rank, medalEmoji, msg;
-            if (pct === 1)        { rank = 4; medalEmoji = "🥇"; msg = "¡Valery, eres una MAESTRA del Inglés! Medalla de ORO. 🦄✨"; }
-            else if (pct >= 0.7)  { rank = 3; medalEmoji = "🥈"; msg = "¡Súper bien, Valery! Te ganaste la medalla de PLATA. 🚀"; }
-            else if (pct >= 0.4)  { rank = 2; medalEmoji = "🥉"; msg = "¡Buen trabajo, Valery! Medalla de BRONCE. Sigue así. 💪"; }
-            else                  { rank = 1; medalEmoji = "🎗️"; msg = "¡Buen intento, Valery! Practica otra vez y ganarás una medalla más grande. 🌟"; }
+            if (pct === 1)       { rank = 4; medalEmoji = "🥇"; msg = "¡Valery, eres una MAESTRA del Inglés! Medalla de ORO. 🦄✨"; }
+            else if (pct >= 0.7) { rank = 3; medalEmoji = "🥈"; msg = "¡Súper bien, Valery! Te ganaste la medalla de PLATA. 🚀"; }
+            else if (pct >= 0.4) { rank = 2; medalEmoji = "🥉"; msg = "¡Buen trabajo, Valery! Medalla de BRONCE. Sigue así. 💪"; }
+            else                 { rank = 1; medalEmoji = "🎗️"; msg = "¡Buen intento, Valery! Practica otra vez y ganarás una medalla más grande. 🌟"; }
 
             document.getElementById('final-medal').innerText = medalEmoji;
             document.getElementById('end-message').innerText = msg;
-
             saveMedal(currentLevel, rank);
 
-            if (pct >= 0.7) {
-                playWin();
-                launchConfetti(150);
-                setTimeout(() => launchConfetti(100), 700);
-                setTimeout(() => launchConfetti(100), 1400);
-            } else {
-                launchConfetti(40);
-            }
+            if (pct >= 0.7) { playWin(); launchConfetti(150); setTimeout(()=>launchConfetti(100),700); setTimeout(()=>launchConfetti(100),1400); }
+            else launchConfetti(40);
         }
 
-        // Mostrar las medallas ya ganadas al abrir el juego
+        /* ============ AL ABRIR ============ */
+        applyEquip();
         updateMedalDisplay();
+        document.getElementById('start-gems').innerText = getGems();
     </script>
 </body>
 </html>
