@@ -137,6 +137,32 @@
         }
         .btn-listen-sentence:hover { background-color: #9B4BEB; }
 
+        /* Nivel de ESCRIBIR: frase con espacio y campo de texto */
+        .write-wrap { margin: 14px 0; }
+        .write-prompt {
+            font-size: 1.5em; color:#333; font-weight:bold; margin:6px 0 16px;
+            background: linear-gradient(135deg,#E0F7FF,#FFF0F5);
+            border-radius:14px; padding:16px 12px; line-height:1.6;
+        }
+        .write-blank { color:#1E90FF; letter-spacing:2px; border-bottom:3px solid #1E90FF; padding:0 18px; }
+        .write-row { display:flex; gap:8px; align-items:stretch; justify-content:center; flex-wrap:wrap; }
+        .write-input {
+            flex: 1 1 220px; min-width:0; font-family:var(--game-font);
+            font-size:1.5em; text-align:center; padding:12px 14px;
+            border:3px solid #1E90FF; border-radius:14px; color:#333;
+            background:#F0F8FF; outline:none;
+        }
+        .write-input::placeholder { color:#9CB3C9; font-size:0.7em; }
+        .write-input:focus { border-color:#FF69B4; background:#fff; }
+        .write-input.write-ok { border-color:#32CD32; background:#F0FFF0; color:#228B22; font-weight:bold; }
+        .write-input.write-no { border-color:#FF4500; background:#FFF0EE; color:#CC3700; font-weight:bold; }
+        .write-check {
+            background-color:#32CD32; box-shadow:0 6px 0 #228B22;
+            font-size:1.15em; margin:0; flex:0 0 auto;
+        }
+        .write-check:disabled { opacity:0.55; }
+        .write-hint { color:#8A2BE2; font-weight:bold; font-size:0.95em; margin-top:10px; }
+
         .hidden { display: none; }
         #score-display { 
             font-size: 1.2em; 
@@ -214,6 +240,7 @@
         .lvl-colors  { background:#DA70D6; box-shadow:0 6px 0 #A64DA6; }
         .lvl-actions { background:#2E8B57; box-shadow:0 6px 0 #1E5E3A; }
         .lvl-objects { background:#607D8B; box-shadow:0 6px 0 #455A64; }
+        .lvl-write { background:#E91E63; box-shadow:0 6px 0 #AD1457; }
         .lvl-all  { background:#8A2BE2; box-shadow:0 6px 0 #5D1A9E; }
         .medal-tag { font-size: 1.1em; background: rgba(255,255,255,0.3); border-radius:20px; padding:2px 8px; }
         .btn-shop { background:#FFD700; color:#8A2BE2; box-shadow:0 6px 0 #DAA520; font-size:1.35em; margin-top:18px; }
@@ -428,6 +455,7 @@
             <button class="btn btn-level lvl-colors" onclick="startGame(9)"><span>🎨 LOS COLORES</span><span id="medal-9" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-actions" onclick="startGame(10)"><span>🏃 ACCIONES</span><span id="medal-10" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-objects" onclick="startGame(11)"><span>🎒 LOS OBJETOS</span><span id="medal-11" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-write" onclick="startGame(12)"><span>✍️ ¡A ESCRIBIR! (Completa frases)</span><span id="medal-12" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
             <button class="btn btn-shop" onclick="openShop()">🛒 Tienda de Recompensas (<span id="start-gems">0</span> 💎)</button>
             <button class="btn btn-progress" onclick="openProgress()">💾 Mi Progreso (pasar a otro aparato)</button>
@@ -1065,11 +1093,108 @@
               rule:"🎒 Los objetos (Objects)",
               exp:"'Mochila' en inglés es BACKPACK. En la mochila llevamos los cuadernos a la escuela 🎒. Los otros: PENCIL es lápiz y CHAIR es silla. Por eso 'mochila' es BACKPACK.",
               examples:[{en:"My books are in my backpack.",es:"Mis libros están en mi mochila."},{en:"My backpack is blue.",es:"Mi mochila es azul."}],
-              scene:'<span class="a-bounce">🎒</span><span class="a-float">📚</span>' }
+              scene:'<span class="a-bounce">🎒</span><span class="a-float">📚</span>' },
+
+            /* ---------- NIVEL 12: ¡A ESCRIBIR! (fusiona todos los niveles) ---------- */
+            { level:12, type:"write", q:"✍️ Escribe la palabra que falta en inglés. Pista: 'perro' 🐶",
+              prompt:"The ___ says woof.", answer:"dog", accept:["dog"],
+              say:"The dog says woof.", img:"dog", lock:121,
+              rule:"🐾 Animales (Animals)",
+              exp:"'Perro' se escribe DOG (3 letras: d-o-g). El perro hace 'woof'. Fíjate que en inglés se escribe distinto a como suena.",
+              examples:[{en:"The dog says woof.",es:"El perro hace guau."},{en:"I love my dog.",es:"Amo a mi perro."}],
+              scene:'<span class="a-bounce">🐶</span><span class="a-float">🦴</span>' },
+
+            { level:12, type:"write", q:"✍️ Completa el color en inglés. Pista: es de color 'rojo' 🍎",
+              prompt:"The apple is ___.", answer:"red", accept:["red"],
+              say:"The apple is red.", img:"apple,red", lock:122,
+              rule:"🎨 Colores (Colors)",
+              exp:"'Rojo' se escribe RED (r-e-d). La manzana es roja, entonces decimos 'The apple is red'.",
+              examples:[{en:"The apple is red.",es:"La manzana es roja."},{en:"I have a red car.",es:"Tengo un carro rojo."}],
+              scene:'<span class="a-grow">🔴</span><span class="a-float">🍎</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe el número en inglés. Pista: después de two viene... (3) 🔢",
+              prompt:"One, two, ___!", answer:"three", accept:["three"],
+              say:"One, two, three!", img:"three,number", lock:123,
+              rule:"🔢 Números (Numbers)",
+              exp:"El número 3 se escribe THREE (t-h-r-e-e). La cuenta es: one, two, THREE.",
+              examples:[{en:"I have three cats.",es:"Tengo tres gatos."},{en:"Count to three!",es:"¡Cuenta hasta tres!"}],
+              scene:'<span class="a-bounce">3️⃣</span><span class="a-float">🐱</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe el miembro de la familia. Pista: 'mamá' 👩",
+              prompt:"I love my ___.", answer:"mother", accept:["mother","mom","mum","mommy"],
+              say:"I love my mother.", img:"mother,child", lock:124,
+              rule:"👨‍👩‍👧 La familia (Family)",
+              exp:"'Mamá' se escribe MOTHER. De cariño también vale MOM o MUM. Cualquiera de esas está bien.",
+              examples:[{en:"I love my mother.",es:"Amo a mi mamá."},{en:"My mom is kind.",es:"Mi mamá es amable."}],
+              scene:'<span class="a-float">👩</span><span class="a-bounce">❤️</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe la parte del cuerpo. Pista: con ella tomas las cosas 'mano' ✋",
+              prompt:"I write with my ___.", answer:"hand", accept:["hand"],
+              say:"I write with my hand.", img:"hand", lock:125,
+              rule:"🧍 El cuerpo (The body)",
+              exp:"'Mano' se escribe HAND (h-a-n-d). Con la mano escribimos y tomamos las cosas.",
+              examples:[{en:"I write with my hand.",es:"Escribo con mi mano."},{en:"Wash your hands!",es:"¡Lávate las manos!"}],
+              scene:'<span class="a-swing">✋</span><span class="a-float">✏️</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe la acción en inglés. Pista: 'saltar' 🤸",
+              prompt:"I can ___ very high.", answer:"jump", accept:["jump"],
+              say:"I can jump very high.", img:"jump,kid", lock:126,
+              rule:"🏃 Verbos de acción (Actions)",
+              exp:"'Saltar' se escribe JUMP (j-u-m-p). '¡Yo puedo saltar muy alto!' es 'I can jump very high'.",
+              examples:[{en:"I can jump high.",es:"Puedo saltar alto."},{en:"Jump like a frog!",es:"¡Salta como una rana!"}],
+              scene:'<span class="a-bounce">🤸</span><span class="a-float">⬆️</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe el objeto en inglés. Pista: sirve para leer 'libro' 📖",
+              prompt:"I read a ___ every night.", answer:"book", accept:["book"],
+              say:"I read a book every night.", img:"book", lock:127,
+              rule:"🎒 Los objetos (Objects)",
+              exp:"'Libro' se escribe BOOK (b-o-o-k, con dos 'o'). 'Leo un libro cada noche' es 'I read a book every night'.",
+              examples:[{en:"I read a book.",es:"Leo un libro."},{en:"The book is big.",es:"El libro es grande."}],
+              scene:'<span class="a-float">📖</span><span class="a-bounce">📚</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe el saludo en inglés. Pista: cuando ves a alguien dices... 'hola' 👋",
+              prompt:"___, my name is Valery!", answer:"hello", accept:["hello","hi"],
+              say:"Hello, my name is Valery!", img:"hello,wave", lock:128,
+              rule:"👋 Saludos (Greetings)",
+              exp:"'Hola' se escribe HELLO (h-e-l-l-o, con dos 'l'). También vale HI. '¡Hola, me llamo Valery!'.",
+              examples:[{en:"Hello, teacher!",es:"¡Hola, profe!"},{en:"Hi, my name is Valery.",es:"Hola, me llamo Valery."}],
+              scene:'<span class="a-swing">👋</span><span class="a-float">😊</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe la comida en inglés. Pista: los peces viven en ella y la tomamos 'agua' 💧",
+              prompt:"I drink ___ every day.", answer:"water", accept:["water"],
+              say:"I drink water every day.", img:"water,glass", lock:129,
+              rule:"🍎 La comida (Food)",
+              exp:"'Agua' se escribe WATER (w-a-t-e-r). 'Tomo agua todos los días' es 'I drink water every day'.",
+              examples:[{en:"I drink water.",es:"Tomo agua."},{en:"The water is cold.",es:"El agua está fría."}],
+              scene:'<span class="a-rain">💧</span><span class="a-float">🥤</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe el color en inglés. Pista: el color del cielo 'azul' 🌌",
+              prompt:"The sky is ___.", answer:"blue", accept:["blue"],
+              say:"The sky is blue.", img:"blue,sky", lock:130,
+              rule:"🎨 Colores (Colors)",
+              exp:"'Azul' se escribe BLUE (b-l-u-e). El cielo es azul: 'The sky is blue'.",
+              examples:[{en:"The sky is blue.",es:"El cielo es azul."},{en:"I like blue shoes.",es:"Me gustan los zapatos azules."}],
+              scene:'<span class="a-grow">🔵</span><span class="a-float">🌊</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe el animal en inglés. Pista: dice 'meow' 🐱",
+              prompt:"The ___ says meow.", answer:"cat", accept:["cat"],
+              say:"The cat says meow.", img:"cat,kitten", lock:131,
+              rule:"🐾 Animales (Animals)",
+              exp:"'Gato' se escribe CAT (c-a-t). El gato hace 'meow'.",
+              examples:[{en:"The cat says meow.",es:"El gato hace miau."},{en:"My cat is small.",es:"Mi gato es pequeño."}],
+              scene:'<span class="a-bounce">🐱</span><span class="a-float">🥛</span>' },
+
+            { level:12, type:"write", q:"✍️ Escribe la fruta en inglés. Pista: es roja y crujiente 'manzana' 🍎",
+              prompt:"I eat an ___.", answer:"apple", accept:["apple"],
+              say:"I eat an apple.", img:"apple", lock:132,
+              rule:"🍎 La comida (Food)",
+              exp:"'Manzana' se escribe APPLE (a-p-p-l-e, con dos 'p'). Fíjate que decimos 'an apple' porque empieza con vocal.",
+              examples:[{en:"I eat an apple.",es:"Como una manzana."},{en:"The apple is red.",es:"La manzana es roja."}],
+              scene:'<span class="a-bounce">🍎</span><span class="a-float">🍏</span>' }
         ];
 
         const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 4:"Familia 👨‍👩‍👧", 5:"Cuerpo 🧍",
-                            6:"Animales 🐶", 7:"Comida 🍎", 8:"Números 🔢", 9:"Colores 🎨", 10:"Acciones 🏃", 11:"Objetos 🎒", 0:"Mezcla 🌈"};
+                            6:"Animales 🐶", 7:"Comida 🍎", 8:"Números 🔢", 9:"Colores 🎨", 10:"Acciones 🏃", 11:"Objetos 🎒", 12:"Escribir ✍️", 0:"Mezcla 🌈"};
 
         /* ============ TIENDA: fondos y personajes ============ */
         const backgrounds = {
@@ -1305,7 +1430,7 @@
         }
         function updateMedalDisplay() {
             const m = getMedals();
-            [0,1,2,3,4,5,6,7,8,9,10,11].forEach(lvl => {
+            [0,1,2,3,4,5,6,7,8,9,10,11,12].forEach(lvl => {
                 const el = document.getElementById('medal-' + lvl);
                 if (!el) return;
                 if (m[lvl]) { el.innerText = rankEmoji[m[lvl]]; el.classList.remove('hidden'); }
@@ -1497,7 +1622,7 @@
         /* ============ JUEGO ============ */
         function startGame(level) {
             playClick(); getCtx(); currentLevel = level;
-            questions = level === 0 ? shuffle(allQuestions).slice(0, 12) : shuffle(allQuestions.filter(q => q.level === level));
+            questions = level === 0 ? shuffle(allQuestions.filter(q => q.type !== 'write')).slice(0, 12) : shuffle(allQuestions.filter(q => q.level === level));
             currentQ = 0; score = 0; points = 0; gems = 0; streak = 0; bestStreak = 0; answers = [];
             document.getElementById('score').innerText = 0;
             document.getElementById('points').innerText = 0;
@@ -1525,17 +1650,21 @@
 
             const optionsDiv = document.getElementById('options');
             optionsDiv.innerHTML = "";
-            current.options.forEach((opt, index) => {
-                const row = document.createElement('div'); row.className = 'option-row';
-                const btn = document.createElement('button');
-                btn.className = 'btn btn-option'; btn.innerText = opt.text;
-                btn.onclick = () => checkAnswer(index, btn);
-                const speak = document.createElement('button');
-                speak.className = 'btn btn-speak'; speak.innerText = '🔉'; speak.title = 'Escuchar en inglés';
-                speak.onclick = (e) => { e.stopPropagation(); speakEnglish(opt.en); };
-                row.appendChild(btn); row.appendChild(speak);
-                optionsDiv.appendChild(row);
-            });
+            if (current.type === 'write') {
+                renderWriteUI(current, optionsDiv);
+            } else {
+                current.options.forEach((opt, index) => {
+                    const row = document.createElement('div'); row.className = 'option-row';
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-option'; btn.innerText = opt.text;
+                    btn.onclick = () => checkAnswer(index, btn);
+                    const speak = document.createElement('button');
+                    speak.className = 'btn btn-speak'; speak.innerText = '🔉'; speak.title = 'Escuchar en inglés';
+                    speak.onclick = (e) => { e.stopPropagation(); speakEnglish(opt.en); };
+                    row.appendChild(btn); row.appendChild(speak);
+                    optionsDiv.appendChild(row);
+                });
+            }
 
             // Botón "Atrás" desactivado en la primera pregunta
             const backBtn = document.getElementById('back-btn');
@@ -1546,6 +1675,94 @@
                 renderResult(current, answers[currentQ], true);
             }
         }
+        /* ---- Nivel ESCRIBIR: dibujar el campo de texto ---- */
+        function renderWriteUI(current, container) {
+            const wrap = document.createElement('div');
+            wrap.className = 'write-wrap';
+
+            if (current.prompt) {
+                const p = document.createElement('div');
+                p.className = 'write-prompt';
+                p.innerHTML = current.prompt.replace('___', '<span class="write-blank">&nbsp;&nbsp;&nbsp;</span>');
+                const sp = document.createElement('button');
+                sp.className = 'mini-speak'; sp.innerText = '🔉'; sp.title = 'Escuchar la frase';
+                sp.onclick = () => speakEnglish(current.say);
+                p.appendChild(document.createTextNode(' '));
+                p.appendChild(sp);
+                wrap.appendChild(p);
+            }
+
+            const row = document.createElement('div'); row.className = 'write-row';
+            const input = document.createElement('input');
+            input.type = 'text'; input.id = 'write-input'; input.className = 'write-input';
+            input.placeholder = 'Escribe aquí en inglés...';
+            input.setAttribute('autocomplete','off');
+            input.setAttribute('autocorrect','off');
+            input.setAttribute('autocapitalize','off');
+            input.setAttribute('spellcheck','false');
+            input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); checkWritten(); } };
+            const btn = document.createElement('button');
+            btn.id = 'write-check'; btn.className = 'btn write-check'; btn.innerText = '✅ Comprobar';
+            btn.onclick = () => checkWritten();
+            row.appendChild(input); row.appendChild(btn);
+            wrap.appendChild(row);
+            container.appendChild(wrap);
+
+            if (!answers[currentQ]) setTimeout(() => { try { input.focus(); } catch(e){} }, 120);
+        }
+        // Limpia el texto para comparar: minúsculas, sin espacios extra ni puntuación
+        function normalizeText(s) {
+            return (s || '').toString().toLowerCase().trim()
+                .replace(/[.!?,;:'"¡¿]/g, '')
+                .replace(/\s+/g, ' ');
+        }
+
+        /* ---- Puntaje compartido (opción múltiple y escritura) ---- */
+        function awardCorrect() {
+            score++; streak++; if (streak > bestStreak) bestStreak = streak;
+            const base = 10;
+            const bonus = Math.min((streak - 1) * 5, 25);
+            const gained = base + bonus;
+            points += gained;
+            const gemsWon = 1 + (streak >= 3 ? 1 : 0) + (streak >= 5 ? 1 : 0);
+            gems += gemsWon;
+            addGems(gemsWon);      // 💎 para fondos y personajes
+            addPoints(gained);     // 🏆 para calcomanías
+            addStars(1);           // ⭐ para títulos
+            document.getElementById('score').innerText = score;
+            document.getElementById('points').innerText = points;
+            document.getElementById('gems').innerText = gems;
+            document.getElementById('streak').innerText = streak;
+            playCorrect(); setTimeout(playReward, 350);
+            launchConfetti(streak >= 3 ? 60 : 30);
+            showRewardPopup(`+${gained} 🏆  +${gemsWon} 💎`);
+            setTimeout(() => buddyReact(false), 250);
+            return bonus;
+        }
+        function awardWrong() {
+            streak = 0; document.getElementById('streak').innerText = streak;
+            playWrong();
+        }
+        // Comprueba lo que Valery escribió en el nivel de escritura
+        function checkWritten() {
+            if (answers[currentQ]) return;
+            const current = questions[currentQ];
+            const input = document.getElementById('write-input');
+            if (!input) return;
+            const typed = input.value;
+            if (normalizeText(typed) === '') {   // vacío: no penaliza, solo pide que escriba
+                input.classList.remove('shake'); void input.offsetWidth; input.classList.add('shake');
+                try { input.focus(); } catch(e){}
+                return;
+            }
+            const accepted = (current.accept || [current.answer]).map(normalizeText);
+            const correct = accepted.includes(normalizeText(typed));
+            let bonus = 0;
+            if (correct) bonus = awardCorrect(); else awardWrong();
+            answers[currentQ] = { typed: typed, correct: correct, bonus: bonus };
+            renderResult(current, answers[currentQ], false);
+        }
+
         function buildExamplesHTML(examples) {
             let html = '<div class="examples-box"><div class="examples-title">📖 Ejemplos:</div>';
             examples.forEach(ex => {
@@ -1563,32 +1780,7 @@
             const current = questions[currentQ];
             const correct = selectedIndex === current.answer;
             let bonus = 0;
-
-            if (correct) {
-                score++; streak++; if (streak > bestStreak) bestStreak = streak;
-                const base = 10;
-                bonus = Math.min((streak - 1) * 5, 25);
-                const gained = base + bonus;
-                points += gained;
-                const gemsWon = 1 + (streak >= 3 ? 1 : 0) + (streak >= 5 ? 1 : 0);
-                gems += gemsWon;
-                addGems(gemsWon);      // 💎 para fondos y personajes
-                addPoints(gained);     // 🏆 para calcomanías
-                addStars(1);           // ⭐ para títulos
-
-                document.getElementById('score').innerText = score;
-                document.getElementById('points').innerText = points;
-                document.getElementById('gems').innerText = gems;
-                document.getElementById('streak').innerText = streak;
-
-                playCorrect(); setTimeout(playReward, 350);
-                launchConfetti(streak >= 3 ? 60 : 30);
-                showRewardPopup(`+${gained} 🏆  +${gemsWon} 💎`);
-                setTimeout(() => buddyReact(false), 250);   // el personaje celebra (sin sonido para no encimarse)
-            } else {
-                streak = 0; document.getElementById('streak').innerText = streak;
-                playWrong();
-            }
+            if (correct) bonus = awardCorrect(); else awardWrong();
 
             // Guardamos la respuesta para poder ir atrás/adelante y repasar
             answers[currentQ] = { selected: selectedIndex, correct: correct, bonus: bonus };
@@ -1597,38 +1789,65 @@
 
         // Dibuja el resultado de una pregunta. isReview=true cuando solo estamos repasando (no suma puntos ni sonidos).
         function renderResult(current, entry, isReview) {
-            const selectedIndex = entry.selected;
             const correct = entry.correct;
-            const buttons = document.querySelectorAll('.btn-option');
-            buttons.forEach(b => b.disabled = true);
-
-            const correctText = current.options[current.answer].text;
-            const pickedText = current.options[selectedIndex].text;
             const feedback = document.getElementById('feedback');
             const expBox = document.getElementById('explanation-box');
             let headerHTML = "";
 
-            if (correct) {
-                buttons[selectedIndex].style.backgroundColor = '#32CD32';
-                buttons[selectedIndex].style.boxShadow = '0 6px 0 #228B22';
-                if (!isReview) buttons[selectedIndex].classList.add('bounce');
-                feedback.innerText = "¡CORRECTO! 🌟"; feedback.style.color = '#32CD32';
+            if (current.type === 'write') {
+                /* ---- Resultado del nivel ESCRIBIR ---- */
+                const input = document.getElementById('write-input');
+                const checkBtn = document.getElementById('write-check');
+                if (input) { input.disabled = true; input.value = entry.typed || ''; }
+                if (checkBtn) checkBtn.disabled = true;
+                const correctText = current.answer;
+                const typedText = (entry.typed || '').trim();
 
-                let bonusMsg = (entry.bonus > 0) ? `<br>🔥 <b>¡Racha! Bonus de +${entry.bonus} puntos.</b>` : "";
-                headerHTML = `<span class="exp-header ok">✅ ¡Muy bien, Valery! Escogiste "${correctText}".</span>` +
-                             `<span class="exp-rule">${current.rule}</span>` +
-                             `<div class="exp-text">${current.exp}${bonusMsg}</div>`;
+                if (correct) {
+                    if (input) { input.classList.remove('write-no'); input.classList.add('write-ok'); if (!isReview) input.classList.add('bounce'); }
+                    feedback.innerText = "¡CORRECTO! 🌟"; feedback.style.color = '#32CD32';
+                    let bonusMsg = (entry.bonus > 0) ? `<br>🔥 <b>¡Racha! Bonus de +${entry.bonus} puntos.</b>` : "";
+                    headerHTML = `<span class="exp-header ok">✅ ¡Muy bien, Valery! Escribiste "${correctText}" perfecto. ✍️</span>` +
+                                 `<span class="exp-rule">${current.rule}</span>` +
+                                 `<div class="exp-text">${current.exp}${bonusMsg}</div>`;
+                } else {
+                    if (input) { input.classList.remove('write-ok'); input.classList.add('write-no'); if (!isReview) input.classList.add('shake'); }
+                    feedback.innerText = "¡Uy! Casi... 😅"; feedback.style.color = '#FF4500';
+                    headerHTML = `<span class="exp-header no">❌ Tú escribiste "<span class="picked-wrong">${typedText || '(nada)'}</span>", pero se escribe "<span class="correct-answer">${correctText}</span>".</span>` +
+                                 `<span class="exp-rule">${current.rule}</span>` +
+                                 `<div class="exp-text"><b>Te explico para que lo entiendas 👇</b><br>${current.exp}</div>` +
+                                 `<div class="write-hint">💡 Fíjate bien cómo se escribe y práctica de nuevo. ¡Tú puedes!</div>`;
+                }
             } else {
-                buttons[selectedIndex].style.backgroundColor = '#FF4500';
-                buttons[selectedIndex].style.boxShadow = '0 6px 0 #CC3700';
-                if (!isReview) buttons[selectedIndex].classList.add('shake');
-                buttons[current.answer].style.backgroundColor = '#32CD32';
-                buttons[current.answer].style.boxShadow = '0 6px 0 #228B22';
-                feedback.innerText = "¡Uy! Casi... 😅"; feedback.style.color = '#FF4500';
+                /* ---- Resultado de opción múltiple ---- */
+                const selectedIndex = entry.selected;
+                const buttons = document.querySelectorAll('.btn-option');
+                buttons.forEach(b => b.disabled = true);
+                const correctText = current.options[current.answer].text;
+                const pickedText = current.options[selectedIndex].text;
 
-                headerHTML = `<span class="exp-header no">❌ Tú escogiste "<span class="picked-wrong">${pickedText}</span>", pero la respuesta correcta era "<span class="correct-answer">${correctText}</span>".</span>` +
-                             `<span class="exp-rule">${current.rule}</span>` +
-                             `<div class="exp-text"><b>Te explico para que lo entiendas 👇</b><br>${current.exp}</div>`;
+                if (correct) {
+                    buttons[selectedIndex].style.backgroundColor = '#32CD32';
+                    buttons[selectedIndex].style.boxShadow = '0 6px 0 #228B22';
+                    if (!isReview) buttons[selectedIndex].classList.add('bounce');
+                    feedback.innerText = "¡CORRECTO! 🌟"; feedback.style.color = '#32CD32';
+
+                    let bonusMsg = (entry.bonus > 0) ? `<br>🔥 <b>¡Racha! Bonus de +${entry.bonus} puntos.</b>` : "";
+                    headerHTML = `<span class="exp-header ok">✅ ¡Muy bien, Valery! Escogiste "${correctText}".</span>` +
+                                 `<span class="exp-rule">${current.rule}</span>` +
+                                 `<div class="exp-text">${current.exp}${bonusMsg}</div>`;
+                } else {
+                    buttons[selectedIndex].style.backgroundColor = '#FF4500';
+                    buttons[selectedIndex].style.boxShadow = '0 6px 0 #CC3700';
+                    if (!isReview) buttons[selectedIndex].classList.add('shake');
+                    buttons[current.answer].style.backgroundColor = '#32CD32';
+                    buttons[current.answer].style.boxShadow = '0 6px 0 #228B22';
+                    feedback.innerText = "¡Uy! Casi... 😅"; feedback.style.color = '#FF4500';
+
+                    headerHTML = `<span class="exp-header no">❌ Tú escogiste "<span class="picked-wrong">${pickedText}</span>", pero la respuesta correcta era "<span class="correct-answer">${correctText}</span>".</span>` +
+                                 `<span class="exp-rule">${current.rule}</span>` +
+                                 `<div class="exp-text"><b>Te explico para que lo entiendas 👇</b><br>${current.exp}</div>`;
+                }
             }
 
             let bodyHTML = buildExamplesHTML(current.examples);
