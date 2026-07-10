@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misión Inglés: Level Up!</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Comic Sans MS', cursive, sans-serif; 
+            background-color: #87CEEB; 
+            background-image: radial-gradient(#fff 15%, transparent 16%), radial-gradient(#fff 15%, transparent 16%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        #game-container { 
+            background-color: #ffffff; 
+            border-radius: 25px; 
+            padding: 30px; 
+            box-shadow: 0 15px 25px rgba(0,0,0,0.2); 
+            text-align: center; 
+            max-width: 650px; 
+            width: 100%; 
+            border: 8px solid #FFD700; 
+            position: relative;
+            z-index: 2;
+        }
+        h1 { color: #FF4500; font-size: 2.8em; margin-top: 0; text-shadow: 2px 2px 0px #FFB6C1; }
+        .btn { 
+            background-color: #32CD32; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 1.3em; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            margin: 10px; 
+            font-family: 'Comic Sans MS', cursive; 
+            box-shadow: 0 6px 0 #228B22; 
+            transition: transform 0.1s, box-shadow 0.1s; 
+            font-weight: bold;
+        }
+        .btn:active { transform: translateY(6px); box-shadow: 0 0 0; }
+
+        /* Fila de opción: botón grande + botón de escuchar */
+        .option-row { display: flex; align-items: stretch; gap: 8px; margin: 15px 0; }
+        .btn-option { 
+            background-color: #1E90FF; 
+            box-shadow: 0 6px 0 #0000CD; 
+            display: block; 
+            flex: 1;
+            margin: 0; 
+            white-space: normal;
+        }
+        .btn-option:hover:not(:disabled) { background-color: #00BFFF; transform: scale(1.02); }
+        .btn-option:disabled { cursor: default; opacity: 0.95; }
+        .btn-speak {
+            background-color: #FF69B4;
+            box-shadow: 0 6px 0 #C71585;
+            padding: 0 18px;
+            font-size: 1.4em;
+            margin: 0;
+            flex: 0 0 auto;
+        }
+        .btn-speak:hover { background-color: #FF85C1; }
+
+        #question-text { font-size: 1.8em; color: #333; margin-bottom: 25px; font-weight: bold; }
+        #feedback { font-size: 1.8em; font-weight: bold; min-height: 40px; margin: 15px 0; }
+
+        /* Cuadro de explicación */
+        #explanation-box {
+            background-color: #FFF8DC;
+            border: 3px dashed #FFA500;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            font-size: 1.15em;
+            color: #444;
+            text-align: left;
+            animation: popIn 0.4s ease;
+        }
+        #explanation-box .exp-title { font-weight: bold; color: #FF8C00; font-size: 1.1em; display: block; margin-bottom: 6px; }
+        #explanation-box .correct-answer { color: #228B22; font-weight: bold; }
+        .btn-listen-sentence {
+            background-color: #8A2BE2;
+            box-shadow: 0 5px 0 #5D1A9E;
+            font-size: 1em;
+            padding: 10px 18px;
+            margin: 12px 0 4px 0;
+        }
+        .btn-listen-sentence:hover { background-color: #9B4BEB; }
+
+        .hidden { display: none; }
+        #score-display { 
+            font-size: 1.3em; 
+            color: #8A2BE2; 
+            margin-bottom: 15px; 
+            font-weight: bold; 
+            background-color: #E6E6FA;
+            padding: 10px 15px;
+            border-radius: 15px;
+            display: inline-flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .streak-fire { color: #FF4500; }
+        #level-badge { color: #1E90FF; }
+
+        /* Barra de progreso */
+        #progress-wrap {
+            background-color: #E0E0E0;
+            border-radius: 20px;
+            height: 18px;
+            margin: 10px 0 20px 0;
+            overflow: hidden;
+            border: 2px solid #ccc;
+        }
+        #progress-bar {
+            background: linear-gradient(90deg, #32CD32, #7CFC00);
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        /* Botones de control (sonido y música) */
+        #controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 5;
+        }
+        .ctrl-btn {
+            background: #FFD700;
+            border: 3px solid #FFA500;
+            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            font-size: 1.4em;
+            cursor: pointer;
+            padding: 0;
+        }
+        .ctrl-btn.off { background: #ddd; border-color: #999; opacity: 0.7; }
+
+        /* Selector de nivel */
+        .level-title { font-size: 1.3em; color: #555; margin: 10px 0; }
+        .btn-level { display: block; width: 100%; margin: 12px 0; }
+        .lvl-easy { background:#32CD32; box-shadow:0 6px 0 #228B22; }
+        .lvl-med  { background:#FF8C00; box-shadow:0 6px 0 #CC7000; }
+        .lvl-hard { background:#FF4500; box-shadow:0 6px 0 #CC3700; }
+        .lvl-all  { background:#8A2BE2; box-shadow:0 6px 0 #5D1A9E; }
+
+        /* Animaciones */
+        @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-10px);} 40%{transform:translateX(10px);} 60%{transform:translateX(-8px);} 80%{transform:translateX(8px);} }
+        @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
+        .shake { animation: shake 0.5s; }
+        .bounce { animation: bounce 0.6s; }
+        .pulse { animation: popIn 0.3s; }
+
+        /* Confeti */
+        .confetti-piece {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            top: -20px;
+            z-index: 1;
+            opacity: 0.9;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(720deg); opacity: 0.2; }
+        }
+
+        #next-btn { background-color: #FF8C00; box-shadow: 0 6px 0 #CC7000; }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="controls">
+            <button id="music-toggle" class="ctrl-btn" onclick="toggleMusic()" title="Música de fondo">🎵</button>
+            <button id="sound-toggle" class="ctrl-btn" onclick="toggleSound()" title="Sonidos del juego">🔊</button>
+        </div>
+
+        <!-- PANTALLA DE INICIO -->
+        <div id="start-screen">
+            <h1>🎮 Misión Inglés 🌟</h1>
+            <p style="font-size: 1.2em; color: #555;">¡Ayuda a completar la misión respondiendo los trucos secretos de inglés!</p>
+            <img src="https://api.iconify.design/fluent-emoji:star-struck.svg" width="90" height="90" alt="Star">
+            <p class="level-title">Elige tu nivel: 👇</p>
+            <button class="btn btn-level lvl-easy" onclick="startGame(1)">😊 FÁCIL (Palabras)</button>
+            <button class="btn btn-level lvl-med" onclick="startGame(2)">🙂 MEDIO (Am / Is / Are)</button>
+            <button class="btn btn-level lvl-hard" onclick="startGame(3)">😎 DIFÍCIL (Verbos y Pasado)</button>
+            <button class="btn btn-level lvl-all" onclick="startGame(0)">🌈 ¡TODO MEZCLADO!</button>
+        </div>
+        
+        <!-- PANTALLA DE JUEGO -->
+        <div id="game-screen" class="hidden">
+            <div id="score-display">
+                <span>⭐ <span id="score">0</span></span>
+                <span class="streak-fire">🔥 <span id="streak">0</span></span>
+                <span id="level-badge">🎯 <span id="level-name">-</span></span>
+            </div>
+            <div id="progress-wrap"><div id="progress-bar"></div></div>
+            <div id="question-text">¿Pregunta?</div>
+            <div id="options"></div>
+            <div id="feedback"></div>
+            <div id="explanation-box" class="hidden"></div>
+            <button id="next-btn" class="btn hidden" onclick="nextQuestion()">Siguiente ➡️</button>
+        </div>
+        
+        <!-- PANTALLA FINAL -->
+        <div id="end-screen" class="hidden">
+            <h1>🏆 ¡Nivel Completado! 🏆</h1>
+            <p style="font-size: 1.8em; color: #333;">Conseguiste <span id="final-score" style="color: #FF8C00; font-weight: bold;"></span> estrellas.</p>
+            <p id="end-message" style="font-size: 1.4em; color: #555;"></p>
+            <button class="btn" onclick="location.reload()">Volver a jugar 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        /* ============ BANCO DE PREGUNTAS ============
+           level: 1 = Fácil, 2 = Medio, 3 = Difícil
+           options: cada opción tiene { text: lo que se ve, en: lo que se pronuncia }
+           say: la frase completa en inglés que se lee en voz alta al responder
+        */
+        const allQuestions = [
+            /* ---------- NIVEL 1: FÁCIL (vocabulario) ---------- */
+            { level:1, q:"¿Cuál es el opuesto de TALL (Alto)? 🦒",
+              options:[{text:"Short (Bajo)",en:"Short"},{text:"Fat (Gordo)",en:"Fat"},{text:"Beautiful (Lindo)",en:"Beautiful"}],
+              answer:0, say:"Short. Short means bajo.",
+              exp:"TALL significa 'alto'. Su opuesto es SHORT, que significa 'bajo' o 'corto'. 📏" },
+
+            { level:1, q:"¿Cómo se dice 'Hola' en inglés? 👋",
+              options:[{text:"Bye (Adiós)",en:"Bye"},{text:"Hello (Hola)",en:"Hello"},{text:"Please (Por favor)",en:"Please"}],
+              answer:1, say:"Hello! Hello means hola.",
+              exp:"'Hola' se dice HELLO (o también 'Hi'). BYE es adiós. 😄" },
+
+            { level:1, q:"¿De qué color es el sol? ☀️",
+              options:[{text:"Blue (Azul)",en:"Blue"},{text:"Green (Verde)",en:"Green"},{text:"Yellow (Amarillo)",en:"Yellow"}],
+              answer:2, say:"Yellow. The sun is yellow.",
+              exp:"El sol es amarillo = YELLOW. Blue es azul y Green es verde. 🌞" },
+
+            { level:1, q:"'Gato' en inglés es... 🐱",
+              options:[{text:"Dog (Perro)",en:"Dog"},{text:"Cat (Gato)",en:"Cat"},{text:"Bird (Pájaro)",en:"Bird"}],
+              answer:1, say:"Cat. The cat says meow.",
+              exp:"'Gato' es CAT. DOG es perro y BIRD es pájaro. 🐈" },
+
+            { level:1, q:"¿Cómo se dice el número 'dos'? ✌️",
+              options:[{text:"Three (Tres)",en:"Three"},{text:"One (Uno)",en:"One"},{text:"Two (Dos)",en:"Two"}],
+              answer:2, say:"Two. One, two, three!",
+              exp:"'Dos' es TWO. One = uno, Two = dos, Three = tres. 🔢" },
+
+            { level:1, q:"¿De qué color es el pasto? 🌱",
+              options:[{text:"Green (Verde)",en:"Green"},{text:"Red (Rojo)",en:"Red"},{text:"Pink (Rosado)",en:"Pink"}],
+              answer:0, say:"Green. The grass is green.",
+              exp:"El pasto es verde = GREEN. Red es rojo y Pink es rosado. 🍃" },
+
+            /* ---------- NIVEL 2: MEDIO (am / is / are, clima, ropa) ---------- */
+            { level:2, q:"Completa el poder mágico: Pikachu _______ yellow. ⚡",
+              options:[{text:"am",en:"am"},{text:"is",en:"is"},{text:"are",en:"are"}],
+              answer:1, say:"Pikachu is yellow.",
+              exp:"Pikachu es UNA cosa (como 'it'). Con he, she, it usamos IS. Por eso: Pikachu IS yellow. 💛" },
+
+            { level:2, q:"Si cae mucha LLUVIA 🌧️, el clima está...",
+              options:[{text:"Sunny (Soleado)",en:"Sunny"},{text:"Snowy (Nevado)",en:"Snowy"},{text:"Rainy (Lluvioso)",en:"Rainy"}],
+              answer:2, say:"Rainy. It is a rainy day.",
+              exp:"RAIN es 'lluvia'. Cuando el clima está lluvioso decimos RAINY. Sunny = soleado, Snowy = nevado. ☔" },
+
+            { level:2, q:"Completa el equipo: We _______ friends! 👫",
+              options:[{text:"are",en:"are"},{text:"am",en:"am"},{text:"is",en:"is"}],
+              answer:0, say:"We are friends!",
+              exp:"Con 'we' (nosotros) siempre usamos ARE. Por eso: We ARE friends! 🤝" },
+
+            { level:2, q:"Hace mucho frío afuera 🥶. Necesito mi...",
+              options:[{text:"T-shirt (Camiseta)",en:"T-shirt"},{text:"Shorts (Pantaloneta)",en:"Shorts"},{text:"Jacket (Chaqueta)",en:"Jacket"}],
+              answer:2, say:"Jacket. I wear a jacket when it is cold.",
+              exp:"Cuando hace frío te abrigas con una JACKET (chaqueta). La T-shirt y los shorts son para el calor. 🧥" },
+
+            { level:2, q:"Sobre mí mismo: I _______ a student. 🎒",
+              options:[{text:"am",en:"am"},{text:"is",en:"is"},{text:"are",en:"are"}],
+              answer:0, say:"I am a student.",
+              exp:"Con 'I' (yo) siempre usamos AM. Por eso: I AM a student. ✏️" },
+
+            { level:2, q:"Ellos están felices: They _______ happy. 😃",
+              options:[{text:"is",en:"is"},{text:"are",en:"are"},{text:"am",en:"am"}],
+              answer:1, say:"They are happy.",
+              exp:"Con 'they' (ellos) usamos ARE. Por eso: They ARE happy. 🎉" },
+
+            /* ---------- NIVEL 3: DIFÍCIL (verbos, -s, pasado, do/does) ---------- */
+            { level:3, q:"Viajemos al PASADO ⏳: Yesterday, I _______ happy.",
+              options:[{text:"am",en:"am"},{text:"was",en:"was"},{text:"were",en:"were"}],
+              answer:1, say:"Yesterday I was happy.",
+              exp:"'Yesterday' (ayer) es pasado. Con 'I' en pasado usamos WAS. Por eso: I WAS happy. 😊" },
+
+            { level:3, q:"La Corona de la 'S' 👑: She _______ basketball.",
+              options:[{text:"play",en:"play"},{text:"plays",en:"plays"},{text:"playing",en:"playing"}],
+              answer:1, say:"She plays basketball.",
+              exp:"Con he, she, it el verbo lleva la corona '-S' al final. Por eso: She PLAYS basketball. 🏀" },
+
+            { level:3, q:"El Escudo Mágico 🛡️: _______ he play Minecraft?",
+              options:[{text:"Do",en:"Do"},{text:"Does",en:"Does"},{text:"Is",en:"Is"}],
+              answer:1, say:"Does he play Minecraft?",
+              exp:"Para hacer preguntas con he, she, it usamos DOES. Por eso: DOES he play Minecraft? 🎮" },
+
+            { level:3, q:"Todos los días: He _______ to school. 🚌",
+              options:[{text:"go",en:"go"},{text:"gos",en:"gos"},{text:"goes",en:"goes"}],
+              answer:2, say:"He goes to school every day.",
+              exp:"Con 'he' el verbo 'go' se vuelve GOES (¡es especial, lleva -ES!). Por eso: He GOES to school. 🏫" },
+
+            { level:3, q:"Pregunta para tu amiga: _______ you like pizza? 🍕",
+              options:[{text:"Do",en:"Do"},{text:"Does",en:"Does"},{text:"Are",en:"Are"}],
+              answer:0, say:"Do you like pizza?",
+              exp:"Con 'you' (tú) usamos DO para preguntar. Por eso: DO you like pizza? 😋" },
+
+            { level:3, q:"El pasado de 'GO' (ir) es... ⏪",
+              options:[{text:"goed",en:"goed"},{text:"went",en:"went"},{text:"gone",en:"gone"}],
+              answer:1, say:"Went. I went to the park.",
+              exp:"'Go' es un verbo especial (irregular): su pasado es WENT, no 'goed'. Por eso: I WENT to the park. 🌳" }
+        ];
+
+        const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 0:"Mezcla 🌈"};
+
+        let questions = [];
+        let currentQ = 0;
+        let score = 0;
+        let streak = 0;
+        let soundOn = true;
+        let musicOn = false;
+        let audioCtx = null;
+
+        /* ============ VOZ EN INGLÉS (Text-to-Speech) ============ */
+        let enVoice = null;
+        function pickVoice() {
+            const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+            enVoice = voices.find(v => /en[-_]US/i.test(v.lang)) ||
+                      voices.find(v => /^en/i.test(v.lang)) || null;
+        }
+        if (window.speechSynthesis) {
+            pickVoice();
+            window.speechSynthesis.onvoiceschanged = pickVoice;
+        }
+        function speakEnglish(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            if (enVoice) u.voice = enVoice;
+            u.rate = 0.85;   // un poco lento para que ella entienda
+            u.pitch = 1.1;
+            window.speechSynthesis.speak(u);
+        }
+
+        /* ============ SONIDOS DEL JUEGO (Web Audio API) ============ */
+        function getCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            return audioCtx;
+        }
+        function playTone(freq, duration, type = 'sine', startTime = 0, vol = 0.2) {
+            if (!soundOn) return;
+            const ctx = getCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(vol, ctx.currentTime + startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + startTime);
+            osc.stop(ctx.currentTime + startTime + duration);
+        }
+        function playClick()   { playTone(500, 0.08, 'square', 0, 0.12); }
+        function playCorrect() {
+            playTone(523, 0.12, 'sine', 0);
+            playTone(659, 0.12, 'sine', 0.1);
+            playTone(784, 0.2, 'sine', 0.2);
+            playTone(1046, 0.3, 'sine', 0.32);
+        }
+        function playWrong()   {
+            playTone(300, 0.15, 'sawtooth', 0, 0.18);
+            playTone(200, 0.25, 'sawtooth', 0.15, 0.18);
+        }
+        function playWin()     {
+            const notes = [523, 659, 784, 1046, 784, 1046];
+            notes.forEach((n, i) => playTone(n, 0.25, 'triangle', i * 0.18, 0.22));
+        }
+        function toggleSound() {
+            soundOn = !soundOn;
+            const b = document.getElementById('sound-toggle');
+            b.innerText = soundOn ? '🔊' : '🔇';
+            b.classList.toggle('off', !soundOn);
+            if (soundOn) playClick();
+        }
+
+        /* ============ MÚSICA DE FONDO (loop suave generado) ============ */
+        let musicTimer = null;
+        let musicNode = null;   // ganancia global de la música
+        // Melodía alegre (notas en Hz) estilo cancioncita infantil
+        const melody = [
+            523, 523, 587, 659, 659, 587, 523, 494,
+            440, 440, 494, 523, 523, 494, 494, 0,
+            523, 523, 587, 659, 659, 587, 523, 494,
+            440, 440, 494, 523, 494, 440, 440, 0
+        ];
+        let melodyIndex = 0;
+        function playMelodyNote() {
+            if (!musicOn) return;
+            const ctx = getCtx();
+            const freq = melody[melodyIndex];
+            if (freq > 0) {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.06, ctx.currentTime);        // volumen bajito
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.34);
+            }
+            melodyIndex = (melodyIndex + 1) % melody.length;
+        }
+        function startMusic() {
+            getCtx();
+            if (musicTimer) clearInterval(musicTimer);
+            musicTimer = setInterval(playMelodyNote, 320);
+        }
+        function stopMusic() {
+            if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+        }
+        function toggleMusic() {
+            musicOn = !musicOn;
+            const b = document.getElementById('music-toggle');
+            b.classList.toggle('off', !musicOn);
+            if (musicOn) { playClick(); startMusic(); } else { stopMusic(); }
+        }
+
+        /* ============ CONFETI ============ */
+        function launchConfetti(amount = 40) {
+            const colors = ['#FFD700', '#FF4500', '#32CD32', '#1E90FF', '#FF69B4', '#8A2BE2'];
+            for (let i = 0; i < amount; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 4000);
+            }
+        }
+
+        /* ============ MEZCLAR (para que no salgan siempre en el mismo orden) ============ */
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        /* ============ JUEGO ============ */
+        function startGame(level) {
+            playClick();
+            getCtx(); // desbloquea el audio con el gesto del usuario
+
+            // Filtra por nivel (0 = todos) y mezcla el orden
+            questions = level === 0 ? shuffle(allQuestions) : shuffle(allQuestions.filter(q => q.level === level));
+            currentQ = 0;
+            score = 0;
+            streak = 0;
+            document.getElementById('score').innerText = 0;
+            document.getElementById('streak').innerText = 0;
+            document.getElementById('level-name').innerText = levelNames[level];
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function updateProgress() {
+            const pct = (currentQ / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+        }
+
+        function loadQuestion() {
+            if (currentQ >= questions.length) {
+                endGame();
+                return;
+            }
+            updateProgress();
+            document.getElementById('feedback').innerText = "";
+            document.getElementById('explanation-box').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+
+            const current = questions[currentQ];
+            const qText = document.getElementById('question-text');
+            qText.innerText = current.q;
+            qText.classList.remove('pulse'); void qText.offsetWidth; qText.classList.add('pulse');
+
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = "";
+            
+            current.options.forEach((opt, index) => {
+                const row = document.createElement('div');
+                row.className = 'option-row';
+
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-option';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkAnswer(index, btn);
+
+                const speak = document.createElement('button');
+                speak.className = 'btn btn-speak';
+                speak.innerText = '🔉';
+                speak.title = 'Escuchar en inglés';
+                speak.onclick = (e) => { e.stopPropagation(); speakEnglish(opt.en); };
+
+                row.appendChild(btn);
+                row.appendChild(speak);
+                optionsDiv.appendChild(row);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btn) {
+            const buttons = document.querySelectorAll('.btn-option');
+            buttons.forEach(b => b.disabled = true);
+
+            const current = questions[currentQ];
+            const correctText = current.options[current.answer].text;
+            const feedback = document.getElementById('feedback');
+            const expBox = document.getElementById('explanation-box');
+
+            if (selectedIndex === current.answer) {
+                btn.style.backgroundColor = '#32CD32';
+                btn.style.boxShadow = '0 6px 0 #228B22';
+                btn.classList.add('bounce');
+                feedback.innerText = "¡CORRECTO! 🌟";
+                feedback.style.color = '#32CD32';
+                score++;
+                streak++;
+                document.getElementById('score').innerText = score;
+                document.getElementById('streak').innerText = streak;
+                playCorrect();
+                launchConfetti(streak >= 3 ? 60 : 30);
+
+                let bonus = streak >= 3 ? `<br>🔥 <b>¡Racha de ${streak}! Estás imparable.</b>` : "";
+                expBox.innerHTML = `<span class="exp-title">💡 ¿Por qué? </span>${current.exp}${bonus}`;
+            } else {
+                btn.style.backgroundColor = '#FF4500';
+                btn.style.boxShadow = '0 6px 0 #CC3700';
+                btn.classList.add('shake');
+                buttons[current.answer].style.backgroundColor = '#32CD32';
+                buttons[current.answer].style.boxShadow = '0 6px 0 #228B22';
+                buttons[current.answer].classList.add('bounce');
+                feedback.innerText = "¡Uy! Casi... 😅";
+                feedback.style.color = '#FF4500';
+                streak = 0;
+                document.getElementById('streak').innerText = streak;
+                playWrong();
+
+                expBox.innerHTML = `<span class="exp-title">📚 ¡Aprendamos algo! </span>` +
+                    `La respuesta correcta era <span class="correct-answer">"${correctText}"</span>.<br>` +
+                    `${current.exp}`;
+            }
+
+            // Botón para escuchar la frase completa en inglés
+            const listenBtn = document.createElement('button');
+            listenBtn.className = 'btn btn-listen-sentence';
+            listenBtn.innerText = '🔊 Escuchar en inglés';
+            listenBtn.onclick = () => speakEnglish(current.say);
+            expBox.appendChild(document.createElement('br'));
+            expBox.appendChild(listenBtn);
+
+            expBox.classList.remove('hidden');
+
+            // Pronuncia automáticamente la frase correcta para que ella la escuche
+            setTimeout(() => speakEnglish(current.say), 700);
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.innerText = (currentQ + 1 >= questions.length) ? "Ver resultado 🏆" : "Siguiente ➡️";
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            playClick();
+            currentQ++;
+            loadQuestion();
+        }
+
+        function endGame() {
+            updateProgress();
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score + " de " + questions.length;
+            
+            let msg = "";
+            if(score === questions.length) msg = "¡Eres una MAESTRA del Inglés! Nivel Perfecto. 🦄✨";
+            else if(score >= questions.length - 2) msg = "¡Súper bien! Eres genial. 🚀";
+            else msg = "¡Buen intento! Sigue practicando, vas a ser la mejor. 💪";
+            
+            document.getElementById('end-message').innerText = msg;
+
+            if (score >= questions.length - 2) {
+                playWin();
+                launchConfetti(120);
+                setTimeout(() => launchConfetti(80), 700);
+            }
+        }
+    </script>
+</body>
+</html>
