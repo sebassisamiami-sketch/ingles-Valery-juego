@@ -361,6 +361,20 @@
         .grand-prize .shop-name { font-size:1.3em; color:#8B4513; }
         @keyframes goldenGlow { 0%,100%{box-shadow:0 4px 12px rgba(255,165,0,0.4);} 50%{box-shadow:0 10px 30px rgba(255,215,0,0.85);} }
         .grand-title { color:#FF8C00; text-shadow:1px 1px 0 #FFD700; }
+
+        /* Calcomanía que aparece al tocar la pantalla */
+        .sticker-pop {
+            position: fixed; font-size: 3.4em; z-index: 40; pointer-events: none;
+            transform: translate(-50%,-50%);
+            animation: stickerPop 1.3s ease-out forwards;
+            filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.25));
+        }
+        @keyframes stickerPop {
+            0%   { opacity:0; transform: translate(-50%,-50%) scale(0.3) rotate(-25deg); }
+            25%  { opacity:1; transform: translate(-50%,-50%) scale(1.4) rotate(12deg); }
+            60%  { opacity:1; transform: translate(-50%,-75%) scale(1.1) rotate(-6deg); }
+            100% { opacity:0; transform: translate(-50%,-155%) scale(1) rotate(0); }
+        }
     </style>
 </head>
 <body>
@@ -437,7 +451,7 @@
             <div id="shop-grandprize" class="shop-grid"></div>
 
             <h2 class="shop-section-title">🌟 Calcomanías <span style="font-size:0.7em;color:#FF8C00;">(con 🏆 puntos)</span></h2>
-            <p style="color:#666;">¡Colecciónalas todas! Se compran con tus puntos 🏆</p>
+            <p style="color:#666;">Se compran con puntos 🏆. Toca <b>"Usar"</b> en una y luego <b>toca la pantalla</b> ¡y aparecerá! ✨</p>
             <div id="shop-stickers" class="shop-grid"></div>
 
             <h2 class="shop-section-title">👑 Títulos <span style="font-size:0.7em;color:#FF8C00;">(con ⭐ estrellas)</span></h2>
@@ -1083,6 +1097,7 @@
             if (!e.bg) e.bg = 'default';
             if (!e.char) e.char = 'star';
             if (!e.title) e.title = 'none';
+            if (e.sticker === undefined) e.sticker = '';   // calcomanía activa para pegar en la pantalla
             return e;
         }
         function setEquip(e){ try { localStorage.setItem('valeryEquip', JSON.stringify(e)); } catch(e){} }
@@ -1277,6 +1292,34 @@
             setTimeout(() => buddy.classList.remove(c.anim), 900);
         }
 
+        /* ============ CALCOMANÍAS: aparecen al tocar la pantalla ============ */
+        function isInteractive(el) {
+            while (el && el !== document.body) {
+                const t = el.tagName;
+                if (t === 'BUTTON' || t === 'A' || t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return true;
+                if (el.id === 'buddy') return true;
+                el = el.parentElement;
+            }
+            return false;
+        }
+        function spawnSticker(x, y, emoji) {
+            const s = document.createElement('div');
+            s.className = 'sticker-pop';
+            s.innerText = emoji;
+            s.style.left = x + 'px';
+            s.style.top = y + 'px';
+            document.body.appendChild(s);
+            if (soundOn) { playTone(660,0.07,'sine',0,0.12); playTone(990,0.09,'sine',0.05,0.12); }
+            setTimeout(() => s.remove(), 1300);
+        }
+        // Al tocar en cualquier parte (que no sea un botón) aparece la calcomanía activa
+        document.addEventListener('click', function(e) {
+            const active = getEquip().sticker;
+            if (!active || !stickers[active]) return;
+            if (isInteractive(e.target)) return;
+            spawnSticker(e.clientX, e.clientY, stickers[active].emoji);
+        });
+
         /* ============ TIENDA ============ */
         function openShop() {
             playClick();
@@ -1314,18 +1357,16 @@
             const equip = getEquip();
             const currency = (kind === 'sticker') ? 'points' : (kind === 'title') ? 'stars' : 'gems';
             const list = owned[kind] || [];
-            const equippable = (kind !== 'sticker');   // las calcomanías solo se coleccionan
             const isOwned = list.includes(id) || item.price === 0;
-            const isEquipped = equippable && equip[kind] === id;
+            const isEquipped = equip[kind] === id;
 
             const div = document.createElement('div');
             div.className = 'shop-item' + (isEquipped ? ' equipped' : '') + (item.grand ? ' grand-prize' : '');
 
             const btn = document.createElement('button');
             btn.className = 'btn btn-buy';
-            if (isEquipped) { btn.classList.add('equip'); btn.innerText = 'Equipado ✓'; btn.disabled = true; }
-            else if (isOwned && equippable) { btn.classList.add('own'); btn.innerText = 'Usar'; btn.onclick = () => equipItem(kind, id); }
-            else if (isOwned && !equippable) { btn.classList.add('equip'); btn.innerText = 'Tengo ✓'; btn.disabled = true; }
+            if (isEquipped) { btn.classList.add('equip'); btn.innerText = (kind === 'sticker' ? 'Activa ✓' : 'Equipado ✓'); btn.disabled = true; }
+            else if (isOwned) { btn.classList.add('own'); btn.innerText = 'Usar'; btn.onclick = () => equipItem(kind, id); }
             else { btn.classList.add('locked'); btn.innerText = 'Comprar ' + item.price + ' ' + curEmoji[currency]; btn.onclick = () => buyItem(kind, id, item.price, currency); }
 
             div.innerHTML = `<div class="shop-emoji">${item.emoji || '🏷️'}</div><div class="shop-name">${item.name}</div>`;
@@ -1345,8 +1386,8 @@
             setOwned(owned);
             playBuy();
             launchConfetti(40);
-            if (kind === 'sticker') { renderShop(); showRewardPopup('🌟 ¡Calcomanía nueva!'); }
-            else equipItem(kind, id);   // fondos, personajes y títulos se equipan al comprar
+            equipItem(kind, id);   // al comprar se activa/equipa automáticamente
+            if (kind === 'sticker') showRewardPopup('🌟 ¡Calcomanía lista! Tócala en la pantalla');
         }
         function equipItem(kind, id) {
             const e = getEquip();
