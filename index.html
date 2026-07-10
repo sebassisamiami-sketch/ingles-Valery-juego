@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Misión Inglés: Level Up!</title>
+    <title>Valery Chikitin - Misión Inglés</title>
     <style>
         * { box-sizing: border-box; }
         body { 
@@ -195,8 +195,9 @@
 
         <!-- PANTALLA DE INICIO -->
         <div id="start-screen">
-            <h1>🎮 Misión Inglés 🌟</h1>
-            <p style="font-size: 1.2em; color: #555;">¡Ayuda a completar la misión respondiendo los trucos secretos de inglés!</p>
+            <h1>🎮 Valery Chikitin 🌟</h1>
+            <p style="font-size: 1.4em; color: #FF69B4; font-weight: bold; margin: 5px 0;">💜 Misión Inglés 💜</p>
+            <p style="font-size: 1.2em; color: #555;">¡Ayuda a Valery a completar la misión respondiendo los trucos secretos de inglés!</p>
             <img src="https://api.iconify.design/fluent-emoji:star-struck.svg" width="90" height="90" alt="Star">
             <p class="level-title">Elige tu nivel: 👇</p>
             <button class="btn btn-level lvl-easy" onclick="startGame(1)">😊 FÁCIL (Palabras)</button>
@@ -609,9 +610,9 @@
             document.getElementById('final-score').innerText = score + " de " + questions.length;
             
             let msg = "";
-            if(score === questions.length) msg = "¡Eres una MAESTRA del Inglés! Nivel Perfecto. 🦄✨";
-            else if(score >= questions.length - 2) msg = "¡Súper bien! Eres genial. 🚀";
-            else msg = "¡Buen intento! Sigue practicando, vas a ser la mejor. 💪";
+            if(score === questions.length) msg = "¡Valery, eres una MAESTRA del Inglés! Nivel Perfecto. 🦄✨";
+            else if(score >= questions.length - 2) msg = "¡Súper bien, Valery! Eres genial. 🚀";
+            else msg = "¡Buen intento, Valery! Sigue practicando, vas a ser la mejor. 💪";
             
             document.getElementById('end-message').innerText = msg;
 
