@@ -412,6 +412,39 @@
         .top-title .shop-emoji { font-size:3.6em; }
         .top-title .shop-name { font-size:1.2em; color:#8B4513; text-shadow:1px 1px 0 #FFF3B0; }
 
+        /* Premio de ORO canjeable por dinero real (COP) */
+        .money-prize {
+            background: linear-gradient(135deg,#FFD700,#FFF3B0,#FFA500,#FFD700,#FFEC8B);
+            border:5px solid #FF8C00; border-radius:20px;
+            padding:18px 16px; margin:10px 0; text-align:center;
+            box-shadow:0 8px 24px rgba(255,165,0,0.55);
+            animation: goldenGlow 2s ease-in-out infinite;
+        }
+        .money-prize.done { background: linear-gradient(135deg,#e8e8e8,#f7f7f7); border-color:#bbb; animation:none; box-shadow:0 4px 12px rgba(0,0,0,0.12); }
+        .money-emoji { font-size:3.4em; line-height:1.1; }
+        .money-title { font-size:1.6em; font-weight:bold; color:#8B4513; text-shadow:1px 1px 0 #FFF3B0; margin:6px 0; }
+        .money-cost { font-size:1.2em; font-weight:bold; color:#B8860B; }
+        .money-sub { color:#8B4513; font-weight:bold; margin:8px 0 12px; font-size:0.95em; }
+        .money-go { background:#32CD32 !important; box-shadow:0 6px 0 #228B22 !important; font-size:1.15em !important; width:100%; color:#fff !important; }
+
+        /* Celebración grande al redimir dinero (para mostrarle a los papás) */
+        .money-celebrate {
+            position:fixed; inset:0; z-index:100;
+            background:rgba(0,0,0,0.55);
+            display:flex; align-items:center; justify-content:center; padding:20px;
+            animation: popIn 0.3s ease;
+        }
+        .money-celebrate-card {
+            background: linear-gradient(135deg,#FFD700,#FFF3B0,#FFA500);
+            border:6px solid #FF8C00; border-radius:24px;
+            padding:26px 22px; max-width:420px; width:100%; text-align:center;
+            box-shadow:0 12px 40px rgba(0,0,0,0.5);
+        }
+        .mc-emoji { font-size:3.4em; }
+        .mc-title { font-size:1.8em; font-weight:bold; color:#8B4513; margin:8px 0; text-shadow:1px 1px 0 #FFF3B0; }
+        .mc-cop { font-size:2em; font-weight:bold; color:#228B22; text-shadow:1px 1px 0 #fff; margin:6px 0; }
+        .mc-note { color:#5B3A1A; font-weight:bold; margin:12px 0 16px; line-height:1.45; }
+
         /* Calcomanía que aparece al tocar la pantalla */
         .sticker-pop {
             position: fixed; font-size: 3.4em; z-index: 40; pointer-events: none;
@@ -493,6 +526,11 @@
             <h1>🛒 Tienda</h1>
             <div id="gem-wallet">⭐ <span id="shop-stars">0</span> &nbsp;·&nbsp; 🏆 <span id="shop-points">0</span> &nbsp;·&nbsp; 💎 <span id="shop-gems">0</span></div>
             <p style="color:#555;">¡Todo lo que ganas jugando se puede canjear! Fondos y personajes con 💎, calcomanías con 🏆 y títulos con ⭐.</p>
+
+            <h2 class="shop-section-title grand-title">🏅 ¡PREMIO DE ORO! 🏅</h2>
+            <p style="color:#B8860B; font-weight:bold;">¡El premio más grande de TODOS! Se canjea por dinero de verdad. 💰 Solo se desbloquea cuando completas todos los niveles.</p>
+            <div id="shop-money"></div>
+
             <h2 class="shop-section-title">🖼️ Fondos <span style="font-size:0.7em;color:#FF8C00;">(con 💎 gemas)</span></h2>
             <div id="shop-backgrounds" class="shop-grid"></div>
             <h2 class="shop-section-title">🦄 Personajes</h2>
@@ -1438,6 +1476,118 @@
             });
         }
 
+        /* ============ PREMIO DE ORO (canjeable por dinero real COP) ============ */
+        // Niveles que hay que completar (tener medalla) para desbloquear el premio de oro
+        const REQUIRED_LEVELS = [1,2,3,4,5,6,7,8,9,10,11,12];
+        // Premios en dinero: cada tier pide más diamantes y se desbloquean en orden
+        const moneyRewards = [
+            { cop:5000, price:10000 },   // 1º premio: 5000 COP por 10.000 💎
+            { cop:5000, price:30000 }    // 2º premio: 5000 COP por 30.000 💎
+        ];
+        // Formatea números con separador de miles (5000 -> "5.000")
+        function fmtNum(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+        function allLevelsComplete() {
+            const m = getMedals();
+            return REQUIRED_LEVELS.every(lvl => !!m[lvl]);
+        }
+        function levelsCompletedCount() {
+            const m = getMedals();
+            return REQUIRED_LEVELS.filter(lvl => !!m[lvl]).length;
+        }
+        function getRedeemedCount() { return parseInt(localStorage.getItem('valeryRedeemed') || '0',10) || 0; }
+        function setRedeemedCount(n) { try { localStorage.setItem('valeryRedeemed', String(Math.max(0,n))); } catch(e){} }
+        // El premio actual según cuántos ya se redimieron (null si ya se redimieron todos)
+        function currentMoneyReward() {
+            const idx = getRedeemedCount();
+            return idx < moneyRewards.length ? moneyRewards[idx] : null;
+        }
+
+        // Dibuja la tarjeta del premio de oro en la tienda
+        function renderMoneyReward() {
+            const div = document.getElementById('shop-money');
+            if (!div) return;
+            div.innerHTML = '';
+            const reward = currentMoneyReward();
+            const redeemed = getRedeemedCount();
+
+            if (!reward) {   // ya redimió todos los premios definidos
+                const done = document.createElement('div');
+                done.className = 'money-prize done';
+                done.innerHTML = `<div class="money-emoji">🎖️</div>
+                    <div class="money-title">¡Redimiste todos los premios de oro!</div>
+                    <div class="money-sub">Ya canjeaste ${redeemed} premios en dinero. ¡Eres una campeona, Valery! 👑</div>`;
+                div.appendChild(done);
+                return;
+            }
+
+            const complete = allLevelsComplete();
+            const gems = getGems();
+            const enough = gems >= reward.price;
+
+            const card = document.createElement('div');
+            card.className = 'money-prize';
+
+            const noteHTML = (redeemed > 0)
+                ? `<div class="money-sub">🎉 ¡Nuevo premio desbloqueado! Ya redimiste ${redeemed} antes.</div>`
+                : `<div class="money-sub">🔑 Solo se desbloquea al completar TODOS los niveles.</div>`;
+
+            card.innerHTML = `<div class="money-emoji">🏅💰</div>
+                <div class="money-title">¡Redime ${fmtNum(reward.cop)} COP!</div>
+                <div class="money-cost">Cuesta ${fmtNum(reward.price)} 💎</div>
+                ${noteHTML}`;
+
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-buy';
+            if (!complete) {
+                btn.classList.add('locked'); btn.disabled = true;
+                btn.innerText = `🔒 Completa los niveles (${levelsCompletedCount()}/${REQUIRED_LEVELS.length})`;
+            } else if (!enough) {
+                btn.classList.add('locked'); btn.disabled = true;
+                btn.innerText = `💎 Te faltan gemas (${fmtNum(gems)}/${fmtNum(reward.price)})`;
+            } else {
+                btn.classList.add('money-go');
+                btn.innerText = `🎁 ¡REDIMIR ${fmtNum(reward.cop)} COP!`;
+                btn.onclick = redeemMoney;
+            }
+            card.appendChild(btn);
+            div.appendChild(card);
+        }
+
+        // Redime el premio de oro por dinero (con confirmación y celebración)
+        function redeemMoney() {
+            const reward = currentMoneyReward();
+            if (!reward) return;
+            if (!allLevelsComplete()) { playWrong(); showRewardPopup('🔒 Completa todos los niveles'); return; }
+            if (getGems() < reward.price) { playWrong(); showRewardPopup('¡Te faltan 💎!'); return; }
+
+            const ok = window.confirm(`¿Seguro que quieres canjear ${fmtNum(reward.price)} 💎 por ${fmtNum(reward.cop)} COP?\n\nLuego muéstrale la pantalla a mamá o papá para recibir tu premio. 💰`);
+            if (!ok) return;
+
+            addGems(-reward.price);
+            setRedeemedCount(getRedeemedCount() + 1);
+            playWin();
+            launchConfetti(160);
+            setTimeout(() => launchConfetti(120), 600);
+            setTimeout(() => launchConfetti(120), 1200);
+            showMoneyCelebration(reward);
+            renderShop();
+        }
+
+        // Muestra la celebración grande que el papá/mamá puede ver
+        function showMoneyCelebration(reward) {
+            const overlay = document.createElement('div');
+            overlay.className = 'money-celebrate';
+            overlay.innerHTML = `
+                <div class="money-celebrate-card">
+                    <div class="mc-emoji">🏅💰🎉</div>
+                    <div class="mc-title">¡FELICIDADES, VALERY!</div>
+                    <div class="mc-cop">Ganaste ${fmtNum(reward.cop)} COP</div>
+                    <div class="mc-note">Muéstrale esta pantalla a 👩 mamá o 👨 papá para recibir tu premio en dinero. ¡Te lo ganaste completando todo! 🌟</div>
+                    <button class="btn" onclick="this.closest('.money-celebrate').remove()">¡Genial! ✨</button>
+                </div>`;
+            document.body.appendChild(overlay);
+        }
+
         /* ============ APLICAR FONDO Y PERSONAJE ============ */
         function applyBackground(id) {
             const b = backgrounds[id] || backgrounds.default;
@@ -1553,6 +1703,7 @@
             document.getElementById('shop-gems').innerText = getGems();
             document.getElementById('shop-points').innerText = getPoints();
             document.getElementById('shop-stars').innerText = getStars();
+            renderMoneyReward();
             fillShopGrid('shop-backgrounds', 'bg', backgrounds);
             fillShopGrid('shop-characters', 'char', characters);
             fillShopGrid('shop-grandprize', 'char', grandPrizes);
@@ -1970,7 +2121,7 @@
         }
 
         /* ============ GUARDAR / CARGAR PROGRESO (pasar a otro dispositivo) ============ */
-        const PROGRESS_KEYS = ['valeryGems','valeryMedals','valeryOwned','valeryEquip','valeryFont'];
+        const PROGRESS_KEYS = ['valeryGems','valeryMedals','valeryOwned','valeryEquip','valeryFont','valeryRedeemed'];
         const PROGRESS_PREFIX = 'VALERY1:';
 
         function collectProgress() {
