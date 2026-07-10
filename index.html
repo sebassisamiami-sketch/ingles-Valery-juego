@@ -172,24 +172,33 @@
             transition: width 0.4s ease;
         }
 
+        /* Barra superior de ajustes (en su propio espacio, no encima del juego) */
         #controls {
-            position: absolute;
-            top: 15px;
-            right: 15px;
             display: flex;
-            gap: 8px;
-            z-index: 5;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin: -8px -8px 14px -8px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #FFF0C4;
         }
         .ctrl-btn {
             background: #FFD700;
             border: 3px solid #FFA500;
             border-radius: 50%;
-            width: 46px;
-            height: 46px;
-            font-size: 1.4em;
+            width: 44px;
+            height: 44px;
+            font-size: 1.3em;
             cursor: pointer;
             padding: 0;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
         }
+        .ctrl-btn:hover { transform: scale(1.1); }
+        .ctrl-btn:active { transform: scale(0.95); }
         .ctrl-btn.off { background: #ddd; border-color: #999; opacity: 0.7; }
 
         .level-title { font-size: 1.3em; color: #555; margin: 10px 0; }
