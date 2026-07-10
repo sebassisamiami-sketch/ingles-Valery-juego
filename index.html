@@ -264,6 +264,20 @@
 
         #next-btn { background-color: #FF8C00; box-shadow: 0 6px 0 #CC7000; }
 
+        /* Barra de navegación del juego */
+        #game-nav { display:flex; gap:8px; justify-content:center; margin-bottom:14px; flex-wrap:wrap; }
+        .nav-btn {
+            background:#9370DB; color:#fff; border:none; border-radius:12px;
+            padding:9px 16px; font-size:1em; font-weight:bold; cursor:pointer;
+            font-family:'Comic Sans MS', cursive; box-shadow:0 4px 0 #6A5ACD;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .nav-btn:hover:not(:disabled) { background:#A385E0; }
+        .nav-btn:active:not(:disabled) { transform:translateY(4px); box-shadow:0 0 0; }
+        .nav-btn:disabled { opacity:0.4; cursor:default; }
+        .nav-btn.home { background:#FF6347; box-shadow:0 4px 0 #C1440E; }
+        .nav-btn.home:hover { background:#FF7A5C; }
+
         /* Personaje acompañante */
         #buddy {
             position: fixed; bottom: 15px; left: 15px; font-size: 3.2em;
@@ -309,6 +323,11 @@
         
         <!-- PANTALLA DE JUEGO -->
         <div id="game-screen" class="hidden">
+            <div id="game-nav">
+                <button class="nav-btn home" onclick="goMenu()">🏠 Menú</button>
+                <button class="nav-btn" id="back-btn" onclick="goBack()">⬅️ Atrás</button>
+                <button class="nav-btn" id="fwd-btn" onclick="goForward()">Adelante ➡️</button>
+            </div>
             <div id="score-display">
                 <span>⭐ <span id="score">0</span></span>
                 <span id="points-badge">🏆 <span id="points">0</span></span>
@@ -614,6 +633,7 @@
         let questions = [];
         let currentQ = 0;
         let score = 0, points = 0, gems = 0, streak = 0, bestStreak = 0;
+        let answers = [];   // guarda lo que respondió en cada pregunta (para ir atrás/adelante)
         let currentLevel = 1;
         let soundOn = true, musicOn = false, audioCtx = null;
 
@@ -842,7 +862,7 @@
         function startGame(level) {
             playClick(); getCtx(); currentLevel = level;
             questions = level === 0 ? shuffle(allQuestions) : shuffle(allQuestions.filter(q => q.level === level));
-            currentQ = 0; score = 0; points = 0; gems = 0; streak = 0; bestStreak = 0;
+            currentQ = 0; score = 0; points = 0; gems = 0; streak = 0; bestStreak = 0; answers = [];
             document.getElementById('score').innerText = 0;
             document.getElementById('points').innerText = 0;
             document.getElementById('gems').innerText = 0;
@@ -880,6 +900,15 @@
                 row.appendChild(btn); row.appendChild(speak);
                 optionsDiv.appendChild(row);
             });
+
+            // Botón "Atrás" desactivado en la primera pregunta
+            const backBtn = document.getElementById('back-btn');
+            if (backBtn) backBtn.disabled = (currentQ === 0);
+
+            // Si esta pregunta ya fue respondida, mostrarla en modo repaso
+            if (answers[currentQ]) {
+                renderResult(current, answers[currentQ], true);
+            }
         }
         function buildExamplesHTML(examples) {
             let html = '<div class="examples-box"><div class="examples-title">📖 Ejemplos:</div>';
@@ -893,23 +922,16 @@
             return html + '</div>';
         }
         function checkAnswer(selectedIndex, btn) {
-            const buttons = document.querySelectorAll('.btn-option');
-            buttons.forEach(b => b.disabled = true);
+            if (answers[currentQ]) return; // ya respondida: no volver a puntuar
 
             const current = questions[currentQ];
-            const correctText = current.options[current.answer].text;
-            const pickedText = current.options[selectedIndex].text;
-            const feedback = document.getElementById('feedback');
-            const expBox = document.getElementById('explanation-box');
-            let headerHTML = "";
+            const correct = selectedIndex === current.answer;
+            let bonus = 0;
 
-            if (selectedIndex === current.answer) {
-                btn.style.backgroundColor = '#32CD32'; btn.style.boxShadow = '0 6px 0 #228B22'; btn.classList.add('bounce');
-                feedback.innerText = "¡CORRECTO! 🌟"; feedback.style.color = '#32CD32';
+            if (correct) {
                 score++; streak++; if (streak > bestStreak) bestStreak = streak;
-
                 const base = 10;
-                const bonus = Math.min((streak - 1) * 5, 25);
+                bonus = Math.min((streak - 1) * 5, 25);
                 const gained = base + bonus;
                 points += gained;
                 const gemsWon = 1 + (streak >= 3 ? 1 : 0) + (streak >= 5 ? 1 : 0);
@@ -924,19 +946,46 @@
                 playCorrect(); setTimeout(playReward, 350);
                 launchConfetti(streak >= 3 ? 60 : 30);
                 showRewardPopup(`+${gained} 🏆  +${gemsWon} 💎`);
+            } else {
+                streak = 0; document.getElementById('streak').innerText = streak;
+                playWrong();
+            }
 
-                let bonusMsg = bonus > 0 ? `<br>🔥 <b>¡Racha de ${streak}! Bonus de +${bonus} puntos.</b>` : "";
+            // Guardamos la respuesta para poder ir atrás/adelante y repasar
+            answers[currentQ] = { selected: selectedIndex, correct: correct, bonus: bonus };
+            renderResult(current, answers[currentQ], false);
+        }
+
+        // Dibuja el resultado de una pregunta. isReview=true cuando solo estamos repasando (no suma puntos ni sonidos).
+        function renderResult(current, entry, isReview) {
+            const selectedIndex = entry.selected;
+            const correct = entry.correct;
+            const buttons = document.querySelectorAll('.btn-option');
+            buttons.forEach(b => b.disabled = true);
+
+            const correctText = current.options[current.answer].text;
+            const pickedText = current.options[selectedIndex].text;
+            const feedback = document.getElementById('feedback');
+            const expBox = document.getElementById('explanation-box');
+            let headerHTML = "";
+
+            if (correct) {
+                buttons[selectedIndex].style.backgroundColor = '#32CD32';
+                buttons[selectedIndex].style.boxShadow = '0 6px 0 #228B22';
+                if (!isReview) buttons[selectedIndex].classList.add('bounce');
+                feedback.innerText = "¡CORRECTO! 🌟"; feedback.style.color = '#32CD32';
+
+                let bonusMsg = (entry.bonus > 0) ? `<br>🔥 <b>¡Racha! Bonus de +${entry.bonus} puntos.</b>` : "";
                 headerHTML = `<span class="exp-header ok">✅ ¡Muy bien, Valery! Escogiste "${correctText}".</span>` +
                              `<span class="exp-rule">${current.rule}</span>` +
                              `<div class="exp-text">${current.exp}${bonusMsg}</div>`;
             } else {
-                btn.style.backgroundColor = '#FF4500'; btn.style.boxShadow = '0 6px 0 #CC3700'; btn.classList.add('shake');
+                buttons[selectedIndex].style.backgroundColor = '#FF4500';
+                buttons[selectedIndex].style.boxShadow = '0 6px 0 #CC3700';
+                if (!isReview) buttons[selectedIndex].classList.add('shake');
                 buttons[current.answer].style.backgroundColor = '#32CD32';
                 buttons[current.answer].style.boxShadow = '0 6px 0 #228B22';
-                buttons[current.answer].classList.add('bounce');
                 feedback.innerText = "¡Uy! Casi... 😅"; feedback.style.color = '#FF4500';
-                streak = 0; document.getElementById('streak').innerText = streak;
-                playWrong();
 
                 headerHTML = `<span class="exp-header no">❌ Tú escogiste "<span class="picked-wrong">${pickedText}</span>", pero la respuesta correcta era "<span class="correct-answer">${correctText}</span>".</span>` +
                              `<span class="exp-rule">${current.rule}</span>` +
@@ -959,13 +1008,40 @@
             expBox.appendChild(listenBtn);
 
             expBox.classList.remove('hidden');
-            setTimeout(() => speakEnglish(current.say), 700);
+            if (!isReview) setTimeout(() => speakEnglish(current.say), 700);
 
             const nextBtn = document.getElementById('next-btn');
             nextBtn.innerText = (currentQ + 1 >= questions.length) ? "Ver mis recompensas 🏆" : "Siguiente ➡️";
             nextBtn.classList.remove('hidden');
         }
+
         function nextQuestion() { playClick(); currentQ++; loadQuestion(); }
+
+        /* ============ NAVEGACIÓN: menú, atrás y adelante ============ */
+        function goMenu() {
+            playClick();
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('shop-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            updateMedalDisplay();
+            document.getElementById('start-gems').innerText = getGems();
+        }
+        function goBack() {
+            if (currentQ > 0) {
+                playClick();
+                if (window.speechSynthesis) window.speechSynthesis.cancel();
+                currentQ--;
+                loadQuestion();
+            }
+        }
+        function goForward() {
+            playClick();
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            if (currentQ < questions.length - 1) { currentQ++; loadQuestion(); }
+            else { endGame(); }
+        }
 
         function endGame() {
             updateProgress();
