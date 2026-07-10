@@ -163,6 +163,29 @@
         .write-check:disabled { opacity:0.55; }
         .write-hint { color:#8A2BE2; font-weight:bold; font-size:0.95em; margin-top:10px; }
 
+        /* Nivel ORDENAR (estilo Duolingo): fichas de palabras */
+        .order-wrap { margin:14px 0; }
+        .order-build {
+            min-height:64px; border:3px dashed #1E90FF; border-radius:14px;
+            padding:12px 10px; margin-bottom:14px; display:flex; flex-wrap:wrap; gap:8px;
+            justify-content:center; align-items:center; background:#F0F8FF;
+        }
+        .order-bank {
+            display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+            padding:6px; margin-bottom:14px; min-height:50px;
+        }
+        .order-tile {
+            font-family:var(--game-font); font-size:1.3em; font-weight:bold;
+            background:#fff; color:#1E5A8A; border:3px solid #1E90FF; border-radius:12px;
+            padding:8px 16px; cursor:pointer; box-shadow:0 4px 0 #1565C0;
+            transition:transform 0.1s; line-height:1.2;
+        }
+        .order-tile:hover { background:#E3F2FD; }
+        .order-tile:active { transform:translateY(3px); box-shadow:0 1px 0 #1565C0; }
+        .order-tile.placed { background:#E3F2FD; }
+        .order-tile.tile-ok { background:#F0FFF0; border-color:#32CD32; color:#228B22; box-shadow:0 4px 0 #1B7A1B; }
+        .order-tile.tile-no { background:#FFF0EE; border-color:#FF4500; color:#CC3700; box-shadow:0 4px 0 #A82D00; }
+
         .hidden { display: none; }
         #score-display { 
             font-size: 1.2em; 
@@ -241,6 +264,7 @@
         .lvl-actions { background:#2E8B57; box-shadow:0 6px 0 #1E5E3A; }
         .lvl-objects { background:#607D8B; box-shadow:0 6px 0 #455A64; }
         .lvl-write { background:#E91E63; box-shadow:0 6px 0 #AD1457; }
+        .lvl-order { background:#00897B; box-shadow:0 6px 0 #00695C; }
         .lvl-all  { background:#8A2BE2; box-shadow:0 6px 0 #5D1A9E; }
         .medal-tag { font-size: 1.1em; background: rgba(255,255,255,0.3); border-radius:20px; padding:2px 8px; }
         .btn-shop { background:#FFD700; color:#8A2BE2; box-shadow:0 6px 0 #DAA520; font-size:1.35em; margin-top:18px; }
@@ -489,6 +513,7 @@
             <button class="btn btn-level lvl-actions" onclick="startGame(10)"><span>🏃 ACCIONES</span><span id="medal-10" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-objects" onclick="startGame(11)"><span>🎒 LOS OBJETOS</span><span id="medal-11" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-write" onclick="startGame(12)"><span>✍️ ¡A ESCRIBIR! (Completa frases)</span><span id="medal-12" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-order" onclick="startGame(13)"><span>🧩 ORDENA LA ORACIÓN (Verbos)</span><span id="medal-13" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
             <button class="btn btn-shop" onclick="openShop()">🛒 Tienda de Recompensas (<span id="start-gems">0</span> 💎)</button>
             <button class="btn btn-progress" onclick="openProgress()">💾 Mi Progreso (pasar a otro aparato)</button>
@@ -1228,11 +1253,92 @@
               rule:"🍎 La comida (Food)",
               exp:"'Manzana' se escribe APPLE (a-p-p-l-e, con dos 'p'). Fíjate que decimos 'an apple' porque empieza con vocal.",
               examples:[{en:"I eat an apple.",es:"Como una manzana."},{en:"The apple is red.",es:"La manzana es roja."}],
-              scene:'<span class="a-bounce">🍎</span><span class="a-float">🍏</span>' }
+              scene:'<span class="a-bounce">🍎</span><span class="a-float">🍏</span>' },
+
+            /* ---------- NIVEL 13: ORDENA LA ORACIÓN (estilo Duolingo) ---------- */
+            { level:13, type:"order", q:"🧩 Ordena las fichas: 'Yo estoy feliz' 😊",
+              answer:["I","am","happy"], extra:["is"],
+              say:"I am happy.", img:"happy,child", lock:141,
+              rule:"✨ Verbo TO BE (presente): am",
+              exp:"Con 'I' (yo) siempre usamos AM. Por eso el orden es: I → am → happy (Yo estoy feliz). Recuerda: I y am van siempre juntas.",
+              examples:[{en:"I am happy.",es:"Yo estoy feliz."},{en:"I am a student.",es:"Yo soy estudiante."}],
+              scene:'<span class="a-bounce">😊</span><span class="a-float">🙋</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas: 'El gato es negro' 🐱",
+              answer:["The","cat","is","black"], extra:["are"],
+              say:"The cat is black.", img:"black,cat", lock:142,
+              rule:"✨ Verbo TO BE (presente): is",
+              exp:"El gato es una sola cosa (como 'it'), por eso usamos IS. El orden es: The → cat → is → black. La ficha 'are' sobra porque 'are' se usa con we/you/they.",
+              examples:[{en:"The cat is black.",es:"El gato es negro."},{en:"The dog is big.",es:"El perro es grande."}],
+              scene:'<span class="a-bounce">🐱</span><span class="a-grow">⚫</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas: 'Ellos son amigos' 👫",
+              answer:["They","are","friends"], extra:["is"],
+              say:"They are friends.", img:"friends,children", lock:143,
+              rule:"✨ Verbo TO BE (presente): are",
+              exp:"Con THEY (ellos) usamos ARE. El orden es: They → are → friends. La ficha 'is' sobra porque 'is' se usa con he/she/it, no con ellos.",
+              examples:[{en:"They are friends.",es:"Ellos son amigos."},{en:"They are happy.",es:"Ellos están felices."}],
+              scene:'<span class="a-bounce">👫</span><span class="a-float">🤝</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas: 'Ella juega fútbol' ⚽",
+              answer:["She","plays","soccer"], extra:["play"],
+              say:"She plays soccer.", img:"soccer,girl", lock:144,
+              rule:"👑 La regla de la -S (he/she/it)",
+              exp:"Con SHE (ella) el verbo lleva una 'corona': se le agrega -S. Por eso es 'plays' y no 'play'. El orden: She → plays → soccer.",
+              examples:[{en:"She plays soccer.",es:"Ella juega fútbol."},{en:"He plays with his dog.",es:"Él juega con su perro."}],
+              scene:'<span class="a-bounce">⚽</span><span class="a-grow">👑</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas: 'Él va a la escuela' 🚌",
+              answer:["He","goes","to","school"], extra:["go"],
+              say:"He goes to school.", img:"schoolbus", lock:145,
+              rule:"👑 La regla de la -S (caso especial: go → goes)",
+              exp:"Con HE el verbo lleva -s, pero 'go' es especial y se vuelve GOES (no 'gos' ni 'go'). El orden: He → goes → to → school.",
+              examples:[{en:"He goes to school.",es:"Él va a la escuela."},{en:"She goes to the park.",es:"Ella va al parque."}],
+              scene:'<span class="a-bounce">🚌</span><span class="a-float">🏫</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas (PASADO): 'Yo estaba en casa' 🏠",
+              answer:["I","was","at","home"], extra:["were"],
+              say:"I was at home.", img:"home,house", lock:146,
+              rule:"⏳ TO BE en pasado: was",
+              exp:"En pasado, AM e IS se convierten en WAS. Con 'I' usamos WAS. El orden: I → was → at → home (Yo estaba en casa). La ficha 'were' sobra.",
+              examples:[{en:"I was at home.",es:"Yo estaba en casa."},{en:"She was happy.",es:"Ella estaba feliz."}],
+              scene:'<span class="a-spin">⏳</span><span class="a-float">🏠</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas (PASADO): 'Nosotros estábamos felices' 😃",
+              answer:["We","were","happy"], extra:["was"],
+              say:"We were happy.", img:"happy,kids", lock:147,
+              rule:"⏳ TO BE en pasado: were",
+              exp:"En pasado, ARE se convierte en WERE. Con WE (nosotros) usamos WERE. El orden: We → were → happy. La ficha 'was' sobra (esa es para I/he/she/it).",
+              examples:[{en:"We were happy.",es:"Nosotros estábamos felices."},{en:"They were at school.",es:"Ellos estaban en la escuela."}],
+              scene:'<span class="a-bounce">😃</span><span class="a-bounce">😄</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas (FUTURO): 'Yo seré doctora' 👩‍⚕️",
+              answer:["I","will","be","a","doctor"], extra:["am"],
+              say:"I will be a doctor.", img:"doctor,child", lock:148,
+              rule:"🚀 TO BE en futuro: will be",
+              exp:"Para el futuro usamos WILL BE (seré/estaré). Siempre es 'will be', nunca cambia. El orden: I → will → be → a → doctor. La ficha 'am' sobra porque el futuro no usa am.",
+              examples:[{en:"I will be a doctor.",es:"Yo seré doctora."},{en:"I will be happy.",es:"Yo estaré feliz."}],
+              scene:'<span class="a-float">🚀</span><span class="a-bounce">👩‍⚕️</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas (FUTURO): 'Ella será alta' 📏",
+              answer:["She","will","be","tall"], extra:["is"],
+              say:"She will be tall.", img:"tall,girl", lock:149,
+              rule:"🚀 TO BE en futuro: will be",
+              exp:"En futuro usamos WILL BE para todos (I, you, he, she...). El orden: She → will → be → tall. La ficha 'is' sobra porque eso es presente, no futuro.",
+              examples:[{en:"She will be tall.",es:"Ella será alta."},{en:"He will be a teacher.",es:"Él será profesor."}],
+              scene:'<span class="a-grow">📏</span><span class="a-float">🌱</span>' },
+
+            { level:13, type:"order", q:"🧩 Ordena las fichas: 'Al perro le gustan los huesos' 🦴",
+              answer:["The","dog","likes","bones"], extra:["like"],
+              say:"The dog likes bones.", img:"dog,bone", lock:150,
+              rule:"👑 La regla de la -S (he/she/it)",
+              exp:"El perro es 'it' (una cosa/animal), así que el verbo lleva -S: 'likes'. El orden: The → dog → likes → bones. La ficha 'like' (sin -s) sobra.",
+              examples:[{en:"The dog likes bones.",es:"Al perro le gustan los huesos."},{en:"She likes cats.",es:"A ella le gustan los gatos."}],
+              scene:'<span class="a-bounce">🐶</span><span class="a-float">🦴</span>' }
         ];
 
         const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 4:"Familia 👨‍👩‍👧", 5:"Cuerpo 🧍",
-                            6:"Animales 🐶", 7:"Comida 🍎", 8:"Números 🔢", 9:"Colores 🎨", 10:"Acciones 🏃", 11:"Objetos 🎒", 12:"Escribir ✍️", 0:"Mezcla 🌈"};
+                            6:"Animales 🐶", 7:"Comida 🍎", 8:"Números 🔢", 9:"Colores 🎨", 10:"Acciones 🏃", 11:"Objetos 🎒", 12:"Escribir ✍️", 13:"Ordenar 🧩", 0:"Mezcla 🌈"};
 
         /* ============ TIENDA: fondos y personajes ============ */
         const backgrounds = {
@@ -1468,7 +1574,7 @@
         }
         function updateMedalDisplay() {
             const m = getMedals();
-            [0,1,2,3,4,5,6,7,8,9,10,11,12].forEach(lvl => {
+            [0,1,2,3,4,5,6,7,8,9,10,11,12,13].forEach(lvl => {
                 const el = document.getElementById('medal-' + lvl);
                 if (!el) return;
                 if (m[lvl]) { el.innerText = rankEmoji[m[lvl]]; el.classList.remove('hidden'); }
@@ -1773,7 +1879,7 @@
         /* ============ JUEGO ============ */
         function startGame(level) {
             playClick(); getCtx(); currentLevel = level;
-            questions = level === 0 ? shuffle(allQuestions.filter(q => q.type !== 'write')).slice(0, 12) : shuffle(allQuestions.filter(q => q.level === level));
+            questions = level === 0 ? shuffle(allQuestions.filter(q => q.type !== 'write' && q.type !== 'order')).slice(0, 12) : shuffle(allQuestions.filter(q => q.level === level));
             currentQ = 0; score = 0; points = 0; gems = 0; streak = 0; bestStreak = 0; answers = [];
             document.getElementById('score').innerText = 0;
             document.getElementById('points').innerText = 0;
@@ -1803,6 +1909,8 @@
             optionsDiv.innerHTML = "";
             if (current.type === 'write') {
                 renderWriteUI(current, optionsDiv);
+            } else if (current.type === 'order') {
+                renderOrderUI(current, optionsDiv);
             } else {
                 current.options.forEach((opt, index) => {
                     const row = document.createElement('div'); row.className = 'option-row';
@@ -1914,6 +2022,72 @@
             renderResult(current, answers[currentQ], false);
         }
 
+        /* ---- Nivel ORDENAR (Duolingo): fichas de palabras ---- */
+        function renderOrderUI(current, container) {
+            const wrap = document.createElement('div');
+            wrap.className = 'order-wrap';
+
+            const build = document.createElement('div');
+            build.id = 'order-build'; build.className = 'order-build';
+            wrap.appendChild(build);
+
+            const bank = document.createElement('div');
+            bank.id = 'order-bank'; bank.className = 'order-bank';
+            wrap.appendChild(bank);
+
+            const btn = document.createElement('button');
+            btn.id = 'order-check'; btn.className = 'btn write-check'; btn.innerText = '✅ Comprobar';
+            btn.onclick = () => checkOrder();
+            wrap.appendChild(btn);
+
+            container.appendChild(wrap);
+
+            // Fichas = respuesta + distractores, mezcladas al azar
+            const tiles = shuffle((current.answer || []).concat(current.extra || []));
+            tiles.forEach(word => {
+                const t = document.createElement('button');
+                t.className = 'order-tile';
+                t.innerText = word;
+                t.onclick = () => moveTileToBuild(t);
+                bank.appendChild(t);
+            });
+        }
+        function moveTileToBuild(tile) {
+            if (answers[currentQ]) return;
+            playClick();
+            document.getElementById('order-build').appendChild(tile);
+            tile.classList.add('placed');
+            tile.onclick = () => moveTileToBank(tile);
+        }
+        function moveTileToBank(tile) {
+            if (answers[currentQ]) return;
+            playClick();
+            document.getElementById('order-bank').appendChild(tile);
+            tile.classList.remove('placed');
+            tile.onclick = () => moveTileToBuild(tile);
+        }
+        function getBuiltWords() {
+            const build = document.getElementById('order-build');
+            if (!build) return [];
+            return Array.from(build.querySelectorAll('.order-tile')).map(t => t.innerText);
+        }
+        // Comprueba la oración que Valery armó con las fichas
+        function checkOrder() {
+            if (answers[currentQ]) return;
+            const current = questions[currentQ];
+            const built = getBuiltWords();
+            if (built.length === 0) {   // no armó nada: pide que ponga fichas
+                const b = document.getElementById('order-build');
+                b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+                return;
+            }
+            const correct = built.join(' ') === (current.answer || []).join(' ');
+            let bonus = 0;
+            if (correct) bonus = awardCorrect(); else awardWrong();
+            answers[currentQ] = { built: built, correct: correct, bonus: bonus };
+            renderResult(current, answers[currentQ], false);
+        }
+
         function buildExamplesHTML(examples) {
             let html = '<div class="examples-box"><div class="examples-title">📖 Ejemplos:</div>';
             examples.forEach(ex => {
@@ -1956,18 +2130,49 @@
 
                 if (correct) {
                     if (input) { input.classList.remove('write-no'); input.classList.add('write-ok'); if (!isReview) input.classList.add('bounce'); }
-                    feedback.innerText = "¡CORRECTO! 🌟"; feedback.style.color = '#32CD32';
+                    feedback.innerText = "¡Excelente, Valery! 🌟"; feedback.style.color = '#32CD32';
                     let bonusMsg = (entry.bonus > 0) ? `<br>🔥 <b>¡Racha! Bonus de +${entry.bonus} puntos.</b>` : "";
                     headerHTML = `<span class="exp-header ok">✅ ¡Muy bien, Valery! Escribiste "${correctText}" perfecto. ✍️</span>` +
                                  `<span class="exp-rule">${current.rule}</span>` +
                                  `<div class="exp-text">${current.exp}${bonusMsg}</div>`;
                 } else {
                     if (input) { input.classList.remove('write-ok'); input.classList.add('write-no'); if (!isReview) input.classList.add('shake'); }
-                    feedback.innerText = "¡Uy! Casi... 😅"; feedback.style.color = '#FF4500';
+                    feedback.innerText = "¡Buuf! 😖"; feedback.style.color = '#FF4500';
                     headerHTML = `<span class="exp-header no">❌ Tú escribiste "<span class="picked-wrong">${typedText || '(nada)'}</span>", pero se escribe "<span class="correct-answer">${correctText}</span>".</span>` +
                                  `<span class="exp-rule">${current.rule}</span>` +
                                  `<div class="exp-text"><b>Te explico para que lo entiendas 👇</b><br>${current.exp}</div>` +
                                  `<div class="write-hint">💡 Fíjate bien cómo se escribe y práctica de nuevo. ¡Tú puedes!</div>`;
+                }
+            } else if (current.type === 'order') {
+                /* ---- Resultado del nivel ORDENAR (Duolingo) ---- */
+                const build = document.getElementById('order-build');
+                const bank = document.getElementById('order-bank');
+                const checkBtn = document.getElementById('order-check');
+                if (checkBtn) checkBtn.disabled = true;
+                if (bank) bank.innerHTML = '';
+                if (build) {
+                    build.innerHTML = '';
+                    (entry.built || []).forEach(word => {
+                        const t = document.createElement('span');
+                        t.className = 'order-tile placed ' + (correct ? 'tile-ok' : 'tile-no');
+                        t.innerText = word;
+                        build.appendChild(t);
+                    });
+                    if (!isReview) build.classList.add(correct ? 'bounce' : 'shake');
+                }
+                const correctSentence = (current.answer || []).join(' ');
+                const builtSentence = (entry.built || []).join(' ');
+                if (correct) {
+                    feedback.innerText = "¡Excelente, Valery! 🌟"; feedback.style.color = '#32CD32';
+                    let bonusMsg = (entry.bonus > 0) ? `<br>🔥 <b>¡Racha! Bonus de +${entry.bonus} puntos.</b>` : "";
+                    headerHTML = `<span class="exp-header ok">✅ ¡Perfecto, Valery! Armaste la oración: "${correctSentence}". 🧩</span>` +
+                                 `<span class="exp-rule">${current.rule}</span>` +
+                                 `<div class="exp-text">${current.exp}${bonusMsg}</div>`;
+                } else {
+                    feedback.innerText = "¡Buuf! 😖"; feedback.style.color = '#FF4500';
+                    headerHTML = `<span class="exp-header no">❌ Tú armaste "<span class="picked-wrong">${builtSentence || '(nada)'}</span>", pero lo correcto es "<span class="correct-answer">${correctSentence}</span>".</span>` +
+                                 `<span class="exp-rule">${current.rule}</span>` +
+                                 `<div class="exp-text"><b>Te explico para que lo entiendas 👇</b><br>${current.exp}</div>`;
                 }
             } else {
                 /* ---- Resultado de opción múltiple ---- */
@@ -1981,7 +2186,7 @@
                     buttons[selectedIndex].style.backgroundColor = '#32CD32';
                     buttons[selectedIndex].style.boxShadow = '0 6px 0 #228B22';
                     if (!isReview) buttons[selectedIndex].classList.add('bounce');
-                    feedback.innerText = "¡CORRECTO! 🌟"; feedback.style.color = '#32CD32';
+                    feedback.innerText = "¡Excelente, Valery! 🌟"; feedback.style.color = '#32CD32';
 
                     let bonusMsg = (entry.bonus > 0) ? `<br>🔥 <b>¡Racha! Bonus de +${entry.bonus} puntos.</b>` : "";
                     headerHTML = `<span class="exp-header ok">✅ ¡Muy bien, Valery! Escogiste "${correctText}".</span>` +
@@ -1993,7 +2198,7 @@
                     if (!isReview) buttons[selectedIndex].classList.add('shake');
                     buttons[current.answer].style.backgroundColor = '#32CD32';
                     buttons[current.answer].style.boxShadow = '0 6px 0 #228B22';
-                    feedback.innerText = "¡Uy! Casi... 😅"; feedback.style.color = '#FF4500';
+                    feedback.innerText = "¡Buuf! 😖"; feedback.style.color = '#FF4500';
 
                     headerHTML = `<span class="exp-header no">❌ Tú escogiste "<span class="picked-wrong">${pickedText}</span>", pero la respuesta correcta era "<span class="correct-answer">${correctText}</span>".</span>` +
                                  `<span class="exp-rule">${current.rule}</span>` +
