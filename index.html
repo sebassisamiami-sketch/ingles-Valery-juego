@@ -26,7 +26,7 @@
             padding: 30px; 
             box-shadow: 0 15px 25px rgba(0,0,0,0.2); 
             text-align: center; 
-            max-width: 650px; 
+            max-width: 680px; 
             width: 100%; 
             border: 8px solid #FFD700; 
             position: relative;
@@ -79,27 +79,59 @@
             background-color: #FFF8DC;
             border: 3px dashed #FFA500;
             border-radius: 15px;
-            padding: 15px 20px;
+            padding: 18px 20px;
             margin: 15px 0;
-            font-size: 1.15em;
+            font-size: 1.12em;
             color: #444;
             text-align: left;
             animation: popIn 0.4s ease;
         }
-        #explanation-box .exp-title { font-weight: bold; color: #FF8C00; font-size: 1.1em; display: block; margin-bottom: 6px; }
-        #explanation-box .correct-answer { color: #228B22; font-weight: bold; }
+        .exp-header { font-weight: bold; font-size: 1.25em; display:block; margin-bottom: 8px; }
+        .exp-header.ok { color: #228B22; }
+        .exp-header.no { color: #FF4500; }
+        .exp-rule {
+            display: inline-block;
+            background: #8A2BE2; color: #fff;
+            border-radius: 10px; padding: 4px 12px;
+            font-size: 0.95em; margin: 6px 0 10px 0; font-weight: bold;
+        }
+        .exp-text { margin: 8px 0; line-height: 1.5; }
+        .correct-answer { color: #228B22; font-weight: bold; }
+        .picked-wrong { color: #FF4500; font-weight: bold; }
+
+        /* Ejemplos */
+        .examples-box { background:#fff; border:2px solid #FFD700; border-radius:12px; padding:10px 14px; margin:12px 0; }
+        .examples-title { font-weight:bold; color:#FF8C00; }
+        .example-item { display:flex; align-items:center; gap:8px; margin:8px 0; }
+        .example-item .en { font-weight:bold; color:#1E90FF; }
+        .example-item .es { color:#666; }
+        .mini-speak {
+            background:#FF69B4; color:#fff; border:none; border-radius:8px;
+            padding:4px 9px; cursor:pointer; font-size:1em; flex:0 0 auto;
+        }
+        .mini-speak:hover { background:#FF85C1; }
+
+        /* Escena animada (ejemplo visual, tipo gif) */
+        .scene-label { font-weight:bold; color:#8A2BE2; margin-top:12px; }
+        .scene {
+            text-align:center; font-size:3.4em; margin:6px 0 4px; line-height:1.2;
+            background: linear-gradient(135deg,#E0F7FF,#FFF0F5);
+            border-radius:14px; padding:14px 6px;
+        }
+        .scene span { display:inline-block; margin:0 6px; }
+
         .btn-listen-sentence {
             background-color: #8A2BE2;
             box-shadow: 0 5px 0 #5D1A9E;
             font-size: 1em;
             padding: 10px 18px;
-            margin: 12px 0 4px 0;
+            margin: 14px 0 4px 0;
         }
         .btn-listen-sentence:hover { background-color: #9B4BEB; }
 
         .hidden { display: none; }
         #score-display { 
-            font-size: 1.3em; 
+            font-size: 1.2em; 
             color: #8A2BE2; 
             margin-bottom: 15px; 
             font-weight: bold; 
@@ -107,13 +139,15 @@
             padding: 10px 15px;
             border-radius: 15px;
             display: inline-flex;
-            gap: 20px;
+            gap: 16px;
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
         }
         .streak-fire { color: #FF4500; }
-        #level-badge { color: #1E90FF; }
+        #points-badge { color: #FF8C00; }
+        #gems-badge { color: #1E90FF; }
+        #level-badge { color: #32CD32; }
 
         /* Barra de progreso */
         #progress-wrap {
@@ -155,11 +189,36 @@
 
         /* Selector de nivel */
         .level-title { font-size: 1.3em; color: #555; margin: 10px 0; }
-        .btn-level { display: block; width: 100%; margin: 12px 0; }
+        .btn-level { display: flex; align-items:center; justify-content:center; gap:10px; width: 100%; margin: 12px 0; }
         .lvl-easy { background:#32CD32; box-shadow:0 6px 0 #228B22; }
         .lvl-med  { background:#FF8C00; box-shadow:0 6px 0 #CC7000; }
         .lvl-hard { background:#FF4500; box-shadow:0 6px 0 #CC3700; }
         .lvl-all  { background:#8A2BE2; box-shadow:0 6px 0 #5D1A9E; }
+        .medal-tag { font-size: 1.1em; background: rgba(255,255,255,0.3); border-radius:20px; padding:2px 8px; }
+
+        /* Recompensa flotante */
+        .reward-popup {
+            position: fixed; left: 50%; top: 42%;
+            transform: translateX(-50%);
+            font-size: 2.4em; font-weight: bold; color: #FFD700;
+            text-shadow: 2px 2px 0 #FF8C00, -1px -1px 0 #FF8C00;
+            z-index: 50; pointer-events: none;
+            animation: floatUp 1.3s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 0; transform: translate(-50%, 30px) scale(0.4); }
+            25% { opacity: 1; transform: translate(-50%, 0) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -90px) scale(1.4); }
+        }
+
+        /* Medalla final */
+        #final-medal { font-size: 5em; margin: 10px 0; animation: bounce 1s ease infinite; }
+        .rewards-summary {
+            display:flex; justify-content:center; gap:20px; flex-wrap:wrap;
+            background:#FFF8DC; border:3px dashed #FFA500; border-radius:15px;
+            padding:14px; margin:15px 0; font-size:1.2em; font-weight:bold;
+        }
+        .rewards-summary span { color:#8A2BE2; }
 
         /* Animaciones */
         @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -168,6 +227,20 @@
         .shake { animation: shake 0.5s; }
         .bounce { animation: bounce 0.6s; }
         .pulse { animation: popIn 0.3s; }
+
+        /* Animaciones de las escenas (ejemplos) */
+        @keyframes floaty { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);} }
+        @keyframes bouncy { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-22px);} }
+        @keyframes spinny { 100%{transform:rotate(360deg);} }
+        @keyframes swingy { 0%,100%{transform:rotate(-18deg);} 50%{transform:rotate(18deg);} }
+        @keyframes rainy { 0%{transform:translateY(-14px); opacity:0.3;} 100%{transform:translateY(14px); opacity:1;} }
+        @keyframes grow { 0%,100%{transform:scale(1);} 50%{transform:scale(1.3);} }
+        .a-float { animation: floaty 2s ease-in-out infinite; }
+        .a-bounce { animation: bouncy 1s ease-in-out infinite; }
+        .a-spin { animation: spinny 5s linear infinite; }
+        .a-swing { animation: swingy 1.5s ease-in-out infinite; }
+        .a-rain { animation: rainy 0.8s ease-in-out infinite alternate; }
+        .a-grow { animation: grow 1.4s ease-in-out infinite; }
 
         /* Confeti */
         .confetti-piece {
@@ -197,21 +270,22 @@
         <div id="start-screen">
             <h1>🎮 Valery Chikitin 🌟</h1>
             <p style="font-size: 1.4em; color: #FF69B4; font-weight: bold; margin: 5px 0;">💜 Misión Inglés 💜</p>
-            <p style="font-size: 1.2em; color: #555;">¡Ayuda a Valery a completar la misión respondiendo los trucos secretos de inglés!</p>
+            <p style="font-size: 1.2em; color: #555;">¡Ayuda a Valery a completar la misión respondiendo los trucos secretos de inglés y gana muchas recompensas!</p>
             <img src="https://api.iconify.design/fluent-emoji:star-struck.svg" width="90" height="90" alt="Star">
             <p class="level-title">Elige tu nivel: 👇</p>
-            <button class="btn btn-level lvl-easy" onclick="startGame(1)">😊 FÁCIL (Palabras)</button>
-            <button class="btn btn-level lvl-med" onclick="startGame(2)">🙂 MEDIO (Am / Is / Are)</button>
-            <button class="btn btn-level lvl-hard" onclick="startGame(3)">😎 DIFÍCIL (Verbos y Pasado)</button>
-            <button class="btn btn-level lvl-all" onclick="startGame(0)">🌈 ¡TODO MEZCLADO!</button>
+            <button class="btn btn-level lvl-easy" onclick="startGame(1)"><span>😊 FÁCIL (Palabras)</span><span id="medal-1" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-med" onclick="startGame(2)"><span>🙂 MEDIO (Am / Is / Are)</span><span id="medal-2" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-hard" onclick="startGame(3)"><span>😎 DIFÍCIL (Verbos y Pasado)</span><span id="medal-3" class="medal-tag hidden"></span></button>
+            <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
         </div>
         
         <!-- PANTALLA DE JUEGO -->
         <div id="game-screen" class="hidden">
             <div id="score-display">
                 <span>⭐ <span id="score">0</span></span>
+                <span id="points-badge">🏆 <span id="points">0</span></span>
+                <span id="gems-badge">💎 <span id="gems">0</span></span>
                 <span class="streak-fire">🔥 <span id="streak">0</span></span>
-                <span id="level-badge">🎯 <span id="level-name">-</span></span>
             </div>
             <div id="progress-wrap"><div id="progress-bar"></div></div>
             <div id="question-text">¿Pregunta?</div>
@@ -224,7 +298,13 @@
         <!-- PANTALLA FINAL -->
         <div id="end-screen" class="hidden">
             <h1>🏆 ¡Nivel Completado! 🏆</h1>
-            <p style="font-size: 1.8em; color: #333;">Conseguiste <span id="final-score" style="color: #FF8C00; font-weight: bold;"></span> estrellas.</p>
+            <div id="final-medal">🏅</div>
+            <p style="font-size: 1.6em; color: #333;">Conseguiste <span id="final-score" style="color: #FF8C00; font-weight: bold;"></span> estrellas.</p>
+            <div class="rewards-summary">
+                <span>🏆 <span id="final-points">0</span> puntos</span>
+                <span>💎 <span id="final-gems">0</span> gemas</span>
+                <span>🔥 Mejor racha: <span id="final-streak">0</span></span>
+            </div>
             <p id="end-message" style="font-size: 1.4em; color: #555;"></p>
             <button class="btn" onclick="location.reload()">Volver a jugar 🔄</button>
         </div>
@@ -232,111 +312,170 @@
 
     <script>
         /* ============ BANCO DE PREGUNTAS ============
-           level: 1 = Fácil, 2 = Medio, 3 = Difícil
-           options: cada opción tiene { text: lo que se ve, en: lo que se pronuncia }
-           say: la frase completa en inglés que se lee en voz alta al responder
+           level: 1=Fácil, 2=Medio, 3=Difícil
+           rule: nombre de la regla | exp: explicación detallada
+           examples: [{en, es}] ejemplos | scene: escena animada (ejemplo visual)
+           say: frase completa en inglés que se lee en voz alta
         */
         const allQuestions = [
             /* ---------- NIVEL 1: FÁCIL (vocabulario) ---------- */
             { level:1, q:"¿Cuál es el opuesto de TALL (Alto)? 🦒",
               options:[{text:"Short (Bajo)",en:"Short"},{text:"Fat (Gordo)",en:"Fat"},{text:"Beautiful (Lindo)",en:"Beautiful"}],
-              answer:0, say:"Short. Short means bajo.",
-              exp:"TALL significa 'alto'. Su opuesto es SHORT, que significa 'bajo' o 'corto'. 📏" },
+              answer:0, say:"Short. The mouse is short.",
+              rule:"🔄 Opuestos (Opposites)",
+              exp:"Las palabras opuestas significan lo contrario. TALL quiere decir 'alto', como una jirafa 🦒. Lo contrario de alto es 'bajito', y en inglés se dice SHORT. Las otras opciones no son opuestos de alto: FAT significa 'gordo' y BEAUTIFUL significa 'hermoso'.",
+              examples:[{en:"The giraffe is tall.",es:"La jirafa es alta."},{en:"The mouse is short.",es:"El ratón es bajito."}],
+              scene:'<span class="a-float">🦒</span><span>➡️</span><span class="a-bounce">🐭</span>' },
 
             { level:1, q:"¿Cómo se dice 'Hola' en inglés? 👋",
               options:[{text:"Bye (Adiós)",en:"Bye"},{text:"Hello (Hola)",en:"Hello"},{text:"Please (Por favor)",en:"Please"}],
-              answer:1, say:"Hello! Hello means hola.",
-              exp:"'Hola' se dice HELLO (o también 'Hi'). BYE es adiós. 😄" },
+              answer:1, say:"Hello! My name is Valery.",
+              rule:"👋 Saludos (Greetings)",
+              exp:"Cuando saludamos a alguien decimos HELLO (o también HI). Las otras palabras se usan en otros momentos: BYE es para despedirnos (adiós) y PLEASE significa 'por favor'. Por eso, para saludar usamos HELLO.",
+              examples:[{en:"Hello, teacher!",es:"¡Hola, profe!"},{en:"Hi, my name is Valery.",es:"Hola, me llamo Valery."}],
+              scene:'<span class="a-swing">👋</span><span class="a-float">😊</span>' },
 
             { level:1, q:"¿De qué color es el sol? ☀️",
               options:[{text:"Blue (Azul)",en:"Blue"},{text:"Green (Verde)",en:"Green"},{text:"Yellow (Amarillo)",en:"Yellow"}],
               answer:2, say:"Yellow. The sun is yellow.",
-              exp:"El sol es amarillo = YELLOW. Blue es azul y Green es verde. 🌞" },
+              rule:"🎨 Colores (Colors)",
+              exp:"El sol lo vemos de color amarillo, y 'amarillo' en inglés es YELLOW. Las otras son colores distintos: BLUE es azul (como el cielo 🌌) y GREEN es verde (como las plantas 🌿). Por eso el color del sol es YELLOW.",
+              examples:[{en:"The sun is yellow.",es:"El sol es amarillo."},{en:"I have a yellow pencil.",es:"Tengo un lápiz amarillo."}],
+              scene:'<span class="a-spin">☀️</span><span class="a-grow">🟡</span>' },
 
             { level:1, q:"'Gato' en inglés es... 🐱",
               options:[{text:"Dog (Perro)",en:"Dog"},{text:"Cat (Gato)",en:"Cat"},{text:"Bird (Pájaro)",en:"Bird"}],
               answer:1, say:"Cat. The cat says meow.",
-              exp:"'Gato' es CAT. DOG es perro y BIRD es pájaro. 🐈" },
+              rule:"🐾 Animales (Animals)",
+              exp:"'Gato' en inglés es CAT, y hace 'meow'. Las otras son otros animales: DOG es perro (hace 'woof' 🐶) y BIRD es pájaro (vuela y canta 🐦). Por eso 'gato' es CAT.",
+              examples:[{en:"My cat is small.",es:"Mi gato es pequeño."},{en:"The cat likes milk.",es:"Al gato le gusta la leche."}],
+              scene:'<span class="a-bounce">🐱</span><span class="a-float">🥛</span>' },
 
             { level:1, q:"¿Cómo se dice el número 'dos'? ✌️",
               options:[{text:"Three (Tres)",en:"Three"},{text:"One (Uno)",en:"One"},{text:"Two (Dos)",en:"Two"}],
               answer:2, say:"Two. One, two, three!",
-              exp:"'Dos' es TWO. One = uno, Two = dos, Three = tres. 🔢" },
+              rule:"🔢 Números (Numbers)",
+              exp:"Los primeros números en inglés son ONE (uno), TWO (dos) y THREE (tres). Entonces 'dos' es TWO. THREE es tres y ONE es uno. ¡Cuenta conmigo: one, two, three!",
+              examples:[{en:"I have two hands.",es:"Tengo dos manos."},{en:"Two cats are playing.",es:"Dos gatos están jugando."}],
+              scene:'<span class="a-bounce">✌️</span><span class="a-float">2️⃣</span>' },
 
             { level:1, q:"¿De qué color es el pasto? 🌱",
               options:[{text:"Green (Verde)",en:"Green"},{text:"Red (Rojo)",en:"Red"},{text:"Pink (Rosado)",en:"Pink"}],
               answer:0, say:"Green. The grass is green.",
-              exp:"El pasto es verde = GREEN. Red es rojo y Pink es rosado. 🍃" },
+              rule:"🎨 Colores (Colors)",
+              exp:"El pasto o la hierba es de color verde, y 'verde' en inglés se dice GREEN. Las otras son colores diferentes: RED es rojo (como una fresa 🍓) y PINK es rosado (como un chicle). Por eso el pasto es GREEN.",
+              examples:[{en:"The grass is green.",es:"El pasto es verde."},{en:"I like green apples.",es:"Me gustan las manzanas verdes."}],
+              scene:'<span class="a-float">🌱</span><span class="a-grow">🟢</span><span class="a-float">🌿</span>' },
 
             /* ---------- NIVEL 2: MEDIO (am / is / are, clima, ropa) ---------- */
             { level:2, q:"Completa el poder mágico: Pikachu _______ yellow. ⚡",
               options:[{text:"am",en:"am"},{text:"is",en:"is"},{text:"are",en:"are"}],
               answer:1, say:"Pikachu is yellow.",
-              exp:"Pikachu es UNA cosa (como 'it'). Con he, she, it usamos IS. Por eso: Pikachu IS yellow. 💛" },
+              rule:"✨ Verbo TO BE: am / is / are",
+              exp:"El verbo TO BE (ser o estar) cambia según quién habla. Con HE (él), SHE (ella) e IT (una cosa o animal) usamos IS. Pikachu es una sola cosa (un 'it'), por eso decimos Pikachu IS yellow. AM va solo con 'I' (yo) y ARE va con we/you/they.",
+              examples:[{en:"Pikachu is yellow.",es:"Pikachu es amarillo."},{en:"She is my friend.",es:"Ella es mi amiga."}],
+              scene:'<span class="a-grow">⚡</span><span class="a-float">🟡</span>' },
 
             { level:2, q:"Si cae mucha LLUVIA 🌧️, el clima está...",
               options:[{text:"Sunny (Soleado)",en:"Sunny"},{text:"Snowy (Nevado)",en:"Snowy"},{text:"Rainy (Lluvioso)",en:"Rainy"}],
-              answer:2, say:"Rainy. It is a rainy day.",
-              exp:"RAIN es 'lluvia'. Cuando el clima está lluvioso decimos RAINY. Sunny = soleado, Snowy = nevado. ☔" },
+              answer:2, say:"It is a rainy day. Take your umbrella!",
+              rule:"🌦️ El clima (The weather)",
+              exp:"Para decir cómo está el clima usamos palabras que terminan en '-y'. Cuando cae lluvia (RAIN) decimos que está RAINY (lluvioso). Las otras son otros climas: SUNNY es soleado (con sol ☀️) y SNOWY es nevado (con nieve ❄️).",
+              examples:[{en:"It is a rainy day.",es:"Es un día lluvioso."},{en:"Take your umbrella, it's rainy!",es:"¡Lleva tu sombrilla, está lluvioso!"}],
+              scene:'<span class="a-rain">🌧️</span><span class="a-float">☔</span>' },
 
             { level:2, q:"Completa el equipo: We _______ friends! 👫",
               options:[{text:"are",en:"are"},{text:"am",en:"am"},{text:"is",en:"is"}],
               answer:0, say:"We are friends!",
-              exp:"Con 'we' (nosotros) siempre usamos ARE. Por eso: We ARE friends! 🤝" },
+              rule:"✨ Verbo TO BE: am / is / are",
+              exp:"Con WE (nosotros), YOU (tú/ustedes) y THEY (ellos) siempre usamos ARE. Como aquí hablamos de 'we' (nosotros), decimos We ARE friends. Recuerda: AM solo va con 'I' e IS va con he/she/it.",
+              examples:[{en:"We are friends.",es:"Somos amigos."},{en:"We are happy.",es:"Estamos felices."}],
+              scene:'<span class="a-bounce">👫</span><span class="a-float">🤝</span>' },
 
             { level:2, q:"Hace mucho frío afuera 🥶. Necesito mi...",
               options:[{text:"T-shirt (Camiseta)",en:"T-shirt"},{text:"Shorts (Pantaloneta)",en:"Shorts"},{text:"Jacket (Chaqueta)",en:"Jacket"}],
-              answer:2, say:"Jacket. I wear a jacket when it is cold.",
-              exp:"Cuando hace frío te abrigas con una JACKET (chaqueta). La T-shirt y los shorts son para el calor. 🧥" },
+              answer:2, say:"I wear a jacket when it is cold.",
+              rule:"🧥 La ropa (Clothes)",
+              exp:"Cuando hace frío 🥶 nos ponemos ropa abrigada. Una JACKET es una chaqueta que nos da calorcito. Las otras son ropa fresca para el calor: una T-SHIRT (camiseta) y unos SHORTS (pantaloneta). Por eso, con frío usamos la JACKET.",
+              examples:[{en:"I wear a jacket when it's cold.",es:"Uso chaqueta cuando hace frío."},{en:"My jacket is blue.",es:"Mi chaqueta es azul."}],
+              scene:'<span class="a-float">🥶</span><span class="a-grow">🧥</span>' },
 
-            { level:2, q:"Sobre mí mismo: I _______ a student. 🎒",
+            { level:2, q:"Hablando de mí: I _______ a student. 🎒",
               options:[{text:"am",en:"am"},{text:"is",en:"is"},{text:"are",en:"are"}],
               answer:0, say:"I am a student.",
-              exp:"Con 'I' (yo) siempre usamos AM. Por eso: I AM a student. ✏️" },
+              rule:"✨ Verbo TO BE: am / is / are",
+              exp:"La palabrita AM solo se usa con 'I' (yo). Siempre van juntas, como mejores amigas: I AM. Por eso decimos I AM a student (yo soy estudiante). Nunca decimos 'I is' ni 'I are'.",
+              examples:[{en:"I am a student.",es:"Yo soy estudiante."},{en:"I am seven years old.",es:"Yo tengo siete años."}],
+              scene:'<span class="a-bounce">🎒</span><span class="a-float">✏️</span>' },
 
             { level:2, q:"Ellos están felices: They _______ happy. 😃",
               options:[{text:"is",en:"is"},{text:"are",en:"are"},{text:"am",en:"am"}],
               answer:1, say:"They are happy.",
-              exp:"Con 'they' (ellos) usamos ARE. Por eso: They ARE happy. 🎉" },
+              rule:"✨ Verbo TO BE: am / is / are",
+              exp:"THEY significa 'ellos' o 'ellas' (más de una persona). Con they usamos ARE. Por eso They ARE happy (ellos están felices). Recuerda el truco: he/she/it usan IS, pero they usa ARE.",
+              examples:[{en:"They are happy.",es:"Ellos están felices."},{en:"They are my friends.",es:"Ellos son mis amigos."}],
+              scene:'<span class="a-bounce">😃</span><span class="a-bounce">😄</span><span class="a-bounce">😁</span>' },
 
             /* ---------- NIVEL 3: DIFÍCIL (verbos, -s, pasado, do/does) ---------- */
             { level:3, q:"Viajemos al PASADO ⏳: Yesterday, I _______ happy.",
               options:[{text:"am",en:"am"},{text:"was",en:"was"},{text:"were",en:"were"}],
               answer:1, say:"Yesterday I was happy.",
-              exp:"'Yesterday' (ayer) es pasado. Con 'I' en pasado usamos WAS. Por eso: I WAS happy. 😊" },
+              rule:"⏳ El pasado del verbo TO BE",
+              exp:"Cuando hablamos de ANTES (ayer, el pasado), el verbo TO BE cambia: AM e IS se convierten en WAS, y ARE se convierte en WERE. La palabra 'yesterday' (ayer) nos avisa que es pasado. Con 'I' usamos WAS: I WAS happy (yo estaba feliz).",
+              examples:[{en:"Yesterday I was happy.",es:"Ayer yo estaba feliz."},{en:"She was at school.",es:"Ella estaba en la escuela."}],
+              scene:'<span class="a-spin">⏳</span><span class="a-float">😊</span>' },
 
             { level:3, q:"La Corona de la 'S' 👑: She _______ basketball.",
               options:[{text:"play",en:"play"},{text:"plays",en:"plays"},{text:"playing",en:"playing"}],
               answer:1, say:"She plays basketball.",
-              exp:"Con he, she, it el verbo lleva la corona '-S' al final. Por eso: She PLAYS basketball. 🏀" },
+              rule:"👑 La regla de la -S (he/she/it)",
+              exp:"En presente, cuando hablamos de HE, SHE o IT, el verbo recibe una 'corona': se le agrega una -S al final. Por eso 'play' se vuelve PLAYS: She PLAYS basketball. Si habláramos de 'I' o 'they', diríamos 'play' sin la -s.",
+              examples:[{en:"She plays basketball.",es:"Ella juega baloncesto."},{en:"He plays with his dog.",es:"Él juega con su perro."}],
+              scene:'<span class="a-bounce">🏀</span><span class="a-grow">👑</span>' },
 
             { level:3, q:"El Escudo Mágico 🛡️: _______ he play Minecraft?",
               options:[{text:"Do",en:"Do"},{text:"Does",en:"Does"},{text:"Is",en:"Is"}],
               answer:1, say:"Does he play Minecraft?",
-              exp:"Para hacer preguntas con he, she, it usamos DOES. Por eso: DOES he play Minecraft? 🎮" },
+              rule:"🛡️ Preguntas con DO / DOES",
+              exp:"Para hacer preguntas en presente usamos DO o DOES al principio. Con HE, SHE, IT usamos DOES (¡la -s de la corona se pasa al 'does', por eso el verbo queda sin -s: play!). Por eso: DOES he play Minecraft? Con I/you/we/they usaríamos DO.",
+              examples:[{en:"Does he play Minecraft?",es:"¿Él juega Minecraft?"},{en:"Does she like cats?",es:"¿A ella le gustan los gatos?"}],
+              scene:'<span class="a-grow">🛡️</span><span class="a-bounce">🎮</span>' },
 
             { level:3, q:"Todos los días: He _______ to school. 🚌",
               options:[{text:"go",en:"go"},{text:"gos",en:"gos"},{text:"goes",en:"goes"}],
               answer:2, say:"He goes to school every day.",
-              exp:"Con 'he' el verbo 'go' se vuelve GOES (¡es especial, lleva -ES!). Por eso: He GOES to school. 🏫" },
+              rule:"👑 La regla de la -S (casos especiales)",
+              exp:"Con HE, SHE, IT el verbo lleva -s. Pero el verbo GO (ir) es especial: no decimos 'gos', sino GOES (con -es). Por eso: He GOES to school. Otros parecidos que llevan -es son: do → does. La opción 'gos' no existe en inglés.",
+              examples:[{en:"He goes to school every day.",es:"Él va a la escuela todos los días."},{en:"She goes to the park.",es:"Ella va al parque."}],
+              scene:'<span class="a-bounce">🚌</span><span>➡️</span><span class="a-float">🏫</span>' },
 
             { level:3, q:"Pregunta para tu amiga: _______ you like pizza? 🍕",
               options:[{text:"Do",en:"Do"},{text:"Does",en:"Does"},{text:"Are",en:"Are"}],
               answer:0, say:"Do you like pizza?",
-              exp:"Con 'you' (tú) usamos DO para preguntar. Por eso: DO you like pizza? 😋" },
+              rule:"🛡️ Preguntas con DO / DOES",
+              exp:"Con YOU (tú), I, WE y THEY usamos DO para hacer preguntas. Por eso: DO you like pizza? Solo con he/she/it cambiaríamos a DOES. La palabra ARE no se usa para este tipo de pregunta con el verbo 'like'.",
+              examples:[{en:"Do you like pizza?",es:"¿Te gusta la pizza?"},{en:"Do you have a pet?",es:"¿Tienes una mascota?"}],
+              scene:'<span class="a-grow">🍕</span><span class="a-float">😋</span>' },
 
             { level:3, q:"El pasado de 'GO' (ir) es... ⏪",
               options:[{text:"goed",en:"goed"},{text:"went",en:"went"},{text:"gone",en:"gone"}],
-              answer:1, say:"Went. I went to the park.",
-              exp:"'Go' es un verbo especial (irregular): su pasado es WENT, no 'goed'. Por eso: I WENT to the park. 🌳" }
+              answer:1, say:"I went to the park.",
+              rule:"⏪ Verbos irregulares en pasado",
+              exp:"Muchos verbos en pasado terminan en -ed, pero algunos son 'irregulares' y cambian por completo. GO (ir) es uno de ellos: su pasado NO es 'goed', sino WENT. Por eso decimos: I WENT to the park (yo fui al parque).",
+              examples:[{en:"I went to the park.",es:"Yo fui al parque."},{en:"We went to school.",es:"Nosotros fuimos a la escuela."}],
+              scene:'<span class="a-spin">⏪</span><span class="a-bounce">🏃</span><span class="a-float">🌳</span>' }
         ];
 
         const levelNames = {1:"Fácil 😊", 2:"Medio 🙂", 3:"Difícil 😎", 0:"Mezcla 🌈"};
 
         let questions = [];
         let currentQ = 0;
-        let score = 0;
+        let score = 0;       // respuestas correctas
+        let points = 0;      // puntos totales (recompensa grande)
+        let gems = 0;        // gemas coleccionadas
         let streak = 0;
+        let bestStreak = 0;
+        let currentLevel = 1;
         let soundOn = true;
         let musicOn = false;
         let audioCtx = null;
@@ -358,7 +497,7 @@
             const u = new SpeechSynthesisUtterance(text);
             u.lang = 'en-US';
             if (enVoice) u.voice = enVoice;
-            u.rate = 0.85;   // un poco lento para que ella entienda
+            u.rate = 0.85;
             u.pitch = 1.1;
             window.speechSynthesis.speak(u);
         }
@@ -383,6 +522,10 @@
             osc.stop(ctx.currentTime + startTime + duration);
         }
         function playClick()   { playTone(500, 0.08, 'square', 0, 0.12); }
+        function playReward()  { // sonidito de "monedita/recompensa"
+            playTone(880, 0.08, 'square', 0, 0.14);
+            playTone(1318, 0.14, 'square', 0.08, 0.14);
+        }
         function playCorrect() {
             playTone(523, 0.12, 'sine', 0);
             playTone(659, 0.12, 'sine', 0.1);
@@ -394,7 +537,7 @@
             playTone(200, 0.25, 'sawtooth', 0.15, 0.18);
         }
         function playWin()     {
-            const notes = [523, 659, 784, 1046, 784, 1046];
+            const notes = [523, 659, 784, 1046, 784, 1046, 1318];
             notes.forEach((n, i) => playTone(n, 0.25, 'triangle', i * 0.18, 0.22));
         }
         function toggleSound() {
@@ -405,10 +548,8 @@
             if (soundOn) playClick();
         }
 
-        /* ============ MÚSICA DE FONDO (loop suave generado) ============ */
+        /* ============ MÚSICA DE FONDO ============ */
         let musicTimer = null;
-        let musicNode = null;   // ganancia global de la música
-        // Melodía alegre (notas en Hz) estilo cancioncita infantil
         const melody = [
             523, 523, 587, 659, 659, 587, 523, 494,
             440, 440, 494, 523, 523, 494, 494, 0,
@@ -425,7 +566,7 @@
                 const gain = ctx.createGain();
                 osc.type = 'triangle';
                 osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.06, ctx.currentTime);        // volumen bajito
+                gain.gain.setValueAtTime(0.06, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
@@ -449,7 +590,7 @@
             if (musicOn) { playClick(); startMusic(); } else { stopMusic(); }
         }
 
-        /* ============ CONFETI ============ */
+        /* ============ CONFETI Y RECOMPENSAS FLOTANTES ============ */
         function launchConfetti(amount = 40) {
             const colors = ['#FFD700', '#FF4500', '#32CD32', '#1E90FF', '#FF69B4', '#8A2BE2'];
             for (let i = 0; i < amount; i++) {
@@ -463,8 +604,42 @@
                 setTimeout(() => piece.remove(), 4000);
             }
         }
+        function showRewardPopup(text) {
+            const pop = document.createElement('div');
+            pop.className = 'reward-popup';
+            pop.innerText = text;
+            document.body.appendChild(pop);
+            setTimeout(() => pop.remove(), 1300);
+        }
 
-        /* ============ MEZCLAR (para que no salgan siempre en el mismo orden) ============ */
+        /* ============ MEDALLAS GUARDADAS (recompensa por nivel) ============ */
+        const rankEmoji = { 4:"🥇 Oro", 3:"🥈 Plata", 2:"🥉 Bronce", 1:"🎗️" };
+        function getMedals() {
+            try { return JSON.parse(localStorage.getItem('valeryMedals') || '{}'); }
+            catch(e) { return {}; }
+        }
+        function saveMedal(level, rank) {
+            const medals = getMedals();
+            if (!medals[level] || rank > medals[level]) {
+                medals[level] = rank;
+                try { localStorage.setItem('valeryMedals', JSON.stringify(medals)); } catch(e) {}
+            }
+        }
+        function updateMedalDisplay() {
+            const medals = getMedals();
+            [0,1,2,3].forEach(lvl => {
+                const el = document.getElementById('medal-' + lvl);
+                if (!el) return;
+                if (medals[lvl]) {
+                    el.innerText = rankEmoji[medals[lvl]];
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        /* ============ MEZCLAR ============ */
         function shuffle(arr) {
             const a = arr.slice();
             for (let i = a.length - 1; i > 0; i--) {
@@ -477,16 +652,15 @@
         /* ============ JUEGO ============ */
         function startGame(level) {
             playClick();
-            getCtx(); // desbloquea el audio con el gesto del usuario
+            getCtx();
+            currentLevel = level;
 
-            // Filtra por nivel (0 = todos) y mezcla el orden
             questions = level === 0 ? shuffle(allQuestions) : shuffle(allQuestions.filter(q => q.level === level));
-            currentQ = 0;
-            score = 0;
-            streak = 0;
+            currentQ = 0; score = 0; points = 0; gems = 0; streak = 0; bestStreak = 0;
             document.getElementById('score').innerText = 0;
+            document.getElementById('points').innerText = 0;
+            document.getElementById('gems').innerText = 0;
             document.getElementById('streak').innerText = 0;
-            document.getElementById('level-name').innerText = levelNames[level];
 
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
@@ -499,10 +673,7 @@
         }
 
         function loadQuestion() {
-            if (currentQ >= questions.length) {
-                endGame();
-                return;
-            }
+            if (currentQ >= questions.length) { endGame(); return; }
             updateProgress();
             document.getElementById('feedback').innerText = "";
             document.getElementById('explanation-box').classList.add('hidden');
@@ -515,7 +686,6 @@
 
             const optionsDiv = document.getElementById('options');
             optionsDiv.innerHTML = "";
-            
             current.options.forEach((opt, index) => {
                 const row = document.createElement('div');
                 row.className = 'option-row';
@@ -537,14 +707,30 @@
             });
         }
 
+        function buildExamplesHTML(examples) {
+            let html = '<div class="examples-box"><div class="examples-title">📖 Ejemplos:</div>';
+            examples.forEach(ex => {
+                const safe = ex.en.replace(/'/g, "\\'");
+                html += `<div class="example-item">
+                    <button class="mini-speak" onclick="speakEnglish('${safe}')">🔉</button>
+                    <span><span class="en">${ex.en}</span> <span class="es">— ${ex.es}</span></span>
+                </div>`;
+            });
+            html += '</div>';
+            return html;
+        }
+
         function checkAnswer(selectedIndex, btn) {
             const buttons = document.querySelectorAll('.btn-option');
             buttons.forEach(b => b.disabled = true);
 
             const current = questions[currentQ];
             const correctText = current.options[current.answer].text;
+            const pickedText = current.options[selectedIndex].text;
             const feedback = document.getElementById('feedback');
             const expBox = document.getElementById('explanation-box');
+
+            let headerHTML = "";
 
             if (selectedIndex === current.answer) {
                 btn.style.backgroundColor = '#32CD32';
@@ -552,15 +738,34 @@
                 btn.classList.add('bounce');
                 feedback.innerText = "¡CORRECTO! 🌟";
                 feedback.style.color = '#32CD32';
+
                 score++;
                 streak++;
-                document.getElementById('score').innerText = score;
-                document.getElementById('streak').innerText = streak;
-                playCorrect();
-                launchConfetti(streak >= 3 ? 60 : 30);
+                if (streak > bestStreak) bestStreak = streak;
 
-                let bonus = streak >= 3 ? `<br>🔥 <b>¡Racha de ${streak}! Estás imparable.</b>` : "";
-                expBox.innerHTML = `<span class="exp-title">💡 ¿Por qué? </span>${current.exp}${bonus}`;
+                // ===== RECOMPENSAS =====
+                const base = 10;
+                const bonus = Math.min((streak - 1) * 5, 25);   // bonus por racha
+                const gained = base + bonus;
+                points += gained;
+                const gemsWon = 1 + (streak >= 3 ? 1 : 0) + (streak >= 5 ? 1 : 0);
+                gems += gemsWon;
+
+                document.getElementById('score').innerText = score;
+                document.getElementById('points').innerText = points;
+                document.getElementById('gems').innerText = gems;
+                document.getElementById('streak').innerText = streak;
+
+                playCorrect();
+                setTimeout(playReward, 350);
+                launchConfetti(streak >= 3 ? 60 : 30);
+                showRewardPopup(`+${gained} 🏆  +${gemsWon} 💎`);
+
+                let bonusMsg = "";
+                if (bonus > 0) bonusMsg = `<br>🔥 <b>¡Racha de ${streak}! Bonus de +${bonus} puntos.</b>`;
+                headerHTML = `<span class="exp-header ok">✅ ¡Muy bien, Valery! Escogiste "${correctText}".</span>` +
+                             `<span class="exp-rule">${current.rule}</span>` +
+                             `<div class="exp-text">${current.exp}${bonusMsg}</div>`;
             } else {
                 btn.style.backgroundColor = '#FF4500';
                 btn.style.boxShadow = '0 6px 0 #CC3700';
@@ -574,26 +779,29 @@
                 document.getElementById('streak').innerText = streak;
                 playWrong();
 
-                expBox.innerHTML = `<span class="exp-title">📚 ¡Aprendamos algo! </span>` +
-                    `La respuesta correcta era <span class="correct-answer">"${correctText}"</span>.<br>` +
-                    `${current.exp}`;
+                headerHTML = `<span class="exp-header no">❌ Tú escogiste "<span class="picked-wrong">${pickedText}</span>", pero la respuesta correcta era "<span class="correct-answer">${correctText}</span>".</span>` +
+                             `<span class="exp-rule">${current.rule}</span>` +
+                             `<div class="exp-text"><b>Te explico para que lo entiendas 👇</b><br>${current.exp}</div>`;
             }
+
+            // Ejemplos + escena animada (ejemplo visual tipo gif)
+            let bodyHTML = buildExamplesHTML(current.examples);
+            bodyHTML += `<div class="scene-label">👀 Míralo con un ejemplo:</div><div class="scene">${current.scene}</div>`;
+
+            expBox.innerHTML = headerHTML + bodyHTML;
 
             // Botón para escuchar la frase completa en inglés
             const listenBtn = document.createElement('button');
             listenBtn.className = 'btn btn-listen-sentence';
-            listenBtn.innerText = '🔊 Escuchar en inglés';
+            listenBtn.innerText = '🔊 Escuchar la frase en inglés';
             listenBtn.onclick = () => speakEnglish(current.say);
-            expBox.appendChild(document.createElement('br'));
             expBox.appendChild(listenBtn);
 
             expBox.classList.remove('hidden');
-
-            // Pronuncia automáticamente la frase correcta para que ella la escuche
             setTimeout(() => speakEnglish(current.say), 700);
 
             const nextBtn = document.getElementById('next-btn');
-            nextBtn.innerText = (currentQ + 1 >= questions.length) ? "Ver resultado 🏆" : "Siguiente ➡️";
+            nextBtn.innerText = (currentQ + 1 >= questions.length) ? "Ver mis recompensas 🏆" : "Siguiente ➡️";
             nextBtn.classList.remove('hidden');
         }
 
@@ -608,20 +816,35 @@
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('end-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score + " de " + questions.length;
-            
-            let msg = "";
-            if(score === questions.length) msg = "¡Valery, eres una MAESTRA del Inglés! Nivel Perfecto. 🦄✨";
-            else if(score >= questions.length - 2) msg = "¡Súper bien, Valery! Eres genial. 🚀";
-            else msg = "¡Buen intento, Valery! Sigue practicando, vas a ser la mejor. 💪";
-            
+            document.getElementById('final-points').innerText = points;
+            document.getElementById('final-gems').innerText = gems;
+            document.getElementById('final-streak').innerText = bestStreak;
+
+            // Medalla según el porcentaje de aciertos
+            const pct = score / questions.length;
+            let rank, medalEmoji, msg;
+            if (pct === 1)        { rank = 4; medalEmoji = "🥇"; msg = "¡Valery, eres una MAESTRA del Inglés! Medalla de ORO. 🦄✨"; }
+            else if (pct >= 0.7)  { rank = 3; medalEmoji = "🥈"; msg = "¡Súper bien, Valery! Te ganaste la medalla de PLATA. 🚀"; }
+            else if (pct >= 0.4)  { rank = 2; medalEmoji = "🥉"; msg = "¡Buen trabajo, Valery! Medalla de BRONCE. Sigue así. 💪"; }
+            else                  { rank = 1; medalEmoji = "🎗️"; msg = "¡Buen intento, Valery! Practica otra vez y ganarás una medalla más grande. 🌟"; }
+
+            document.getElementById('final-medal').innerText = medalEmoji;
             document.getElementById('end-message').innerText = msg;
 
-            if (score >= questions.length - 2) {
+            saveMedal(currentLevel, rank);
+
+            if (pct >= 0.7) {
                 playWin();
-                launchConfetti(120);
-                setTimeout(() => launchConfetti(80), 700);
+                launchConfetti(150);
+                setTimeout(() => launchConfetti(100), 700);
+                setTimeout(() => launchConfetti(100), 1400);
+            } else {
+                launchConfetti(40);
             }
         }
+
+        // Mostrar las medallas ya ganadas al abrir el juego
+        updateMedalDisplay();
     </script>
 </body>
 </html>
