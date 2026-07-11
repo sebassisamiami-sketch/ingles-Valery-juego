@@ -186,6 +186,19 @@
         .order-tile.tile-ok { background:#F0FFF0; border-color:#32CD32; color:#228B22; box-shadow:0 4px 0 #1B7A1B; }
         .order-tile.tile-no { background:#FFF0EE; border-color:#FF4500; color:#CC3700; box-shadow:0 4px 0 #A82D00; }
 
+        /* Panel del reproductor de música de ambiente (YouTube) */
+        #yt-audio {
+            position: fixed; right: 12px; bottom: 12px; z-index: 8;
+            background: #fff; border: 3px solid #FFD700; border-radius: 14px;
+            padding: 6px; box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+            display: none;
+        }
+        #yt-audio.show { display: block; }
+        #yt-audio .yt-audio-title { font-size: 0.8em; font-weight: bold; color: #8A2BE2; margin: 2px 4px 6px; text-align: center; }
+        #yt-player { width: 240px; height: 135px; }
+        #yt-player iframe { width: 100% !important; height: 100% !important; border-radius: 10px; display: block; }
+        @media (max-width: 480px) { #yt-player { width: 172px; height: 97px; } }
+
         .hidden { display: none; }
         #score-display { 
             font-size: 1.2em; 
@@ -485,6 +498,10 @@
     </style>
 </head>
 <body>
+    <div id="yt-audio" aria-label="Música de ambiente">
+        <div class="yt-audio-title">🎵 Música de ambiente</div>
+        <div id="yt-player"></div>
+    </div>
     <div id="buddy-bubble"></div>
     <div id="buddy" onclick="buddyReact()" title="¡Tócame para jugar!">🌟</div>
     <div id="game-container">
@@ -1541,29 +1558,58 @@
             if (soundOn) playClick();
         }
 
-        /* ============ MÚSICA ============ */
-        let musicTimer = null;
-        const melody = [523,523,587,659,659,587,523,494,440,440,494,523,523,494,494,0,523,523,587,659,659,587,523,494,440,440,494,523,494,440,440,0];
-        let melodyIndex = 0;
-        function playMelodyNote() {
-            if (!musicOn) return;
-            const ctx = getCtx(); const freq = melody[melodyIndex];
-            if (freq > 0) {
-                const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                osc.type = 'triangle'; osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.06, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + 0.34);
-            }
-            melodyIndex = (melodyIndex + 1) % melody.length;
+        /* ============ MÚSICA DE AMBIENTE (lista de YouTube, reproductor oficial) ============ */
+        // Se transmite desde el reproductor oficial de YouTube (IFrame API). No se descarga audio.
+        const YT_PLAYLIST = 'PL718D16542AE44430';   // la lista original que pediste
+        const YT_FIRST_VIDEO = '-tJYN-eG1zk';        // primer video de la lista
+        let ytPlayer = null;
+        let ytReady = false;
+        let ytPending = false;   // si tocó play antes de que cargue el reproductor
+
+        // La API de YouTube llama a esta función global cuando termina de cargar
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('yt-player', {
+                height: '180', width: '320',
+                playerVars: {
+                    listType: 'playlist', list: YT_PLAYLIST,
+                    autoplay: 0, controls: 1, loop: 1,
+                    modestbranding: 1, rel: 0, playsinline: 1
+                },
+                events: {
+                    'onReady': function(e) {
+                        ytReady = true;
+                        try { e.target.setVolume(35); } catch(err){}   // suave, de fondo
+                        if (ytPending) { try { e.target.playVideo(); } catch(err){} ytPending = false; }
+                    },
+                    'onStateChange': function(e) {
+                        // cuando termina la lista, vuelve a empezar (bucle infinito)
+                        if (e.data === YT.PlayerState.ENDED) { try { e.target.playVideo(); } catch(err){} }
+                    }
+                }
+            });
         }
-        function startMusic(){ getCtx(); if (musicTimer) clearInterval(musicTimer); musicTimer = setInterval(playMelodyNote, 320); }
-        function stopMusic(){ if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } }
+        // Carga el script de la API de YouTube una sola vez
+        (function loadYouTubeAPI(){
+            if (window.YT && window.YT.Player) { onYouTubeIframeAPIReady(); return; }
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(tag);
+        })();
+
+        function startMusic() {
+            if (ytReady && ytPlayer) { try { ytPlayer.playVideo(); } catch(e){} }
+            else { ytPending = true; }   // se reproducirá al estar listo
+        }
+        function stopMusic() {
+            ytPending = false;
+            if (ytReady && ytPlayer) { try { ytPlayer.pauseVideo(); } catch(e){} }
+        }
         function toggleMusic() {
             musicOn = !musicOn;
             document.getElementById('music-toggle').classList.toggle('off', !musicOn);
-            if (musicOn) { playClick(); startMusic(); } else { stopMusic(); }
+            const panel = document.getElementById('yt-audio');
+            if (musicOn) { playClick(); startMusic(); if (panel) panel.classList.add('show'); }
+            else { stopMusic(); if (panel) panel.classList.remove('show'); }
         }
 
         /* ============ CONFETI Y RECOMPENSAS ============ */
