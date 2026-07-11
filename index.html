@@ -341,6 +341,24 @@
         .mg-banner { background:#FFF8DC; border:3px dashed #FFA500; border-radius:15px; padding:16px; margin:16px 0; }
         .mg-banner-msg { font-size:1.25em; font-weight:bold; color:#8A2BE2; margin-bottom:12px; }
 
+        /* Récord en los botones del hub */
+        #minigames-screen .btn-level { flex-wrap:wrap; }
+        .mg-record { flex-basis:100%; text-align:center; font-size:0.6em; font-weight:normal; opacity:0.95; }
+        .mg-btn-letter { background:#FF8C00; box-shadow:0 6px 0 #CC7000; }
+
+        /* Minijuego 4: la letra que falta */
+        .mg-l-emoji { font-size:2.6em; line-height:1.1; }
+        .mg-l-word { font-size:2em; font-weight:bold; letter-spacing:6px; color:#333; margin:8px 0; font-family:var(--game-font); }
+        .mg-l-blank { color:#1E90FF; }
+        .mg-letter-tile {
+            font-family:var(--game-font); font-size:1.8em; font-weight:bold;
+            width:62px; height:62px; background:#fff; color:#1E5A8A;
+            border:3px solid #1E90FF; border-radius:12px; cursor:pointer; box-shadow:0 4px 0 #1565C0;
+        }
+        .mg-letter-tile:disabled { cursor:default; }
+        .mg-letter-tile.tile-ok { background:#F0FFF0; border-color:#32CD32; color:#228B22; box-shadow:0 4px 0 #1B7A1B; }
+        .mg-letter-tile.tile-no { background:#FFF0EE; border-color:#FF4500; color:#CC3700; box-shadow:0 4px 0 #A82D00; }
+
         /* Pantalla de progreso */
         .progress-box {
             width:100%; min-height:90px; border:3px solid #FFD700; border-radius:12px;
@@ -692,9 +710,10 @@
         <div id="minigames-screen" class="hidden">
             <h1>🎮 Minijuegos</h1>
             <p style="font-size:1.1em; color:#555;">¡Juega, diviértete y aprende inglés ganando gemas 💎 y puntos 🏆!</p>
-            <button class="btn btn-level mg-btn-memory" onclick="startMinigame('memory')"><span>🃏 MEMORIA (Encuentra las parejas)</span></button>
-            <button class="btn btn-level mg-btn-balloon" onclick="startMinigame('balloon')"><span>🎈 ATRAPA LA PALABRA (Globos)</span></button>
-            <button class="btn btn-level mg-btn-simon" onclick="startMinigame('simon')"><span>🎹 SIMÓN DICE (Colores en inglés)</span></button>
+            <button class="btn btn-level mg-btn-memory" onclick="startMinigame('memory')"><span>🃏 MEMORIA (Encuentra las parejas)</span><span id="rec-memory" class="mg-record"></span></button>
+            <button class="btn btn-level mg-btn-balloon" onclick="startMinigame('balloon')"><span>🎈 ATRAPA LA PALABRA (Globos)</span><span id="rec-balloon" class="mg-record"></span></button>
+            <button class="btn btn-level mg-btn-simon" onclick="startMinigame('simon')"><span>🎹 SIMÓN DICE (Colores en inglés)</span><span id="rec-simon" class="mg-record"></span></button>
+            <button class="btn btn-level mg-btn-letter" onclick="startMinigame('letter')"><span>🔤 LA LETRA QUE FALTA</span><span id="rec-letter" class="mg-record"></span></button>
             <button class="btn" onclick="closeMinigames()">⬅️ Volver al menú</button>
         </div>
 
@@ -2474,7 +2493,7 @@
         }
 
         /* ============ GUARDAR / CARGAR PROGRESO (pasar a otro dispositivo) ============ */
-        const PROGRESS_KEYS = ['valeryGems','valeryMedals','valeryOwned','valeryEquip','valeryFont','valeryRedeemed'];
+        const PROGRESS_KEYS = ['valeryGems','valeryMedals','valeryOwned','valeryEquip','valeryFont','valeryRedeemed','valeryRecords'];
         const PROGRESS_PREFIX = 'VALERY1:';
 
         function collectProgress() {
@@ -2552,9 +2571,42 @@
             {es:'Flor', en:'Flower', emoji:'🌸'}, {es:'Pelota', en:'Ball', emoji:'⚽'},
             {es:'Corazón', en:'Heart', emoji:'❤️'}, {es:'Luna', en:'Moon', emoji:'🌙'},
             {es:'Pájaro', en:'Bird', emoji:'🐦'}, {es:'Árbol', en:'Tree', emoji:'🌳'},
-            {es:'Carro', en:'Car', emoji:'🚗'}, {es:'Mano', en:'Hand', emoji:'✋'}
+            {es:'Carro', en:'Car', emoji:'🚗'}, {es:'Mano', en:'Hand', emoji:'✋'},
+            {es:'Leche', en:'Milk', emoji:'🥛'}, {es:'Huevo', en:'Egg', emoji:'🥚'},
+            {es:'Pan', en:'Bread', emoji:'🍞'}, {es:'Agua', en:'Water', emoji:'💧'},
+            {es:'Vaca', en:'Cow', emoji:'🐮'}, {es:'León', en:'Lion', emoji:'🦁'},
+            {es:'Pato', en:'Duck', emoji:'🦆'}, {es:'Rana', en:'Frog', emoji:'🐸'},
+            {es:'Cama', en:'Bed', emoji:'🛏️'}, {es:'Puerta', en:'Door', emoji:'🚪'},
+            {es:'Fuego', en:'Fire', emoji:'🔥'}, {es:'Pastel', en:'Cake', emoji:'🎂'},
+            {es:'Rey', en:'King', emoji:'🤴'}, {es:'Bebé', en:'Baby', emoji:'👶'},
+            {es:'Nieve', en:'Snow', emoji:'❄️'}, {es:'Sombrero', en:'Hat', emoji:'🎩'}
         ];
-        const MG_TITLES = { memory:'🃏 Memoria', balloon:'🎈 Atrapa la palabra', simon:'🎹 Simón dice' };
+        const MG_TITLES = { memory:'🃏 Memoria', balloon:'🎈 Atrapa la palabra', simon:'🎹 Simón dice', letter:'🔤 Letra que falta' };
+
+        /* ---- Récords (mejor puntaje) de cada minijuego ---- */
+        function getRecords() { try { return JSON.parse(localStorage.getItem('valeryRecords') || '{}'); } catch(e){ return {}; } }
+        function saveRecord(game, value, higherIsBetter) {
+            const r = getRecords();
+            const cur = r[game];
+            const isBetter = (cur === undefined) ? true : (higherIsBetter ? value > cur : value < cur);
+            if (isBetter) { r[game] = value; try { localStorage.setItem('valeryRecords', JSON.stringify(r)); } catch(e){} return true; }
+            return false;
+        }
+        function recordText(game) {
+            const r = getRecords();
+            if (r[game] === undefined) return '';
+            if (game === 'memory') return '🏅 Récord: ' + r[game] + ' intentos';
+            if (game === 'simon')  return '🏅 Récord: nivel ' + r[game];
+            if (game === 'balloon') return '🏅 Récord: ' + r[game] + '/' + MG_BALLOON_TOTAL;
+            if (game === 'letter')  return '🏅 Récord: ' + r[game] + '/' + MG_LETTER_TOTAL;
+            return '';
+        }
+        function renderMinigameRecords() {
+            ['memory','balloon','simon','letter'].forEach(g => {
+                const el = document.getElementById('rec-' + g);
+                if (el) el.innerText = recordText(g);
+            });
+        }
 
         /* ---- Navegación de minijuegos ---- */
         function openMinigames() {
@@ -2562,6 +2614,7 @@
             if (window.speechSynthesis) window.speechSynthesis.cancel();
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('minigames-screen').classList.remove('hidden');
+            renderMinigameRecords();
         }
         function closeMinigames() {
             playClick();
@@ -2585,6 +2638,7 @@
             if (which === 'memory') mgMemoryStart(area);
             else if (which === 'balloon') mgBalloonStart(area);
             else if (which === 'simon') mgSimonStart(area);
+            else if (which === 'letter') mgLetterStart(area);
         }
         function exitMinigame() {
             playClick();
@@ -2595,9 +2649,12 @@
         }
         function stopAllMinigames() {
             if (mgBalloonTimer) { clearTimeout(mgBalloonTimer); mgBalloonTimer = null; }
+            if (mgLetterTimer) { clearTimeout(mgLetterTimer); mgLetterTimer = null; }
             mgSimonTimeouts.forEach(t => clearTimeout(t)); mgSimonTimeouts = [];
             mgSimonPlaying = false; mgMemoryLock = false;
         }
+        // Devuelve un aviso si se supera el récord del minijuego
+        function mgRecordSuffix(game, value, higher) { return saveRecord(game, value, higher) ? '  🎉 ¡NUEVO RÉCORD!' : ''; }
         // Recompensa compartida de los minijuegos
         function mgAward(gemsWon, pointsWon, msg) {
             if (gemsWon > 0) addGems(gemsWon);
@@ -2685,7 +2742,9 @@
                 mgAward(gemsWon, pointsWon, '🃏 +' + gemsWon + ' 💎  +' + pointsWon + ' 🏆');
                 buddyReact(false);
                 speakResult(true, null);
-                mgShowBanner('🃏 ¡Memoria completada en ' + mgMemoryTries + ' intentos! ¡Excelente, Valery!', () => startMinigame('memory'));
+                const rec = mgRecordSuffix('memory', mgMemoryTries, false);
+                mgShowBanner('🃏 ¡Memoria completada en ' + mgMemoryTries + ' intentos! ¡Excelente, Valery!' + rec, () => startMinigame('memory'));
+                renderMinigameRecords();
             }, 550);
         }
 
@@ -2746,9 +2805,11 @@
             const pointsWon = mgBalloonScore * 5;
             mgAward(gemsWon, pointsWon, '🎈 +' + gemsWon + ' 💎  +' + pointsWon + ' 🏆');
             if (mgBalloonScore >= 7) { buddyReact(false); speakResult(true, null); }
+            const rec = mgRecordSuffix('balloon', mgBalloonScore, true);
             const msg = '🎈 ¡Terminaste! Acertaste ' + mgBalloonScore + ' de ' + MG_BALLOON_TOTAL + '. ' +
-                (mgBalloonScore >= 7 ? '¡Excelente, Valery!' : '¡Sigue practicando!');
+                (mgBalloonScore >= 7 ? '¡Excelente, Valery!' : '¡Sigue practicando!') + rec;
             mgShowBanner(msg, () => startMinigame('balloon'));
+            renderMinigameRecords();
         }
 
         /* ---- Minijuego 3: SIMÓN DICE (colores en inglés) ---- */
@@ -2829,7 +2890,76 @@
             const pointsWon = completed * 5;
             mgAward(gemsWon, pointsWon, '🎹 +' + gemsWon + ' 💎  +' + pointsWon + ' 🏆');
             if (completed >= 4) { buddyReact(false); speakResult(true, null); }
-            mgShowBanner('🎹 ¡Buen intento! Llegaste al nivel ' + mgSimonLevel + '. ' + (completed >= 4 ? '¡Excelente, Valery!' : '¡Tú puedes más!'), () => startMinigame('simon'));
+            const rec = mgRecordSuffix('simon', completed, true);
+            mgShowBanner('🎹 ¡Buen intento! Llegaste al nivel ' + mgSimonLevel + '. ' + (completed >= 4 ? '¡Excelente, Valery!' : '¡Tú puedes más!') + rec, () => startMinigame('simon'));
+            renderMinigameRecords();
+        }
+
+        /* ---- Minijuego 4: LA LETRA QUE FALTA (deletreo) ---- */
+        let mgLetterRound = 0, mgLetterScore = 0, mgLetterTimer = null;
+        const MG_LETTER_TOTAL = 10;
+        function mgLetterStart(area) {
+            mgLetterRound = 0; mgLetterScore = 0;
+            const info = document.createElement('p'); info.className = 'mg-info';
+            info.innerHTML = 'Mira el dibujo y completa la palabra en inglés: toca la <b>letra que falta</b>. 🔤';
+            area.appendChild(info);
+            const target = document.createElement('div'); target.id = 'mg-l-target'; target.className = 'mg-b-target';
+            area.appendChild(target);
+            const status = document.createElement('div'); status.id = 'mg-l-status'; status.className = 'mg-b-status';
+            area.appendChild(status);
+            const field = document.createElement('div'); field.id = 'mg-l-field'; field.className = 'mg-b-field';
+            area.appendChild(field);
+            mgLetterNext();
+        }
+        function mgLetterNext() {
+            if (mgLetterRound >= MG_LETTER_TOTAL) { mgLetterEnd(); return; }
+            mgLetterRound++;
+            document.getElementById('mg-l-status').innerText = 'Ronda ' + mgLetterRound + ' de ' + MG_LETTER_TOTAL + '   ·   ⭐ ' + mgLetterScore;
+            const word = shuffle(mgVocab)[0];
+            const en = word.en.toUpperCase();
+            const pos = Math.floor(Math.random() * en.length);
+            const missing = en[pos];
+            const shown = en.split('').map((ch, i) => i === pos ? '<span class="mg-l-blank">_</span>' : ch).join('');
+            document.getElementById('mg-l-target').innerHTML =
+                '<div class="mg-l-emoji">' + word.emoji + '</div>' +
+                '<div class="mg-b-word" style="font-size:0.8em;">(' + word.es + ')</div>' +
+                '<div class="mg-l-word">' + shown + '</div>';
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const distractors = shuffle(alphabet.replace(missing, '').split('')).slice(0, 3);
+            const opts = shuffle([missing].concat(distractors));
+            const field = document.getElementById('mg-l-field');
+            field.innerHTML = '';
+            opts.forEach(letter => {
+                const b = document.createElement('button');
+                b.className = 'mg-letter-tile';
+                b.innerText = letter;
+                b.onclick = () => mgLetterPick(letter, missing, word, b);
+                field.appendChild(b);
+            });
+        }
+        function mgLetterPick(letter, missing, word, btn) {
+            document.querySelectorAll('.mg-letter-tile').forEach(b => b.disabled = true);
+            if (letter === missing) {
+                playCorrect(); speakEnglish(word.en);
+                mgLetterScore++;
+                btn.classList.add('tile-ok');
+                launchConfetti(16);
+                mgLetterTimer = setTimeout(mgLetterNext, 800);
+            } else {
+                playWrong();
+                btn.classList.add('tile-no');
+                document.querySelectorAll('.mg-letter-tile').forEach(b => { if (b.innerText === missing) b.classList.add('tile-ok'); });
+                mgLetterTimer = setTimeout(mgLetterNext, 1200);
+            }
+        }
+        function mgLetterEnd() {
+            const gemsWon = mgLetterScore;
+            const pointsWon = mgLetterScore * 5;
+            mgAward(gemsWon, pointsWon, '🔤 +' + gemsWon + ' 💎  +' + pointsWon + ' 🏆');
+            if (mgLetterScore >= 7) { buddyReact(false); speakResult(true, null); }
+            const rec = mgRecordSuffix('letter', mgLetterScore, true);
+            mgShowBanner('🔤 ¡Terminaste! Acertaste ' + mgLetterScore + ' de ' + MG_LETTER_TOTAL + '. ' + (mgLetterScore >= 7 ? '¡Excelente, Valery!' : '¡Sigue practicando!') + rec, () => startMinigame('letter'));
+            renderMinigameRecords();
         }
 
         /* ============ AL ABRIR ============ */
