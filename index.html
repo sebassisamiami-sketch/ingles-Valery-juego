@@ -1983,7 +1983,10 @@
             const bonus = Math.min((streak - 1) * 5, 25);
             const gained = base + bonus;
             points += gained;
-            const gemsWon = 1 + (streak >= 3 ? 1 : 0) + (streak >= 5 ? 1 : 0);
+            let gemsWon = 1 + (streak >= 3 ? 1 : 0) + (streak >= 5 ? 1 : 0);
+            // El nivel de ESCRIBIR es más difícil: paga el DOBLE de diamantes por respuesta correcta
+            const curQ = questions[currentQ];
+            if (curQ && curQ.type === 'write') gemsWon *= 2;
             gems += gemsWon;
             addGems(gemsWon);      // 💎 para fondos y personajes
             addPoints(gained);     // 🏆 para calcomanías
