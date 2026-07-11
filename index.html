@@ -283,6 +283,64 @@
         .btn-shop { background:#FFD700; color:#8A2BE2; box-shadow:0 6px 0 #DAA520; font-size:1.35em; margin-top:18px; }
         .btn-progress { background:#20B2AA; box-shadow:0 6px 0 #178A84; font-size:1.15em; }
 
+        /* ===== Minijuegos ===== */
+        .btn-minigames { background:#FF69B4; color:#fff; box-shadow:0 6px 0 #C71585; font-size:1.35em; margin-top:8px; }
+        .mg-btn-memory  { background:#9370DB; box-shadow:0 6px 0 #6A5ACD; }
+        .mg-btn-balloon { background:#FF6B6B; box-shadow:0 6px 0 #C1440E; }
+        .mg-btn-simon   { background:#20B2AA; box-shadow:0 6px 0 #178A84; }
+        #mg-wallet { font-size:1.2em; color:#1E90FF; font-weight:bold; background:#E6F3FF; border-radius:15px; padding:8px 16px; display:inline-block; margin:8px 0; }
+        #mg-title { color:#8A2BE2; }
+        .mg-info { font-size:1.05em; color:#555; margin:8px 0 4px; }
+
+        /* Memoria (parejas) */
+        .mg-mem-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; max-width:420px; margin:12px auto; }
+        .mg-card {
+            position:relative; aspect-ratio:1/1; min-height:66px;
+            border:3px solid #6A5ACD; border-radius:12px;
+            background:linear-gradient(135deg,#9370DB,#6A5ACD); color:#fff;
+            font-size:1.5em; font-weight:bold; cursor:pointer; padding:4px;
+            font-family:var(--game-font); box-shadow:0 4px 0 #5D1A9E;
+            display:flex; align-items:center; justify-content:center; text-align:center; word-break:break-word;
+        }
+        .mg-card .mg-card-face { visibility:hidden; font-size:0.95em; }
+        .mg-card:not(.flipped):not(.matched)::before {
+            content:'❓'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.5em;
+        }
+        .mg-card.flipped { background:#fff; color:#8A2BE2; }
+        .mg-card.flipped .mg-card-face, .mg-card.matched .mg-card-face { visibility:visible; }
+        .mg-card.matched { background:#F0FFF0; border-color:#32CD32; color:#228B22; box-shadow:0 4px 0 #1B7A1B; }
+
+        /* Atrapa la palabra (globos) */
+        .mg-b-target { font-size:1.6em; font-weight:bold; margin:12px 0; color:#333; }
+        .mg-b-emoji { font-size:1.3em; }
+        .mg-b-word { color:#8A2BE2; }
+        .mg-b-status { color:#8A2BE2; font-weight:bold; margin:6px 0; }
+        .mg-b-field { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; align-items:center; margin:16px 0; min-height:150px; }
+        .mg-balloon {
+            border:none; border-radius:50% 50% 50% 50% / 58% 58% 42% 42%;
+            width:108px; height:126px; color:#fff; font-size:1.25em; font-weight:bold;
+            cursor:pointer; font-family:var(--game-font); box-shadow:0 6px 12px rgba(0,0,0,0.2);
+            position:relative; text-shadow:1px 1px 2px rgba(0,0,0,0.35);
+        }
+        .mg-balloon::after { content:''; position:absolute; bottom:-7px; left:50%; width:2px; height:10px; background:rgba(0,0,0,0.25); transform:translateX(-50%); }
+        .mg-balloon:disabled { cursor:default; }
+        .mg-b-wrong { opacity:0.35; }
+        .mg-pop { animation: popIn 0.25s reverse forwards; }
+
+        /* Simón dice */
+        .mg-simon { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; max-width:320px; margin:16px auto; }
+        .mg-pad {
+            aspect-ratio:1/1; min-height:92px; border:4px solid rgba(0,0,0,0.12); border-radius:16px;
+            font-size:1.2em; font-weight:bold; color:#fff; cursor:pointer;
+            font-family:var(--game-font); text-shadow:1px 1px 2px rgba(0,0,0,0.4);
+            opacity:0.72; transition:opacity 0.1s, transform 0.1s;
+        }
+        .mg-pad.lit { opacity:1; transform:scale(1.06); box-shadow:0 0 22px #fff; }
+
+        /* Banner de resultado de minijuego */
+        .mg-banner { background:#FFF8DC; border:3px dashed #FFA500; border-radius:15px; padding:16px; margin:16px 0; }
+        .mg-banner-msg { font-size:1.25em; font-weight:bold; color:#8A2BE2; margin-bottom:12px; }
+
         /* Pantalla de progreso */
         .progress-box {
             width:100%; min-height:90px; border:3px solid #FFD700; border-radius:12px;
@@ -532,6 +590,7 @@
             <button class="btn btn-level lvl-write" onclick="startGame(12)"><span>✍️ ¡A ESCRIBIR! (Completa frases)</span><span id="medal-12" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-order" onclick="startGame(13)"><span>🧩 ORDENA LA ORACIÓN (Verbos)</span><span id="medal-13" class="medal-tag hidden"></span></button>
             <button class="btn btn-level lvl-all" onclick="startGame(0)"><span>🌈 ¡TODO MEZCLADO!</span><span id="medal-0" class="medal-tag hidden"></span></button>
+            <button class="btn btn-minigames" onclick="openMinigames()">🎮 Minijuegos Divertidos</button>
             <button class="btn btn-shop" onclick="openShop()">🛒 Tienda de Recompensas (<span id="start-gems">0</span> 💎)</button>
             <button class="btn btn-progress" onclick="openProgress()">💾 Mi Progreso (pasar a otro aparato)</button>
             <div id="font-picker-wrap">
@@ -627,6 +686,27 @@
             <p id="end-message" style="font-size: 1.4em; color: #555;"></p>
             <button class="btn" onclick="location.reload()">Volver a jugar 🔄</button>
             <button class="btn btn-shop" onclick="openShop()">🛒 Ir a la Tienda</button>
+        </div>
+
+        <!-- HUB DE MINIJUEGOS -->
+        <div id="minigames-screen" class="hidden">
+            <h1>🎮 Minijuegos</h1>
+            <p style="font-size:1.1em; color:#555;">¡Juega, diviértete y aprende inglés ganando gemas 💎 y puntos 🏆!</p>
+            <button class="btn btn-level mg-btn-memory" onclick="startMinigame('memory')"><span>🃏 MEMORIA (Encuentra las parejas)</span></button>
+            <button class="btn btn-level mg-btn-balloon" onclick="startMinigame('balloon')"><span>🎈 ATRAPA LA PALABRA (Globos)</span></button>
+            <button class="btn btn-level mg-btn-simon" onclick="startMinigame('simon')"><span>🎹 SIMÓN DICE (Colores en inglés)</span></button>
+            <button class="btn" onclick="closeMinigames()">⬅️ Volver al menú</button>
+        </div>
+
+        <!-- PANTALLA DE JUEGO DE MINIJUEGO -->
+        <div id="minigame-screen" class="hidden">
+            <div id="game-nav">
+                <button class="nav-btn home" onclick="closeMinigames()">🏠 Menú</button>
+                <button class="nav-btn" onclick="exitMinigame()">🎮 Otros minijuegos</button>
+            </div>
+            <div id="mg-wallet">💎 <span id="mg-gems">0</span> &nbsp;·&nbsp; 🏆 <span id="mg-points">0</span></div>
+            <h2 id="mg-title">Minijuego</h2>
+            <div id="mg-area"></div>
         </div>
     </div>
 
@@ -2461,6 +2541,295 @@
                 msg.style.color = '#FF4500';
                 msg.innerText = '❌ El código no es válido. Revisa que esté completo.';
             }
+        }
+
+        /* ============ MINIJUEGOS (fuera de los niveles) ============ */
+        const mgVocab = [
+            {es:'Gato', en:'Cat', emoji:'🐱'}, {es:'Perro', en:'Dog', emoji:'🐶'},
+            {es:'Sol', en:'Sun', emoji:'☀️'}, {es:'Casa', en:'House', emoji:'🏠'},
+            {es:'Manzana', en:'Apple', emoji:'🍎'}, {es:'Libro', en:'Book', emoji:'📖'},
+            {es:'Pez', en:'Fish', emoji:'🐟'}, {es:'Estrella', en:'Star', emoji:'⭐'},
+            {es:'Flor', en:'Flower', emoji:'🌸'}, {es:'Pelota', en:'Ball', emoji:'⚽'},
+            {es:'Corazón', en:'Heart', emoji:'❤️'}, {es:'Luna', en:'Moon', emoji:'🌙'},
+            {es:'Pájaro', en:'Bird', emoji:'🐦'}, {es:'Árbol', en:'Tree', emoji:'🌳'},
+            {es:'Carro', en:'Car', emoji:'🚗'}, {es:'Mano', en:'Hand', emoji:'✋'}
+        ];
+        const MG_TITLES = { memory:'🃏 Memoria', balloon:'🎈 Atrapa la palabra', simon:'🎹 Simón dice' };
+
+        /* ---- Navegación de minijuegos ---- */
+        function openMinigames() {
+            playClick();
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('minigames-screen').classList.remove('hidden');
+        }
+        function closeMinigames() {
+            playClick();
+            stopAllMinigames();
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            document.getElementById('minigames-screen').classList.add('hidden');
+            document.getElementById('minigame-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            document.getElementById('start-gems').innerText = getGems();
+            updateMedalDisplay();
+        }
+        function startMinigame(which) {
+            playClick(); getCtx();
+            document.getElementById('minigames-screen').classList.add('hidden');
+            document.getElementById('minigame-screen').classList.remove('hidden');
+            document.getElementById('mg-title').innerText = MG_TITLES[which] || 'Minijuego';
+            document.getElementById('mg-gems').innerText = getGems();
+            document.getElementById('mg-points').innerText = getPoints();
+            const area = document.getElementById('mg-area');
+            area.innerHTML = '';
+            if (which === 'memory') mgMemoryStart(area);
+            else if (which === 'balloon') mgBalloonStart(area);
+            else if (which === 'simon') mgSimonStart(area);
+        }
+        function exitMinigame() {
+            playClick();
+            stopAllMinigames();
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            document.getElementById('minigame-screen').classList.add('hidden');
+            document.getElementById('minigames-screen').classList.remove('hidden');
+        }
+        function stopAllMinigames() {
+            if (mgBalloonTimer) { clearTimeout(mgBalloonTimer); mgBalloonTimer = null; }
+            mgSimonTimeouts.forEach(t => clearTimeout(t)); mgSimonTimeouts = [];
+            mgSimonPlaying = false; mgMemoryLock = false;
+        }
+        // Recompensa compartida de los minijuegos
+        function mgAward(gemsWon, pointsWon, msg) {
+            if (gemsWon > 0) addGems(gemsWon);
+            if (pointsWon > 0) addPoints(pointsWon);
+            launchConfetti(80);
+            playWin();
+            showRewardPopup(msg);
+            document.getElementById('mg-gems').innerText = getGems();
+            document.getElementById('mg-points').innerText = getPoints();
+        }
+        // Banner de fin de minijuego con botones de repetir / salir
+        function mgShowBanner(msg, replayFn) {
+            const area = document.getElementById('mg-area');
+            const banner = document.createElement('div');
+            banner.className = 'mg-banner';
+            const m = document.createElement('div'); m.className = 'mg-banner-msg'; m.innerText = msg;
+            banner.appendChild(m);
+            const replay = document.createElement('button');
+            replay.className = 'btn lvl-easy'; replay.innerText = '🔄 Jugar otra vez';
+            replay.onclick = replayFn;
+            const back = document.createElement('button');
+            back.className = 'btn'; back.innerText = '🎮 Otros minijuegos';
+            back.onclick = exitMinigame;
+            banner.appendChild(replay); banner.appendChild(back);
+            area.appendChild(banner);
+            try { banner.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){}
+        }
+
+        /* ---- Minijuego 1: MEMORIA (parejas dibujo ↔ palabra) ---- */
+        let mgMemoryLock = false, mgMemoryFlipped = [], mgMemoryMatched = 0, mgMemoryPairs = 0, mgMemoryTries = 0;
+        function mgMemoryStart(area) {
+            mgMemoryLock = false; mgMemoryFlipped = []; mgMemoryMatched = 0; mgMemoryTries = 0;
+            const picks = shuffle(mgVocab).slice(0, 6);
+            mgMemoryPairs = picks.length;
+            let cards = [];
+            picks.forEach((v, i) => {
+                cards.push({ key:i, face:v.emoji, en:v.en });
+                cards.push({ key:i, face:v.en, en:v.en });
+            });
+            cards = shuffle(cards);
+            const info = document.createElement('p'); info.className = 'mg-info';
+            info.innerHTML = 'Encuentra las parejas: une el <b>dibujo</b> con su <b>palabra en inglés</b>. 🃏';
+            area.appendChild(info);
+            const grid = document.createElement('div'); grid.className = 'mg-mem-grid';
+            cards.forEach(c => {
+                const card = document.createElement('button');
+                card.className = 'mg-card';
+                card.innerHTML = '<span class="mg-card-face">' + c.face + '</span>';
+                card.onclick = () => mgMemoryFlip(card, c);
+                grid.appendChild(card);
+            });
+            area.appendChild(grid);
+        }
+        function mgMemoryFlip(card, c) {
+            if (mgMemoryLock) return;
+            if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            playClick();
+            card.classList.add('flipped');
+            mgMemoryFlipped.push({ card:card, c:c });
+            if (mgMemoryFlipped.length === 2) {
+                mgMemoryLock = true;
+                mgMemoryTries++;
+                const a = mgMemoryFlipped[0], b = mgMemoryFlipped[1];
+                if (a.c.key === b.c.key) {
+                    setTimeout(() => {
+                        a.card.classList.add('matched'); b.card.classList.add('matched');
+                        playCorrect();
+                        speakEnglish(a.c.en);
+                        mgMemoryFlipped = []; mgMemoryLock = false;
+                        mgMemoryMatched++;
+                        if (mgMemoryMatched === mgMemoryPairs) mgMemoryWin();
+                    }, 450);
+                } else {
+                    setTimeout(() => {
+                        a.card.classList.remove('flipped'); b.card.classList.remove('flipped');
+                        playWrong();
+                        mgMemoryFlipped = []; mgMemoryLock = false;
+                    }, 950);
+                }
+            }
+        }
+        function mgMemoryWin() {
+            setTimeout(() => {
+                const gemsWon = 12, pointsWon = 30;
+                mgAward(gemsWon, pointsWon, '🃏 +' + gemsWon + ' 💎  +' + pointsWon + ' 🏆');
+                buddyReact(false);
+                speakResult(true, null);
+                mgShowBanner('🃏 ¡Memoria completada en ' + mgMemoryTries + ' intentos! ¡Excelente, Valery!', () => startMinigame('memory'));
+            }, 550);
+        }
+
+        /* ---- Minijuego 2: ATRAPA LA PALABRA (globos) ---- */
+        let mgBalloonRound = 0, mgBalloonScore = 0, mgBalloonTimer = null;
+        const MG_BALLOON_TOTAL = 10;
+        function mgBalloonStart(area) {
+            mgBalloonRound = 0; mgBalloonScore = 0;
+            const info = document.createElement('p'); info.className = 'mg-info';
+            info.innerHTML = 'Toca el globo con la palabra en <b>inglés</b> correcta. 🎈';
+            area.appendChild(info);
+            const target = document.createElement('div'); target.id = 'mg-b-target'; target.className = 'mg-b-target';
+            area.appendChild(target);
+            const status = document.createElement('div'); status.id = 'mg-b-status'; status.className = 'mg-b-status';
+            area.appendChild(status);
+            const field = document.createElement('div'); field.id = 'mg-b-field'; field.className = 'mg-b-field';
+            area.appendChild(field);
+            mgBalloonNext();
+        }
+        function mgBalloonNext() {
+            if (mgBalloonRound >= MG_BALLOON_TOTAL) { mgBalloonEnd(); return; }
+            mgBalloonRound++;
+            document.getElementById('mg-b-status').innerText = 'Ronda ' + mgBalloonRound + ' de ' + MG_BALLOON_TOTAL + '   ·   ⭐ ' + mgBalloonScore;
+            const correct = shuffle(mgVocab)[0];
+            const others = shuffle(mgVocab.filter(v => v.en !== correct.en)).slice(0, 3);
+            const opts = shuffle([correct].concat(others));
+            document.getElementById('mg-b-target').innerHTML = '<span class="mg-b-emoji">' + correct.emoji + '</span> ¿Cómo se dice <span class="mg-b-word">' + correct.es + '</span>?';
+            const field = document.getElementById('mg-b-field');
+            field.innerHTML = '';
+            const colors = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#A66CFF'];
+            opts.forEach((o, i) => {
+                const b = document.createElement('button');
+                b.className = 'mg-balloon a-float';
+                b.style.background = colors[i % colors.length];
+                b.style.animationDelay = (i * 0.25) + 's';
+                b.innerText = o.en;
+                b.onclick = () => mgBalloonPick(o, correct, b);
+                field.appendChild(b);
+            });
+        }
+        function mgBalloonPick(chosen, correct, btn) {
+            document.querySelectorAll('.mg-balloon').forEach(b => b.disabled = true);
+            if (chosen.en === correct.en) {
+                playCorrect(); speakEnglish(correct.en);
+                mgBalloonScore++;
+                btn.classList.add('mg-pop');
+                launchConfetti(18);
+                mgBalloonTimer = setTimeout(mgBalloonNext, 750);
+            } else {
+                playWrong();
+                btn.classList.add('mg-b-wrong');
+                document.querySelectorAll('.mg-balloon').forEach(b => { if (b.innerText === correct.en) b.style.outline = '4px solid #32CD32'; });
+                mgBalloonTimer = setTimeout(mgBalloonNext, 1100);
+            }
+        }
+        function mgBalloonEnd() {
+            const gemsWon = mgBalloonScore;
+            const pointsWon = mgBalloonScore * 5;
+            mgAward(gemsWon, pointsWon, '🎈 +' + gemsWon + ' 💎  +' + pointsWon + ' 🏆');
+            if (mgBalloonScore >= 7) { buddyReact(false); speakResult(true, null); }
+            const msg = '🎈 ¡Terminaste! Acertaste ' + mgBalloonScore + ' de ' + MG_BALLOON_TOTAL + '. ' +
+                (mgBalloonScore >= 7 ? '¡Excelente, Valery!' : '¡Sigue practicando!');
+            mgShowBanner(msg, () => startMinigame('balloon'));
+        }
+
+        /* ---- Minijuego 3: SIMÓN DICE (colores en inglés) ---- */
+        const mgSimonPads = [
+            { name:'Red', color:'#FF4136', freq:330 },
+            { name:'Green', color:'#2ECC40', freq:392 },
+            { name:'Blue', color:'#0074D9', freq:494 },
+            { name:'Yellow', color:'#FFDC00', freq:587 }
+        ];
+        let mgSimonSeq = [], mgSimonInput = [], mgSimonLevel = 0, mgSimonPlaying = false, mgSimonTimeouts = [], mgSimonStartBtn = null;
+        function mgSimonStart(area) {
+            mgSimonSeq = []; mgSimonInput = []; mgSimonLevel = 0; mgSimonTimeouts = []; mgSimonPlaying = false;
+            const info = document.createElement('p'); info.className = 'mg-info';
+            info.innerHTML = 'Mira y escucha la secuencia de colores (en inglés) y ¡repítela tocando! 🎹';
+            area.appendChild(info);
+            const status = document.createElement('div'); status.id = 'mg-s-status'; status.className = 'mg-b-status'; status.innerText = 'Toca Empezar';
+            area.appendChild(status);
+            const pad = document.createElement('div'); pad.className = 'mg-simon';
+            mgSimonPads.forEach((p, i) => {
+                const b = document.createElement('button');
+                b.className = 'mg-pad'; b.style.background = p.color; b.innerText = p.name;
+                b.onclick = () => mgSimonTap(i);
+                pad.appendChild(b);
+            });
+            area.appendChild(pad);
+            mgSimonStartBtn = document.createElement('button');
+            mgSimonStartBtn.className = 'btn lvl-easy'; mgSimonStartBtn.innerText = '▶️ Empezar';
+            mgSimonStartBtn.onclick = () => mgSimonNextRound();
+            area.appendChild(mgSimonStartBtn);
+        }
+        function mgSimonFlash(i, cb) {
+            const pads = document.querySelectorAll('.mg-pad');
+            if (!pads[i]) { if (cb) cb(); return; }
+            pads[i].classList.add('lit');
+            playTone(mgSimonPads[i].freq, 0.4, 'sine', 0, 0.25);
+            speakEnglish(mgSimonPads[i].name);
+            const t = setTimeout(() => { pads[i].classList.remove('lit'); if (cb) cb(); }, 650);
+            mgSimonTimeouts.push(t);
+        }
+        function mgSimonNextRound() {
+            if (mgSimonStartBtn) mgSimonStartBtn.style.display = 'none';
+            mgSimonInput = [];
+            mgSimonLevel++;
+            document.getElementById('mg-s-status').innerText = 'Nivel ' + mgSimonLevel + ' — ¡Mira!';
+            mgSimonSeq.push(Math.floor(Math.random() * 4));
+            mgSimonPlaying = true;
+            let delay = 500;
+            mgSimonSeq.forEach((idx, k) => {
+                const t = setTimeout(() => {
+                    mgSimonFlash(idx, () => {
+                        if (k === mgSimonSeq.length - 1) {
+                            mgSimonPlaying = false;
+                            const s = document.getElementById('mg-s-status');
+                            if (s) s.innerText = 'Nivel ' + mgSimonLevel + ' — ¡Tu turno!';
+                        }
+                    });
+                }, delay);
+                mgSimonTimeouts.push(t);
+                delay += 820;
+            });
+        }
+        function mgSimonTap(i) {
+            if (mgSimonPlaying || mgSimonSeq.length === 0) return;
+            mgSimonFlash(i);
+            mgSimonInput.push(i);
+            const idx = mgSimonInput.length - 1;
+            if (mgSimonInput[idx] !== mgSimonSeq[idx]) { mgSimonGameOver(); return; }
+            if (mgSimonInput.length === mgSimonSeq.length) {
+                mgSimonPlaying = true;
+                setTimeout(() => { playCorrect(); mgSimonNextRound(); }, 700);
+            }
+        }
+        function mgSimonGameOver() {
+            mgSimonPlaying = true;
+            playWrong();
+            const completed = Math.max(0, mgSimonLevel - 1);
+            const gemsWon = Math.max(1, completed * 2);
+            const pointsWon = completed * 5;
+            mgAward(gemsWon, pointsWon, '🎹 +' + gemsWon + ' 💎  +' + pointsWon + ' 🏆');
+            if (completed >= 4) { buddyReact(false); speakResult(true, null); }
+            mgShowBanner('🎹 ¡Buen intento! Llegaste al nivel ' + mgSimonLevel + '. ' + (completed >= 4 ? '¡Excelente, Valery!' : '¡Tú puedes más!'), () => startMinigame('simon'));
         }
 
         /* ============ AL ABRIR ============ */
