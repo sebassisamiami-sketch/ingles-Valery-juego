@@ -1446,11 +1446,13 @@
         }
         function setEquip(e){ try { localStorage.setItem('valeryEquip', JSON.stringify(e)); } catch(e){} }
 
-        /* ============ VOZ EN INGLÉS ============ */
+        /* ============ VOZ (inglés para las frases, español para el feedback) ============ */
         let enVoice = null;
+        let esVoice = null;
         function pickVoice() {
             const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
             enVoice = voices.find(v => /en[-_]US/i.test(v.lang)) || voices.find(v => /^en/i.test(v.lang)) || null;
+            esVoice = voices.find(v => /es[-_](419|CO|MX|US)/i.test(v.lang)) || voices.find(v => /^es/i.test(v.lang)) || null;
         }
         if (window.speechSynthesis) { pickVoice(); window.speechSynthesis.onvoiceschanged = pickVoice; }
         function speakEnglish(text) {
@@ -1461,6 +1463,26 @@
             if (enVoice) u.voice = enVoice;
             u.rate = 0.85; u.pitch = 1.1;
             window.speechSynthesis.speak(u);
+        }
+        // Dice el feedback en voz alta (como locutor) y luego encola la frase en inglés
+        function speakResult(correct, englishSentence) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            // 1) Feedback hablado en español
+            const fb = new SpeechSynthesisUtterance(correct ? '¡Excelente, Valery!' : 'Buuu');
+            fb.lang = 'es-ES';
+            if (esVoice) fb.voice = esVoice;
+            fb.rate = correct ? 1.0 : 0.85;
+            fb.pitch = correct ? 1.35 : 0.6;   // alegre al acertar, bajito al fallar
+            window.speechSynthesis.speak(fb);
+            // 2) Luego la frase en inglés (encolada, sin cancelar la anterior)
+            if (englishSentence) {
+                const en = new SpeechSynthesisUtterance(englishSentence);
+                en.lang = 'en-US';
+                if (enVoice) en.voice = enVoice;
+                en.rate = 0.85; en.pitch = 1.1;
+                window.speechSynthesis.speak(en);
+            }
         }
 
         /* ============ SONIDOS ============ */
@@ -2225,7 +2247,7 @@
             expBox.appendChild(listenBtn);
 
             expBox.classList.remove('hidden');
-            if (!isReview) setTimeout(() => speakEnglish(current.say), 700);
+            if (!isReview) setTimeout(() => speakResult(correct, current.say), 450);
 
             const nextBtn = document.getElementById('next-btn');
             nextBtn.innerText = (currentQ + 1 >= questions.length) ? "Ver mis recompensas 🏆" : "Siguiente ➡️";
